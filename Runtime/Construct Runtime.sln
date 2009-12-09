@@ -1,0 +1,65 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Construct Runtime", "Construct Runtime.vcproj", "{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		App Release|Win32 = App Release|Win32
+		App_p Debug|Win32 = App_p Debug|Win32
+		App_p Release|Win32 = App_p Release|Win32
+		App_pd Debug|Win32 = App_pd Debug|Win32
+		App_pd Release|Win32 = App_pd Release|Win32
+		DX9 Debug|Win32 = DX9 Debug|Win32
+		DX9 Release|Win32 = DX9 Release|Win32
+		DX9_p Debug|Win32 = DX9_p Debug|Win32
+		DX9_p Release|Win32 = DX9_p Release|Win32
+		DX9_pd Debug|Win32 = DX9_pd Debug|Win32
+		DX9_pd Release|Win32 = DX9_pd Release|Win32
+		SDL Debug|Win32 = SDL Debug|Win32
+		SDL Release|Win32 = SDL Release|Win32
+		SDL_p Debug|Win32 = SDL_p Debug|Win32
+		SDL_p Release|Win32 = SDL_p Release|Win32
+		SDL_pd Debug|Win32 = SDL_pd Debug|Win32
+		SDL_pd Release|Win32 = SDL_pd Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.App Release|Win32.ActiveCfg = DX9_p Debug|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.App Release|Win32.Build.0 = DX9_p Debug|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.App_p Debug|Win32.ActiveCfg = App_p Debug|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.App_p Debug|Win32.Build.0 = App_p Debug|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.App_p Release|Win32.ActiveCfg = App_p Release|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.App_p Release|Win32.Build.0 = App_p Release|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.App_pd Debug|Win32.ActiveCfg = App_pd Debug|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.App_pd Debug|Win32.Build.0 = App_pd Debug|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.App_pd Release|Win32.ActiveCfg = App_pd Release|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.App_pd Release|Win32.Build.0 = App_pd Release|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.DX9 Debug|Win32.ActiveCfg = DX9 Debug|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.DX9 Debug|Win32.Build.0 = DX9 Debug|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.DX9 Release|Win32.ActiveCfg = DX9 Release|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.DX9 Release|Win32.Build.0 = DX9 Release|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.DX9_p Debug|Win32.ActiveCfg = DX9_p Debug|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.DX9_p Debug|Win32.Build.0 = DX9_p Debug|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.DX9_p Release|Win32.ActiveCfg = DX9_p Release|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.DX9_p Release|Win32.Build.0 = DX9_p Release|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.DX9_pd Debug|Win32.ActiveCfg = DX9_pd Debug|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.DX9_pd Debug|Win32.Build.0 = DX9_pd Debug|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.DX9_pd Release|Win32.ActiveCfg = DX9_pd Release|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.DX9_pd Release|Win32.Build.0 = DX9_pd Release|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.SDL Debug|Win32.ActiveCfg = SDL Debug|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.SDL Debug|Win32.Build.0 = SDL Debug|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.SDL Release|Win32.ActiveCfg = SDL Release|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.SDL Release|Win32.Build.0 = SDL Release|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.SDL_p Debug|Win32.ActiveCfg = SDL_p Debug|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.SDL_p Debug|Win32.Build.0 = SDL_p Debug|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.SDL_p Release|Win32.ActiveCfg = SDL_p Release|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.SDL_p Release|Win32.Build.0 = SDL_p Release|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.SDL_pd Debug|Win32.ActiveCfg = SDL_pd Debug|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.SDL_pd Debug|Win32.Build.0 = SDL_pd Debug|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.SDL_pd Release|Win32.ActiveCfg = SDL_pd Release|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.SDL_pd Release|Win32.Build.0 = SDL_pd Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
