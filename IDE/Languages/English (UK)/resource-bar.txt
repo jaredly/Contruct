@@ -1,0 +1,15 @@
+binary=Binary
+cursor=Cursor
+icon=Icon
+menu=Menu
+font=Font
+
+add-file=Add file
+remove-file=Remove file
+
+delete-icon=Delete icon
+edit-icon=Edit icon
+
+add-menu=Add menu
+delete-menu=Delete menu
+edit-menu=Edit menu

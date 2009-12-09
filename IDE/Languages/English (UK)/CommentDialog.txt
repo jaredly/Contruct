@@ -1,0 +1,2 @@
+1=Colour
+2=Font

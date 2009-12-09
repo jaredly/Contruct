@@ -1,0 +1,3 @@
+title=About
+build-date=Build date
+product-version=Product version

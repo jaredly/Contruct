@@ -1,0 +1,2 @@
+layout-editor=Layout Editor
+event-sheet-editor=Event Sheet Editor

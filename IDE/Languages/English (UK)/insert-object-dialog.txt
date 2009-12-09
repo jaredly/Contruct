@@ -1,0 +1,13 @@
+title=Insert new object
+click-for-info=Click an object for information.
+exchange=Exchange
+list-objects=List objects
+search=Search
+
+description=Description
+author=Author
+version=Version
+name=Name
+result=Result
+
+first-run=Insert objects using this dialog; right click an object to view information and the author's website.  Use 'search' to search for keywords.

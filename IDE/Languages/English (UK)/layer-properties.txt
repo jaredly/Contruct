@@ -1,0 +1,66 @@
+properties=Layer Properties
+properties-desc=Properties for this layer
+
+name=Name
+name-desc=The name of this layer
+
+type=Type
+type-desc=The type of layer this is
+
+display=Normal
+nonlayout=Non-layout objects
+
+display=Display
+display-sec=Display settings for this layer
+
+show=Show layer
+show-desc=If unticked, this layer will not be shown
+
+transparent=Transparent
+transparent-desc=Empty parts of this layer will be transparent
+
+background=Background
+background-desc=If not transparent, the colour show in empty areas
+
+scrollx=Scroll X
+scrollx-desc=The layer's horizontal scroll position
+scrolly=Scroll Y
+scrolly-desc=The layer's vertical scroll position
+
+scrollx-rate=Scroll X Rate
+scrollx-rate-desc=The rate at which this layer scrolls horizontally
+scrolly-rate=Scroll Y Rate
+scrolly-rate-desc=The rate at which this layer scrolls vertically
+
+zoomx=Zoom X
+zoomx-desc=The layer's horizontal zoom
+zoomy=Zoom Y
+zoomy-desc=The layer's vertical zoom
+
+zoomx-rate=Zoom X Rate
+zoomx-rate-desc=The layer's horizontal zoom rate
+zoomy-rate=Zoom Y Rate
+zoomy-rate-desc=The layer's vertical zoom rate
+
+opacity=Opacity
+opacity-desc=The semi-transparency of this layer
+
+filter=Filter
+filter-desc=Colour tint of the entire layer
+
+force-own-texture=Force own texture
+force-own-texture-desc=Force rendering on to intermediate texture when no effects are used
+
+inheritance=Inheritance
+inheritance-desc=Inheritance options for this layer
+
+inheritance-layer=Inheritance layer
+inheritance-layer-desc=The layer from which this layer inherits
+
+effects=Layer Effects
+effects-desc=Effects on this layer
+
+remove-effect=Remove effect
+
+add-effect=Add layer effect
+add-effect-desc=Add an effect to this layer

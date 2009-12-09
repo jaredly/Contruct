@@ -1,0 +1,12 @@
+1=All
+2=Audio
+3=Controls
+4=Data && Files
+5=Game
+6=Graphics
+7=Input
+8=Internet
+9=Other
+10=System
+11=Common
+12=Professional

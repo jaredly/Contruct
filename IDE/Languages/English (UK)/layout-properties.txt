@@ -1,0 +1,24 @@
+title=Layout Properties
+title-desc=Settings that affect the currently selected layout
+
+name=Name
+name-desc=The name of this layout
+
+width=Width
+width-desc=The width of this layout
+height=Height
+height-desc=The height of this layout
+
+application-background=Application background
+application-background-desc=Ignore the layout colour and use an application background
+
+colour=Layout colour
+colour-desc=Background colour of this layout
+
+unbounded-scrolling=Unbounded scrolling
+unbounded-scrolling-desc=Allow scrolling outside of the set width/height
+
+event-sheet=Event Sheet
+event-sheet-desc=The event sheet linked to this layout
+
+application-desc=Go to application properties

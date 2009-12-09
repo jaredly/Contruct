@@ -1,0 +1,4 @@
+1=Menu editor
+2=Checked
+3=Separator
+4=Disabled

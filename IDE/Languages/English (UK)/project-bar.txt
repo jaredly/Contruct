@@ -1,0 +1,8 @@
+add-layout=Add layout
+manage-families=Manage families
+manage-global-variables=Manage global variables
+manage-event-sheets=Manage event sheets
+show-plugins=Show plugins
+close-project=Close project
+
+already-event-sheet-named-this=There is already an event sheet named this.

@@ -1,0 +1,6 @@
+1=Attributes Manager
+2=Add Attribute
+3=Remove Attribute
+4=Edit Attribute
+5=Save list of Attributes
+6=Load list of Attributes

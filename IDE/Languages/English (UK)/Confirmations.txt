@@ -1,0 +1,5 @@
+1=Are you sure you wish to delete the current selection?
+2=has been modified. Do you wish to save?
+
+3=Do you wish to delete the associated event sheet for this layout?
+4=Associated event sheet

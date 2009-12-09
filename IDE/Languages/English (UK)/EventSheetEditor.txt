@@ -1,0 +1,37 @@
+1=Delete event
+2=Unbookmark event
+3=Bookmark event
+4=Copy as text
+5=Delete condition
+6=Edit condition
+7=Replace condition
+8=Insert new condition
+9=Insert new event
+10=Edit group
+11=Insert sub-event
+12=Invert condition
+13=Insert event
+14=Insert comment
+15=Insert group
+16=Insert script
+17=Include event sheet
+18=Chronological view
+19=List view
+toggle-condition=Toggle condition
+toggle-action=Toggle action
+
+expand-all=Expand all
+collapse-all=Collapse all
+
+20=Delete include
+
+21=Edit action
+22=Delete action
+
+23=Applications using scripting must have 'Enable scripting' turned on in Application Properties and must also redistribute Python25.dll.  Would you like to enable Scripting for this application?
+24=Scripting
+
+25=Delete comment
+26=Edit comment
+
+27=Go-to include

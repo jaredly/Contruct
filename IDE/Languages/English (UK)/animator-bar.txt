@@ -1,0 +1,56 @@
+animation=Animation
+animation-properties=Animation properties
+
+animation-name=Animation name
+animation-name-desc=The name of the animation
+animation-tag=Tag
+animation-tag-desc=A common animation this represents
+animation-speed=Animation speed
+animation-speed-desc=The number of times the animation is shown per second
+animation-loop=Loop
+animation-loop-desc=Repeat the animation infinitely
+animation-repeat=Repeat #
+animation-repeat-desc=The number of times to repeat (if not looping)
+animation-repeat-to=Repeat to
+animation-repeat-to-desc=The frame number to go to when the animation ends
+animation-pingpong=Ping-pong
+animation-pingpong-desc=Alternately reverse the animation
+copy-collision-mask-to-each-frame=Copy Collision mask to each frame
+
+frame=Frame
+frame-desc=Animation frame
+frame-speed=Frame speed
+frame-speed-desc=Speed multiplier. 1 is normal, 0.5 is twice as fast
+
+default=Default
+angle=Angle
+right=Right
+bottom=Bottom
+left=Left
+top=Top
+add-new-animation=Add new animation
+add-sub-animation=Add sub-animation
+add-new-angle=Add new angle
+add-frame=Add frame
+remove-frames=Remove frames
+import-frames=Import frames
+copy-frames=Copy frames
+cut-frames=Cut frames
+paste-frames=Paste frames
+duplicate-frames=Duplicate frames
+launch-explorer=Launch explorer
+add-from-gif=Add frames from GIF
+mirror-frames=Flip frames horizontally
+flip-frames=Flip frames vertically
+
+cannot-remove-frame=Cannot remove frame
+cannot-remove-frame-desc=Each animation/angle must have at least one frame.
+cannot-remove-animation=Cannot remove animation
+cannot-remove-animation-desc=There must be at least one animation.
+cannot-remove-angle=Cannot remove angle
+cannot-remove-angle-desc=There must be at least one angle per animation.
+
+stopped=Stopped
+walking=Walking
+jumping=Jumping
+falling=Falling
