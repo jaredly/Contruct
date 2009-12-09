@@ -1,0 +1,14 @@
+# Welcome to Constructs inline Python Scripting! 
+#==============================================
+# Double clicking a keyword will display information
+#
+# Scroll down for a tutorial
+#
+#
+#
+# =-=-=-=-=-=
+# Tutorial 1:
+# If you have a single sprite on your screen, this code will make it grow and rotate
+Sprite.Width += 2
+Sprite.Height += 2
+Sprite.Angle += 2

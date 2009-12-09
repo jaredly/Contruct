@@ -1,0 +1,61 @@
+#pragma once
+
+// Event sheet editor	
+#define EE_DELETEEVENT					GetString("EventSheetEditor", "1")
+#define EE_UNBOOKMARKEVENT				GetString("EventSheetEditor", "2")
+#define EE_BOOKMARKEVENT				GetString("EventSheetEditor", "3")
+#define EE_COPYASTEXT					GetString("EventSheetEditor", "4")
+#define EE_DELETECONDITION				GetString("EventSheetEditor", "5")
+#define EE_EDITCONDITION				GetString("EventSheetEditor", "6")
+#define EE_REPLACECONDITION				GetString("EventSheetEditor", "7")
+#define EE_INSERTNEWCONDITION			GetString("EventSheetEditor", "8")
+#define EE_INSERTNEWEVENT				GetString("EventSheetEditor", "9")
+#define EE_EDITGROUP					GetString("EventSheetEditor", "10")
+#define EE_INSERTSUBEVENT				GetString("EventSheetEditor", "11")
+#define EE_INVERTCONDITION				GetString("EventSheetEditor", "12")
+#define EE_INSERTEVENT					GetString("EventSheetEditor", "13")
+#define EE_INSERTCOMMENT				GetString("EventSheetEditor", "14")
+#define EE_INSERTGROUP					GetString("EventSheetEditor", "15")
+#define EE_INSERTSCRIPT					GetString("EventSheetEditor", "16")
+#define EE_INCLUDEEVENTSHEET			GetString("EventSheetEditor", "17")
+#define EE_CHRONOLOGICALVIEW			GetString("EventSheetEditor", "18")
+#define EE_LISTVIEW						GetString("EventSheetEditor", "19")
+#define EE_TOGGLECONDITION				GetString("EventSheetEditor", "toggle-condition")
+#define EE_TOGGLEACTION					GetString("EventSheetEditor", "toggle-action")
+
+#define EE_EXPANDALL					GetString("EventSheetEditor", "expand-all")
+#define EE_COLLAPSEALL					GetString("EventSheetEditor", "collapse-all")
+
+#define EE_DELETEINCLUDE				GetString("EventSheetEditor", "20")
+
+#define EE_EDITACTION					GetString("EventSheetEditor", "21")
+#define EE_DELETEACTION					GetString("EventSheetEditor", "22")
+
+#define EE_PYTHON						GetString("EventSheetEditor", "23")
+#define EE_PYTHONTITLE					GetString("EventSheetEditor", "24")
+
+#define EE_DELETECOMMENT				GetString("EventSheetEditor", "25")
+#define EE_EDITCOMMENT					GetString("EventSheetEditor", "26")
+
+#define EE_GOTOINCLUDE					GetString("EventSheetEditor", "27")
+
+// Layout editor
+#define LE_INSERTOBJECT					GetString("LayoutEditor", "1")
+#define LE_CUT							GetString("LayoutEditor", "2")
+#define LE_COPY							GetString("LayoutEditor", "3")
+#define LE_PASTE						GetString("LayoutEditor", "4")
+#define LE_PASTECLONE					GetString("LayoutEditor", "19")
+#define LE_DELETE						GetString("LayoutEditor", "5")
+#define LE_OBJECTINFORMATION			GetString("LayoutEditor", "6")
+#define LE_ARRAYPASTE					GetString("LayoutEditor", "7")
+#define LE_ALIGN						GetString("LayoutEditor", "8")
+#define LE_DISTRIBUTE					GetString("LayoutEditor", "9")
+#define LE_EFLECTS						GetString("LayoutEditor", "10")
+#define LE_GROUPS						GetString("LayoutEditor", "11")
+#define LE_HIDELOCK						GetString("LayoutEditor", "12")
+#define LE_MOVEMENTS					GetString("LayoutEditor", "13")
+#define LE_ORDER						GetString("LayoutEditor", "14")
+#define LE_SIZE							GetString("LayoutEditor", "15")
+#define LE_TRAITS						GetString("LayoutEditor", "16")
+#define LE_CENTERFRAME					GetString("LayoutEditor", "17")
+#define LE_CENTERFRAMEOVERSELECTION		GetString("LayoutEditor", "18")

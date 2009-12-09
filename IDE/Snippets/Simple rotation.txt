@@ -1,0 +1,2 @@
+Rotation of Sprites
+Sprite.Angle = Sprite.Angle + 1
