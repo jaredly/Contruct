@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "8DirMovement", "8DirMovement.vcproj", "{9799145E-25D5-4315-87F9-348E50D5751A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug Runtime|Win32 = Debug Runtime|Win32
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+		Runtime|Win32 = Runtime|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9799145E-25D5-4315-87F9-348E50D5751A}.Debug Runtime|Win32.ActiveCfg = Debug Runtime|Win32
+		{9799145E-25D5-4315-87F9-348E50D5751A}.Debug Runtime|Win32.Build.0 = Debug Runtime|Win32
+		{9799145E-25D5-4315-87F9-348E50D5751A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9799145E-25D5-4315-87F9-348E50D5751A}.Debug|Win32.Build.0 = Debug|Win32
+		{9799145E-25D5-4315-87F9-348E50D5751A}.Release|Win32.ActiveCfg = Release|Win32
+		{9799145E-25D5-4315-87F9-348E50D5751A}.Release|Win32.Build.0 = Release|Win32
+		{9799145E-25D5-4315-87F9-348E50D5751A}.Runtime|Win32.ActiveCfg = Runtime|Win32
+		{9799145E-25D5-4315-87F9-348E50D5751A}.Runtime|Win32.Build.0 = Runtime|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

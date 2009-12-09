@@ -1,0 +1,7 @@
+; ConstructSDK.def : Declares the module parameters for the DLL.
+
+EXPORTS
+	GetTable					@1
+	RTCreateObject				@3
+	RTDestroyObject				@4
+	RTDllLoad					@5
