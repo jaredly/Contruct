@@ -1,0 +1,20 @@
+; ConstructSDK.def : Declare the exported functions for this extension
+
+DESCRIPTION  'ConstructSDK Object'
+
+EXPORTS
+	GetInfo						@2
+	ETCreateObject				@7
+	ETInitializeObject			@8
+	ETDrawObject				@9
+	ETOnPropertyChanged			@10
+	ETDestroyObject             @11
+	ETSerialize					@12
+	ETSizeObject                @13
+	ETPutObject					@17
+	ETRemoveObject				@18
+	ETDllLoad					@20
+	RTDllLoad					@21
+	RTCreateObject				@22
+	RTDestroyObject				@23
+	ETOnNotify					@25

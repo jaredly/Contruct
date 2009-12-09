@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Tile Background", "Tile Background.vcproj", "{F68F00EB-F9B5-4EC3-998A-3411AFE967FD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug Runtime|Win32 = Debug Runtime|Win32
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+		Runtime|Win32 = Runtime|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F68F00EB-F9B5-4EC3-998A-3411AFE967FD}.Debug Runtime|Win32.ActiveCfg = Runtime|Win32
+		{F68F00EB-F9B5-4EC3-998A-3411AFE967FD}.Debug Runtime|Win32.Build.0 = Runtime|Win32
+		{F68F00EB-F9B5-4EC3-998A-3411AFE967FD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F68F00EB-F9B5-4EC3-998A-3411AFE967FD}.Debug|Win32.Build.0 = Debug|Win32
+		{F68F00EB-F9B5-4EC3-998A-3411AFE967FD}.Release|Win32.ActiveCfg = Release|Win32
+		{F68F00EB-F9B5-4EC3-998A-3411AFE967FD}.Release|Win32.Build.0 = Release|Win32
+		{F68F00EB-F9B5-4EC3-998A-3411AFE967FD}.Runtime|Win32.ActiveCfg = Runtime|Win32
+		{F68F00EB-F9B5-4EC3-998A-3411AFE967FD}.Runtime|Win32.Build.0 = Runtime|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
