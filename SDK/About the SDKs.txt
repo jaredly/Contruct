@@ -1,0 +1,23 @@
+Construct Plugin SDK
+====================
+
+The SDK folder should be in the same directory as your IDE folder, eg:
+
+Construct\IDE
+Construct\SDK
+
+This way the SDK builds directly in to the IDE's Plugins directory.
+
+The 'MFC VC6-8 Static' folder contains the SDK configured for Visual C++ 6.0 (.dsw) and Visual Studio 2005 (.sln), with MFC.  The 'Win32 VC8-9 Static' folder contains the SDK configured to not use MFC, which produces a smaller file size.  The SDK ports to and compiles under Visual Studio 2008 (version 9) as well.  The projects/solutions with _vc9 after them are for VS 2008.
+
+The SDK no longer supports dynamic linkage to the MFC or CRT DLLs, because this causes compatibility and distribution problems.
+
+Here is an overview of the template filesizes produced by each of the SDKs.
+
+		   | Support MFC	| Release filesize	| Runtime filesize
+----------------------------------------------------------------------------------
+MFC VC6 Static	     Yes		  124kb			  124kb
+MFC VC8 Static	     Yes		  197kb			  195kb
+Win32 VC8-9 Static   No			  89kb			  89kb
+
+
