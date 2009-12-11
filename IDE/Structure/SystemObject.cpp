@@ -1489,7 +1489,7 @@ void SO_SetLayerZoomOffset(ACESEntry2& Out)
 
 	param.desc = "The offset is added onto the current Y zoom amount for this layer";
 	param.name = "Y Ratio";
-	param.initStr = "1.0";
+	param.initStr = "0.0";
 	param.type = 1;
 	Out.params.push_back(param);
 }
