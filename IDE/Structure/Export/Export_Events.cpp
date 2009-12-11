@@ -25,7 +25,7 @@ void CExport::ExportParameter(CEditorParam& param, int runtimeOid, int edittimeO
 
 		else // attribute..
 		{
-			
+
 			// Export actual attribute name, including quotes.  No processing needed.
 			/*
 			param_string = param_string.Mid(1, param_string.GetLength()-2);
@@ -35,10 +35,10 @@ void CExport::ExportParameter(CEditorParam& param, int runtimeOid, int edittimeO
 
 			for( ; i != application->m_Traits.end(); i++) {
 
-				if(param_string == *i)
-					oid = m_ExportTypesNumbers.size() + application->m_Families.size()+index;
+			if(param_string == *i)
+			oid = m_ExportTypesNumbers.size() + application->m_Families.size()+index;
 
-				index++;
+			index++;
 			}*/
 		}
 	}
@@ -128,7 +128,7 @@ void CExport::ExportParameter(CEditorParam& param, int runtimeOid, int edittimeO
 				eventBlock << (int)tok->t;
 				eventBlock << atof(tok->str);
 				break;
-			// String literals, identifiers and variable names need to export their strings.
+				// String literals, identifiers and variable names need to export their strings.
 			case T_STRINGLITERAL:
 			case T_IDENTIFIER:
 				eventBlock << (int)tok->t;
@@ -136,39 +136,39 @@ void CExport::ExportParameter(CEditorParam& param, int runtimeOid, int edittimeO
 				break;
 			case T_VARIABLENAME:
 				{
-				eventBlock << (int)tok->t;
+					eventBlock << (int)tok->t;
 
-				bool found = false;
+					bool found = false;
 
-				if (tok->oidOwner == -1) {
-					int varid = tok->id;
-					
-					for(list<CApplication::GlobalVariable>::iterator i = application->global_variables.begin(); i!= application->global_variables.end(); i++) {
-						if(i->identifier == varid) {
-							eventBlock << i->name;
-							found = true;
-							break;
+					if (tok->oidOwner == -1) {
+						int varid = tok->id;
+
+						for(list<CApplication::GlobalVariable>::iterator i = application->global_variables.begin(); i!= application->global_variables.end(); i++) {
+							if(i->identifier == varid) {
+								eventBlock << i->name;
+								found = true;
+								break;
+							}
 						}
 					}
-				}
-				else {
-					int varid = tok->id;
-					CObjType* pType = application->FindObjTypeFromNumber(tok->oidOwner);
+					else {
+						int varid = tok->id;
+						CObjType* pType = application->FindObjTypeFromNumber(tok->oidOwner);
 
-					for(vector<PrivateValue>::iterator i = pType->m_PrivateValues.begin(); i!= pType->m_PrivateValues.end(); i++) {
-						if(i->identifier == varid) {
-							eventBlock << i->name;
-							found = true;
-							break;
+						for(vector<PrivateValue>::iterator i = pType->m_PrivateValues.begin(); i!= pType->m_PrivateValues.end(); i++) {
+							if(i->identifier == varid) {
+								eventBlock << i->name;
+								found = true;
+								break;
+							}
 						}
 					}
-				}
 
-				// Not broken yet: variable not found!
-				if (!found)
-					throw;
+					// Not broken yet: variable not found!
+					if (!found)
+						throw;
 
-				break;
+					break;
 				}//case
 			case T_COLOR:
 				eventBlock << (int)T_INTEGER;
@@ -180,60 +180,15 @@ void CExport::ExportParameter(CEditorParam& param, int runtimeOid, int edittimeO
 
 		}
 	}
-	
+
 	//eventBlock<<CAP_BEGINPARAM;
 	//eventBlock.append((const char*)param_string, param_string.GetLength());
 	//eventBlock<<'\0';
 	//eventBlock<<CAP_ENDPARAM;
 }
 
-bool CExport::ReallocateEvent(CEditorEvent* pOldEvent, CEditorEvent* cutoff)
-{
-	CEditorEvent* newparent = &m_event_memory.back();
 
-	CEditorEvent* oldparent = pOldEvent;
-
-	// We no longer want actions from parent events appearing in the reallocated event, so i commented it out - Davo
-	//newparent->m_Actions =		oldparent->m_Actions;
-	newparent->m_Conditions =	oldparent->m_Conditions;
-	newparent->m_type =			oldparent->m_type;
-	newparent->m_sActive =		oldparent->m_sActive;
-	newparent->m_sTitle =		oldparent->m_sTitle;
-	newparent->event_sheet_include = oldparent->event_sheet_include;
-	newparent->m_number		=   oldparent->m_number;
-
-	for(int i = 0; i < oldparent->m_EventList.size(); i++)
-	{
-		if(cutoff == oldparent->m_EventList[i])
-		{
-			newparent->m_EventList.push_back(cutoff);
-			oldparent->m_EventList.clear();
-			return true;
-		}
-		else
-		{
-			m_event_memory.push_back(CEditorEvent(false));
-			newparent->m_EventList.push_back(&m_event_memory.back());
-
-			if(ReallocateEvent(oldparent->m_EventList[i], cutoff))
-				return true;
-			else
-			{
-				// We dont want to include this event list because its not part of the chain of events
-				// relating to the trigger
-				// We dont need to worry about freeing memory because its in a memory vector which is freed
-				// later :)
-				newparent->m_EventList.pop_back();
-				
-			}
-		}
-	}
-
-	return false;
-}
-
-	map<int,int> m_EventSheetConvert;
-
+map<int,int> m_EventSheetConvert;
 int CExport::EventSheetIndex(int id)
 {
 	map<int, int>::iterator i = m_EventSheetConvert.find(id);
@@ -244,411 +199,719 @@ int CExport::EventSheetIndex(int id)
 	return m_EventSheetConvert[id];
 }
 
-void CExport::ReallocateTriggerlessEvent(CEditorEvent* cutoff)
+void CExport::AddEvent(CEditorEvent* curevent, ExportBlock* root, int current_sheet)
 {
-	if(cutoff == m_triggerless)
-		return;
+	const int event_type_group = 2;
+	const int event_type_include = INCLUDE_TYPE;
+	const int event_type_event = EVENT_TYPE;
+	const int event_type_script = SCRIPT_TYPE;
 
-	m_event_memory.push_back(CEditorEvent(false));
-	CEditorEvent* new_first_triggerless = &m_event_memory.back();
-
-	ReallocateEvent(m_triggerless, cutoff);
-
-	m_triggerless = new_first_triggerless;
-}
+	const int max_nesting = 100;
 
 
-void CExport::AddEvent(CEditorEvent* curevent, int current_sheet)
-{
-	m_depth++;
-			
-	if(m_TriggerDepth >= 0)
+	switch (curevent->m_type)
 	{
-		CEditorEvent* triggerless = m_curTriggerlessEvent;
-
-		triggerless->m_type = curevent->m_type;
-		if(triggerless->m_type == INCLUDE_TYPE)
-			triggerless->m_type = EVENT_TYPE;
-		triggerless->m_Actions = curevent->m_Actions;
-		triggerless->m_sActive = curevent->m_sActive;
-		triggerless->m_sTitle = curevent->m_sTitle;
-		triggerless->event_sheet_include = curevent->event_sheet_include;
-		triggerless->m_number = curevent->m_number;
-		
-		//python
-		triggerless->m_cText = curevent->m_cText;
-	}
-	
-	// Group
-	if (curevent->m_type == 2)
-	{
-		if(m_TriggerDepth <= 0)
+	case event_type_group:
 		{
-			eventBlock << CAP_BEGINGROUP;
-			// m_sActive - is this on when the group is enabled, or disabled?!
-			eventBlock << (BYTE)(curevent->m_sActive);
-			eventBlock << curevent->m_sTitle;
+			ExportGroup* e_group = new ExportGroup(curevent->m_sTitle, curevent->m_sActive);
+			root->addChildBack(e_group);
 		}
-
-		for (int i = 0; i < curevent->m_EventList.size(); i++)
+		break;
+	case event_type_include:
 		{
-			CEditorEvent* temp = m_curTriggerlessEvent;
-			if(m_TriggerDepth >= 0)
-			{
-				m_event_memory.push_back(CEditorEvent(false));
-				m_curTriggerlessEvent->m_EventList.push_back(&m_event_memory.back());
-				m_curTriggerlessEvent = m_curTriggerlessEvent->m_EventList.back();
-			}
-			
-				
-			AddEvent(curevent->m_EventList.at(i), current_sheet);
-			m_curTriggerlessEvent = temp;
-		}
+			if (curevent->event_sheet_include == -1) 
+				return;
 
-		if(m_TriggerDepth <= 0)
-			eventBlock << CAP_ENDGROUP;
-	}
+			if(m_depth > max_nesting)
+				return;
 
-	else if (curevent->m_type == INCLUDE_TYPE)
-	{
-		if (curevent->event_sheet_include == -1) return;
-		if (curevent->event_sheet_include == current_sheet) return;
-
-		if(m_TriggerDepth <= 0)
-		{
-		//	eventBlock<<CAP_BEGINEVENT<<0<<0;	// runtime expects to see event number/sheet after beginevent
-		//	eventBlock<<CAP_BEGINCONDITIONS;
-		//	eventBlock<<CAP_ENDCONDITIONS;
-		//	eventBlock<<CAP_BEGINACTIONS;
-		//	eventBlock<<CAP_ENDACTIONS;
-		}
-		if(m_depth < 100)
-		{
-			// we need to obtain the event list in the include
-			EventSheet* evntsheet = this->application->FindEventSheetFromNumber(curevent->event_sheet_include);
+			EventSheet* evntsheet = application->FindEventSheetFromNumber(curevent->event_sheet_include);
 			if(evntsheet)
 			{
-				for (int i = 0; i < evntsheet->m_EventList.size(); i++)
+				for (EventVector::iterator i = evntsheet->m_EventList.begin(); i != evntsheet->m_EventList.end(); i++)
 				{
-					CEditorEvent* temp = m_curTriggerlessEvent;
-					if(m_TriggerDepth >= 0)
-					{
-						m_event_memory.push_back(CEditorEvent(false));
-						m_curTriggerlessEvent->m_EventList.push_back(&m_event_memory.back());
-						m_curTriggerlessEvent = m_curTriggerlessEvent->m_EventList.back();
-					}
-					
 					int scope = m_EventSheetNumber;
 					m_EventSheetNumber = EventSheetIndex(evntsheet->identifier);
-
-					AddEvent(evntsheet->m_EventList.at(i), evntsheet->identifier);
-					m_curTriggerlessEvent = temp;	
+					AddEvent(*i, root, evntsheet->identifier);
+					m_EventSheetNumber = scope;	
 				}
 			}
 		}
+		break;
+	case event_type_script:
+		{
+			ExportScript* e_script = new ExportScript(curevent->m_cText);
+			root->addChildBack(e_script);
+		}
+		break;
+	case event_type_event:
+		{
+			ExportEvent* e_event = new ExportEvent(curevent->m_number, m_EventSheetNumber);
+			root->addChildBack(e_event);
+
+			ConditionVector::iterator c = curevent->m_Conditions.begin();
+			for(; c!= curevent->m_Conditions.end(); c++)
+			{
+				CEditorCondition* cnd = *c;
+				if( cnd->Valid(application) && cnd->m_bEnabled && curevent->m_bEnabled)
+				{
+					e_event->conditions.push_back(ExportCondition(cnd->oid, cnd->mid, cnd->cndID, cnd->m_Negate, cnd->IsTrigger(application), &cnd->params ));
+				}
+			}
+
+			ActionVector::iterator a = curevent->m_Actions.begin();
+			for(; a!= curevent->m_Actions.end(); a++)
+			{
+				CEditorAction* act = *a;
+				if( act->Valid(application) && act->m_bEnabled && curevent->m_bEnabled)
+				{
+					e_event->actions.push_back(ExportAction(act->oid, act->mid, act->actID, &act->params ));
+				}
+			}
+		}
+		break;
+
 	}
 
-	else if (curevent->m_type == SCRIPT_TYPE)
-	{
-		if(m_TriggerDepth <= 0)
-		{
-			eventBlock<<CAP_BEGINEVENT<<0<<0; // runtime expects to see event number/event sheet after beginevent
-			eventBlock<<CAP_BEGINCONDITIONS;
-			eventBlock<<CAP_ENDCONDITIONS;
-			eventBlock<<CAP_BEGINACTIONS;
-			eventBlock<<CAP_BEGINACTION;
-			
-			eventBlock<<(int)(-1); // Action OID (SYSTEM)
-			eventBlock<<(int)(45); // Action ID (Run Script)
-			eventBlock<<(int)(-1); // Action Mov ID
-			eventBlock<<(int)(1);  // Param Count
-
-			CEditorParam temp;
-			CString script = curevent->m_cText;
-			script.Replace("\"", "\"\"");
-			script = "\"" + script + "\"";
-			temp.CreateFromString(script, application, 2, "");
-			ExportParameter(temp, -1,-1);
-			eventBlock<<CAP_ENDACTION;
-			eventBlock<<CAP_ENDACTIONS;
-			eventBlock<<CAP_ENDEVENT;
-		}
+	for (EventVector::iterator i = curevent->m_EventList.begin(); i != curevent->m_EventList.end(); i++)
+	{	
+		AddEvent(*i, root->getLastChild(), current_sheet);
 	}
 
-	else if (curevent->m_type == EVENT_TYPE)
-	{
-		// something special we have to do : we need to loop all the conditions in this event and create tempory events for them, and then
-		// export those. 
-		bool hasATrigger = false;
-
-		if(m_TriggerDepth >= 0)
-		{
-			for (int y = 0; y < curevent->m_Conditions.size(); y++)
-			{
-				CEditorCondition* curcnd = curevent->m_Conditions.at(y);
-				if(curcnd->Valid(application) && curcnd->m_bEnabled && curevent->m_bEnabled)
-				{
-					if(application->FindObjTypeFromNumber(curcnd->oid))
-					{
-						if(curcnd->IsTrigger(application))
-						{
-							hasATrigger = true;
-
-							m_export_later.push_back(CEditorEvent(false));
-								
-							CEditorEvent* item = &m_export_later.back();
-
-							//item->m_Actions = triggerless.m_Actions;
-							CEditorEvent* temp = m_triggerless;
-							ReallocateTriggerlessEvent(m_curTriggerlessEvent);
-							item->m_EventList.push_back(m_triggerless); // we give it the topmost triggerless event
-							item->m_type = 0;	// normal event type
-							item->m_Conditions.push_back(curcnd);	// the only condition we are going to have is the trigger. The sub event will contain the entire triggerless event
-							m_triggerless = temp;
-						}
-						else
-						{
-						
-							m_curTriggerlessEvent->m_Conditions.push_back(curcnd);	// copy pointer to condition
-						}
-					}
-				}
-
-			}
-		}
-
-		if(hasATrigger)
-			m_TriggerDepth ++;
-
-		if(m_TriggerDepth <= 0)
-		{
-
-			eventBlock << CAP_BEGINEVENT;
-
-			eventBlock << curevent->m_number;
-			eventBlock << m_EventSheetNumber;
-
-			eventBlock<<CAP_BEGINCONDITIONS;
-
-			// Conditions
-			for (int y = 0; y < curevent->m_Conditions.size(); y++)
-			{
-				// Get condition
-				CEditorCondition* curcondition = curevent->m_Conditions.at(y);
-				if(!curcondition->ValidToDisplay(application)
-					|| !curcondition->m_bEnabled 
-					|| !curevent->m_bEnabled )
-					continue;
-				CObjType* obj = application->FindObjTypeFromNumber(curcondition->oid);
-
-				eventBlock<<CAP_BEGINCONDITION;
-
-				// Get condition OID
-				int curOid = ObjTypeIDCnvt((*curcondition).oid);
-				eventBlock<<curOid;
-
-				// Cnd ID
-				eventBlock<<(*curcondition).cndID;
-
-				// Is negated
-				if ((*curcondition).m_Negate)
-					eventBlock<<(BYTE)1;
-				else
-					eventBlock<<(BYTE)0;
-				bool bFound = false;
-
-				if(curcondition->mid >= 0)
-					eventBlock << obj->GetBehaviorIndexFromUniqueID(curcondition->mid);
-				else
-					eventBlock << curcondition->mid;
-
-				eventBlock << curcondition->params.size();
-
-				// Parameters
-				for (int t = 0; t < curcondition->params.size(); t++)
-				{
-					ExportParameter(*(curcondition->params[t]), curOid, curcondition->oid);
-				}
-
-				eventBlock<<CAP_ENDCONDITION;
-			}
-
-			eventBlock<<CAP_ENDCONDITIONS;
-			eventBlock<<CAP_BEGINACTIONS;
-
-			// Actions
-			for (int z = 0; z < curevent->m_Actions.size(); z++)
-			{
-			
-
-				// Get action
-
-				CEditorAction* curaction = curevent->m_Actions.at(z);
-				if(!curaction->ValidToDisplay(application)
-					|| !curaction->m_bEnabled
-					|| !curevent->m_bEnabled)
-					continue;
-
-				CObjType* obj = application->FindObjTypeFromNumber(curaction->oid);
-
-				eventBlock<<CAP_BEGINACTION;
-
-				// Action OID
-				int curOid = ObjTypeIDCnvt(curaction->oid);
-		
-				eventBlock<<curOid;
-
-				// Action ID
-				eventBlock<<curaction->actID;
-
-				bool bFound = false;
-
-				if(curaction->mid == -1)
-					eventBlock << curaction->mid;
-				else if(curaction->mid >= 0)
-					eventBlock << obj->GetBehaviorIndexFromUniqueID(curaction->mid);
-				else
-				{
-					int mid = -1;
-					int index = 1;
-					
-					for(list<CEffect>::iterator i = obj->effects.begin(); i!= obj->effects.end(); i++)
-					{
-						index++;
-						if(i->m_effectID * -1  == curaction->mid)
-						{
-							mid = index * -1; // will start at -1 and go downwards as planned
-						}
-					}
-					eventBlock << mid;
-				}
-
-				eventBlock << curaction->params.size();
-
-				// Parameters
-				for (int t = 0; t < curaction->params.size(); t++)
-				{
-					ExportParameter(*(curaction->params[t]), curOid, curaction->oid);
-				}
-
-				eventBlock<<CAP_ENDACTION;
-			}
-			
-			eventBlock<<CAP_ENDACTIONS;
-
-		}
-
-		for (int i = 0; i < curevent->m_EventList.size(); i++)
-		{
-			//bool previous_trigger;
-			CEditorEvent* temp = m_curTriggerlessEvent;
-			if(m_TriggerDepth >= 0)
-			{
-				m_event_memory.push_back(CEditorEvent(false));
-				m_curTriggerlessEvent->m_EventList.push_back(&m_event_memory.back());
-				m_curTriggerlessEvent = m_curTriggerlessEvent->m_EventList.back();
-			}
-			
-			if (curevent->m_EventList.at(i)->m_bEnabled)
-				AddEvent(curevent->m_EventList.at(i), current_sheet);
-
-			m_curTriggerlessEvent = temp;
-
-		}
-		if(m_TriggerDepth <= 0)
-			eventBlock<<CAP_ENDEVENT;
-		
-	// end iterator loop of all trigger events
-		if(hasATrigger)
-			m_TriggerDepth--;
-	}
-	m_depth--;
 }
 
 // Generate events
 void CExport::GenerateEvents()
 {
+	// Tell the runtime how many event sheets we have and their names
 	eventBlock << application->event_sheets.size();
 
 	for(list<EventSheet*>::iterator s = application->event_sheets.begin(); s!= application->event_sheets.end(); s++)
 	{
 		eventBlock << (*s)->GetName();
 	}
-	
+
+	// Note: I dont think the names of the event sheets would line up with the event sheet indexes, revise code
+
 
 	int numLayouts = application->layouts.GetSize();
-	
+
 	eventBlock << numLayouts;
 
-	//	m_depth = 0;
-	//	m_TriggerDepth = 0;
-
+	// Export an event sheet for each layout
 	for (int layoutIndex = 0; layoutIndex < numLayouts; layoutIndex++)
 	{
-		// UNTESTED BEGIN
-		m_depth = 0;
-		m_TriggerDepth = 0;
-		m_triggerless = 0;
-		m_curTriggerlessEvent = 0;
-		m_event_memory.clear();
-		m_export_later.clear();
-		// UNTESTED END
-
-		//TODO: use proper POSITION iteration rather than this finding from index
-		// - eh? it exports them in a specific order so they match with the level. Later we should
-		// make it so it simply exports the event lists vector and the levels have the number of the 
-		// event list they use...since we have event lists as sheets now... but thats a later thing :P
-
+		// Todo: Loop with POSITION instead of index stuff
 		CLayout* pFrame = application->layouts.GetAt(application->layouts.FindIndex(layoutIndex));
-
-		eventBlock<<CAP_BEGINEVENTLIST;
-
 		EventSheet* sheet = pFrame->event_sheet;
-
 		m_EventSheetNumber = EventSheetIndex(sheet->identifier);
+		m_depth = 0;
 
-		for (int i = 0; i < sheet->m_EventList.size(); i++)
+		eventBlock << CAP_BEGINEVENTLIST;
+
+		ExportEvent root(0,0); // the root should never export
+		for (EventVector::iterator i = sheet->m_EventList.begin(); i != sheet->m_EventList.end(); i++)
 		{	
-			m_event_memory.push_back(CEditorEvent(false));
-			m_triggerless = &m_event_memory.back();
-			m_curTriggerlessEvent = m_triggerless;		
-			
-			AddEvent(sheet->m_EventList.at(i), sheet->identifier);
+			AddEvent(*i, &root, sheet->identifier);
 		}
 
-		m_TriggerDepth = -1;
-		// Trigger time
-		for(list<CEditorEvent>::iterator i = m_export_later.begin(); i != m_export_later.end(); i++)
-		{
-			// The topmost event (that is the ones listed in m_export_later) are always (28/8/07) just an empty
-			// event with one condition (the trigger). The runtime apparently is unoptimised for this, so we need to 
-			// put the trigger into the child.
-			CEditorEvent& triggerevent = *i;
-			if(triggerevent.m_Actions.size() == 0 && triggerevent.m_Conditions.size() == 1 && triggerevent.m_EventList.size() == 1)
-			{
-				//The above check is so if in the future the export later events are used differently this code wont skrew things up
-				CEditorEvent* cur = triggerevent.m_EventList[0];
-				if(cur->m_type == EVENT_TYPE)
-				{
-					cur->m_Conditions.insert(cur->m_Conditions.begin(), triggerevent.m_Conditions[0]);
-					
-					// The runtime filters out where the trigger is...
-					AddEvent(cur, sheet->identifier);
-					// We pop back our newly added condition because if we had:
-					// button 1 clicked + button 2 clicked
-					//    actions...
-					// Then during the export process both the 2 separae events get the same pointer to the subevents and actions
-					cur->m_Conditions.erase(cur->m_Conditions.begin());
-				}
-				else
-					AddEvent(&(*i), sheet->identifier);
-			}
-			else
-				AddEvent(&(*i), sheet->identifier);
-		}
-
-		// we list all events that we wish to export later (triggers at the moment) here
+		ProcessEventsElse(&root);
+		ProcessEventsTriggers(&root);
+		ExportEvents(&root);
 
 		eventBlock<<CAP_ENDEVENTLIST;
 	}
 }
+void CExport::ExportEvents( ExportBlock* root )
+{
+	root->getFirstChild()->Export(this);
+
+}
+
+void CExport::ProcessEventsElse( ExportBlock* root )
+{
+
+}
+
+void CExport::ProcessEventsTriggers( ExportBlock* root )
+{
+	list<ExportBlock*> append;
+	if(root->getFirstChild())
+		root->getFirstChild()->ProcessEventsTriggers(root, append);	
+
+	list<ExportBlock*>::iterator e = append.begin();
+	for( ; e!= append.end(); e++)
+	{
+		root->addChildBack(*e);
+	}
+}
+
+int CExport::ConvertMID(int mid, int oid)
+{
+	CObjType* obj = application->FindObjTypeFromNumber(oid);
+
+	if (mid == -1)
+		return mid;
+	else if (mid >= 0)
+		return obj->GetBehaviorIndexFromUniqueID(mid);
+	else
+	{
+		int index = 1;
+
+		for(list<CEffect>::iterator i = obj->effects.begin(); i!= obj->effects.end(); i++)
+		{
+			index++;
+			if(i->m_effectID * -1  == mid)
+			{
+				return index * -1; // will start at -1 and go downwards as planned
+			}
+		}
+		return -1;
+	}
+
+}
+
+//--------------------------------------
+
+ExportBlock::ExportBlock()
+{
+	next = NULL;
+	prev = NULL;
+	parent = NULL;
+	first_child = NULL;
+	last_child = NULL;
+}
+
+ExportBlock::ExportBlock( ExportBlock* other, bool children)
+{
+	next = NULL;
+	prev = NULL;
+	parent = NULL;
+	first_child = NULL;
+	last_child = NULL;
+
+	// clone the blocks children
+	if(other->first_child && children)
+	{
+		ExportBlock* loop = other->first_child;
+
+		ExportBlock* prev_block = NULL;
+		while(loop)
+		{
+			ExportBlock* block = loop->clone(children);
+			if(!this->first_child)
+				this->first_child = block; // first block is the first child
+			this->last_child = block;
+
+			block->parent = this;
+			block->prev = prev_block;
+			if(prev_block)
+				prev_block->next = block;
+
+			prev_block = block;
+			loop = loop->next;
+		}	
+	}
+}
+void ExportBlock::ProcessEventsTriggers( ExportBlock* root, list<ExportBlock*>& append )
+{
+	if(first_child)
+		first_child->ProcessEventsTriggers(root, append); // first process the child to ensure no sub events have triggers
+
+	bool needsDeleting = ProcessThisEventForTrigger(root, append);
+
+	if(next)
+		next->ProcessEventsTriggers(root, append);
+
+	if(needsDeleting)
+	{
+		detach();
+		delete this;
+	}
+	// this abstract class (and others) wont have triggers
+}
+
+void ExportBlock::moveAfter( ExportBlock* block )
+{
+	detach();
+
+	next = block->next;
+	prev = block;
+	parent = block->parent;
+
+	block->next = this;
+
+
+	// check the parents child to see if we've changed it (lol)
+	if(parent)
+	{
+		if(parent->last_child == block)
+		{
+			parent->last_child = this;
+		}
+	}
+	if(first_child)
+		first_child->setParentForAllSiblings(parent);
+}
+
+void ExportBlock::moveBefore( ExportBlock* block )
+{
+	detach();
+
+	next = block;
+	prev = block->prev;
+	parent = block->parent;
+
+	block->prev = this;
+
+	// check the parents child to see if we've changed it (lol)
+	if(parent)
+	{
+		if(parent->first_child == block)
+		{
+			parent->first_child = this;
+		}
+	}
+	if(first_child)
+		first_child->setParentForAllSiblings(parent);
+}
+
+void ExportBlock::addChildBack( ExportBlock* newChild )
+{
+	newChild->detach();
+
+	newChild->parent = this;
+	if(newChild->first_child)
+		newChild->first_child->setParentForAllSiblings(this);
+
+	if(first_child && last_child)
+	{
+		last_child->next = newChild;
+		newChild->prev = last_child;
+		last_child = newChild;
+	}
+	else
+	{
+		first_child = newChild;
+		last_child = newChild;
+	}
+}
+
+void ExportBlock::addChildFront( ExportBlock* newChild )
+{
+	newChild->detach();
+
+	newChild->parent = this;
+	if(newChild->first_child)
+		newChild->first_child->setParentForAllSiblings(this);
+
+	if(first_child && last_child)
+	{
+		first_child->prev = newChild;
+		newChild->next = first_child;
+		first_child = newChild;
+	}
+	else
+	{
+		first_child = newChild;
+		last_child = newChild;
+	}
+}
+
+void ExportBlock::detach()
+{
+	// Connect our previous and next together ^_^
+	if(prev)
+	{
+		prev->next = next;
+	}
+	if(next)
+	{
+		next->prev = prev;
+	}
+	if(parent)
+	{
+		if(parent->first_child == this)
+		{
+			parent->first_child = next;
+		}
+		if(parent->last_child == this)
+		{
+			parent->last_child = prev;
+		}
+	}
+
+	// Now its not attached to anything
+	next = NULL;
+	prev = NULL;
+	parent = NULL;
+	if(first_child)
+		first_child->setParentForAllSiblings(parent);
+}
+
+ExportBlock* ExportBlock::getPrev()
+{
+	return prev;
+}
+
+ExportBlock* ExportBlock::getNext()
+{
+	return next;
+}
+
+ExportBlock* ExportBlock::getParent()
+{
+	return parent;
+}
+
+ExportBlock* ExportBlock::getFirstChild()
+{
+	return first_child;
+}
+
+ExportBlock* ExportBlock::getLastChild()
+{
+	return last_child;
+}
+
+
+
+void ExportBlock::setParentForAllSiblings( ExportBlock* newParent )
+{
+	parent = newParent;
+
+	if(next)
+		next->setParentForAllSiblings( newParent );
+}
+
+ExportBlock::~ExportBlock()
+{
+	detach(); 
+
+	ExportBlock* loop = first_child;
+	ExportBlock* nextloop = NULL;
+	while(loop)
+	{
+		nextloop = loop->first_child;
+		delete loop; // free this child :D
+
+		loop = nextloop; // move on to the next :P
+	}
+}
+//-------------------------------------------------
+
+ExportGroup::ExportGroup( CString Name, BYTE Active )
+{
+	name = Name;
+	active = Active;
+}
+
+ExportGroup::ExportGroup( ExportGroup* other, bool children ) : ExportBlock(other, children)
+{
+	name = other->name;
+	active = other->active;
+}
+void ExportGroup::Export( CExport* exporter )
+{
+	bin& eventBlock = exporter->eventBlock;
+
+	eventBlock << CAP_BEGINGROUP;
+
+	eventBlock << (BYTE)(active ? 1 : 0);
+	eventBlock << name;
+
+	// sub events
+	if(getFirstChild())
+		getFirstChild()->Export(exporter);
+
+	eventBlock << CAP_ENDGROUP;
+
+	if(getNext())
+		getNext()->Export(exporter);
+}
+
+ExportBlock* ExportGroup::clone(bool children)
+{	
+	return new ExportGroup(this, children);
+}
+//-------------------------------------------------
+
+ExportScript::ExportScript( CString Script )
+{
+	script = Script;
+}
+
+ExportScript::ExportScript( ExportScript* other, bool children ) : ExportBlock(other, children)
+{
+	script = other->script;
+}
+void ExportScript::Export( CExport* exporter )
+{
+	bin& eventBlock = exporter->eventBlock;
+
+	eventBlock<<CAP_BEGINEVENT<<(int)0<<(int)0; // runtime expects to see event number/event sheet after beginevent
+	eventBlock<<CAP_BEGINCONDITIONS;
+	eventBlock<<CAP_ENDCONDITIONS;
+	eventBlock<<CAP_BEGINACTIONS;
+	eventBlock<<CAP_BEGINACTION;
+
+	eventBlock<<(int)(-1); // Action OID (SYSTEM)
+	eventBlock<<(int)(45); // Action ID (Run Script)
+	eventBlock<<(int)(-1); // Action Mov ID
+	eventBlock<<(int)(1);  // Param Count
+
+	CEditorParam temp;
+	CString script = script;
+	script.Replace("\"", "\"\"");
+	script = "\"" + script + "\"";
+	temp.CreateFromString(script, exporter->application, 2, "");
+	exporter->ExportParameter(temp, -1,-1);
+	eventBlock<<CAP_ENDACTION;
+	eventBlock<<CAP_ENDACTIONS;
+	eventBlock<<CAP_ENDEVENT;
+
+	if(getNext())
+		getNext()->Export(exporter);
+}
+
+ExportBlock* ExportScript::clone(bool children)
+{
+	return new ExportScript(this, children);
+}
+//-------------------------------------------------
+
+ExportEvent::ExportEvent( int LineNumber, int SheetNumber )
+{
+	linenumber = LineNumber;
+	sheetnumber = SheetNumber;
+}
+
+ExportEvent::ExportEvent( ExportEvent* other, bool children ) : ExportBlock(other, children)
+{
+	actions = other->actions;
+	conditions = other->conditions;
+	linenumber = other->linenumber;
+	sheetnumber = other->sheetnumber;
+}
+
+void ExportEvent::Export( CExport* exporter )
+{
+	bin& eventBlock = exporter->eventBlock;
+
+	eventBlock << CAP_BEGINEVENT;
+	eventBlock << linenumber;
+	eventBlock << sheetnumber;
+	eventBlock << CAP_BEGINCONDITIONS;
+	list<ExportCondition>::iterator c = conditions.begin();
+	for(; c!= conditions.end(); c++)
+	{
+		c->Export(exporter);
+	}
+	eventBlock << CAP_ENDCONDITIONS;
+	eventBlock << CAP_BEGINACTIONS;
+	list<ExportAction>::iterator a = actions.begin();
+	for(; a!= actions.end(); a++)
+	{
+		a->Export(exporter);
+	}
+	eventBlock << CAP_ENDACTIONS;
+
+	// Sub events
+	if(getFirstChild())
+		getFirstChild()->Export(exporter);
+
+	eventBlock << CAP_ENDEVENT;
+
+	// Next
+	if(getNext())
+		getNext()->Export(exporter);
+
+}
+
+ExportBlock* ExportEvent::clone(bool children)
+{
+	return new ExportEvent(this, children);
+}
+
+bool ExportEvent::ProcessThisEventForTrigger( ExportBlock* root, list<ExportBlock*>& append )
+{
+	bool hasTrigger = false;
+
+	list<ExportCondition>::iterator c = conditions.begin();
+
+	for(; c!= conditions.end(); c++)
+	{
+		if(c->isTrigger())
+		{
+			hasTrigger = true;
+
+			ExportEvent* newEvent = (ExportEvent*)this->clone(true);
+			newEvent->RemoveAllTriggers();
+
+			if(getParent() && getParent() != root)
+			{
+				ExportBlock* trigger_root = createConditionOnlyEvents(root);
+				trigger_root->addChildBack(newEvent);
+
+				ExportBlock* parent = trigger_root;
+				while(parent->getParent() != NULL) // find the top parent
+					parent = parent->getParent();
+
+				// here we would check if parent is an ExportEvent, and if its not
+				// do this:
+				ExportEvent* blank_event = new ExportEvent(linenumber, sheetnumber);
+				blank_event->addChildBack(parent);
+
+				newEvent = blank_event;
+			}
+
+			newEvent->conditions.push_front(*c);
+
+			append.push_back(newEvent);
+
+			// now we need to include all the conditions above
+
+		}
+	}
+
+	// There was a trigger in this event so destroy it!
+	if(hasTrigger)
+	{
+		return true;
+	}
+	else
+		return false;
+}
+
+ExportBlock* ExportBlock::createConditionOnlyEvents(ExportBlock* root)
+{
+	ExportBlock* block = clone(false);
+
+	if(parent && parent != root )
+	{
+		block->parent = parent->createConditionOnlyEvents(root);
+		block->parent->addChildBack(block);
+	}
+
+	return block;
+}
+
+bool ExportBlock::ProcessThisEventForTrigger( ExportBlock* root, list<ExportBlock*>& append )
+{
+	// Do nothing because it doesn't have a trigger
+	return false;
+}
+
+//-------------------------------------------------
+
+ExportBlock* ExportEvent::createConditionOnlyEvents(ExportBlock* root)
+{
+	ExportEvent* block = (ExportEvent*) ExportBlock::createConditionOnlyEvents(root);
+
+	block->RemoveAllTriggers();
+	block->actions.clear();
+
+	return block;
+}
+
+void ExportEvent::RemoveAllTriggers()
+{
+	list<ExportCondition>::iterator c = conditions.begin();
+	for(; c!= conditions.end(); c++)
+	{
+		if(c->isTrigger())
+		{
+			c = conditions.erase(c);
+		}
+	}
+};
+
+//-------------------------------------------------
+
+ExportAction::ExportAction( int oid, int mid, int actid, ParamVector* params )
+{
+	this->oid = oid;
+	this->mid = mid;
+	this->actid = actid;
+	this->params = params;
+}
+
+void ExportAction::Export( CExport* exporter )
+{
+	bin& eventBlock = exporter->eventBlock;
+
+	eventBlock << CAP_BEGINACTION;
+
+	// Action OID
+	int curOid = exporter->ObjTypeIDCnvt(oid);
+
+	eventBlock << curOid;
+
+	// Action ID
+	eventBlock << actid;
+
+	int run_mid = exporter->ConvertMID(mid, oid);
+
+	eventBlock << run_mid;
+
+	eventBlock << params->size();
+
+	// Parameters
+	ParamVector::iterator p = params->begin();
+	for (; p!= params->end(); p++)
+	{
+		exporter->ExportParameter(**p, curOid, oid);
+	}
+
+	eventBlock << CAP_ENDACTION;
+}
+
+//-------------------------------------------------
+
+ExportCondition::ExportCondition( int oid, int mid, int cndid, bool negated, bool trigger, ParamVector* params )
+{
+	this->oid = oid;
+	this->mid = mid;
+	this->cndid = cndid;
+	this->negated = negated;
+	this->params = params;
+	this->trigger = trigger;
+}
+
+void ExportCondition::Export( CExport* exporter )
+{
+	bin& eventBlock = exporter->eventBlock;
+
+	eventBlock << CAP_BEGINCONDITION;
+
+	// Condition OID
+	int curOid = exporter->ObjTypeIDCnvt(oid);
+
+	eventBlock << curOid;
+
+	// Condition ID
+	eventBlock << cndid;
+
+	eventBlock << (BYTE) (negated ? 1:0);
+
+	int run_mid = exporter->ConvertMID(mid, oid);
+
+	eventBlock << run_mid;
+
+	eventBlock << params->size();
+
+	// Parameters
+	ParamVector::iterator p = params->begin();
+	for (; p!= params->end(); p++)
+	{
+		exporter->ExportParameter(**p, curOid, oid);
+	}
+
+	eventBlock << CAP_ENDCONDITION;
+}
+
+bool ExportCondition::isTrigger()
+{
+	return trigger;
+}
+//-------------------------------------------------
