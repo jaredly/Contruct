@@ -324,7 +324,8 @@ void CExport::GenerateEvents()
 }
 void CExport::ExportEvents( ExportBlock* root )
 {
-	root->getFirstChild()->Export(this);
+	if(root->getFirstChild())
+		root->getFirstChild()->Export(this);
 
 }
 

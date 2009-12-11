@@ -47,6 +47,7 @@ long ExtObject::aChangeMotionAngleTowardsPos(LPVAL params)
 long ExtObject::aChangeMotionAngleTowardsObj(LPVAL params)
 {
 	CRunObject* pTarget = params[0].GetPairedObjectParam(pRuntime, this);
+	if (pTarget == NULL) return 0;
 	float step = params[1].GetFloat();
 	float newangle = AngleToFrom(pTarget->info.x,pTarget->info.y, pLink->info.x, pLink->info.y);
 
@@ -122,6 +123,7 @@ long ExtObject::aChangeMotionRotateSpeedTowardsObj(LPVAL params)
 	float dt = pRuntime->GetTimeDelta();
 
 	CRunObject* pTarget = params[0].GetPairedObjectParam(pRuntime, this);
+	if (pTarget == NULL) return 0;
 
 	float angle = AngleToFrom(pTarget->info.x, pTarget->info.y, pLink->info.x, pLink->info.y);
 	int mode = params[2].GetInt();
@@ -258,6 +260,7 @@ long ExtObject::aChangeSpeedTowardsObject(LPVAL params)
 	float speed = params[1].GetFloat();
 
 	CRunObject* pTarget = params[2].GetPairedObjectParam(pRuntime, this);
+	if (pTarget == NULL) return 0;
 
 	float angle = AngleToFrom(pTarget->info.x,pTarget->info.y, pLink->info.x, pLink->info.y);
 
@@ -470,6 +473,8 @@ long ExtObject::aRestrainDistanceFromObject(LPVAL params)
 {
 	double distance = params[0].GetFloat();
 	CRunObject* pTarget = params[1].GetPairedObjectParam(pRuntime, this);
+	if (pTarget == NULL) return 0;
+
 	double ox = pTarget->info.x;
 	double oy = pTarget->info.y;
 	int combo = params[2].GetInt();
@@ -526,6 +531,7 @@ long ExtObject::aScaleDistanceFromObject(LPVAL params)
 	float scale = params[0].GetFloat();
 
 	CRunObject* pTarget = params[1].GetPairedObjectParam(pRuntime, this);
+	if (pTarget == NULL) return 0;
 
 	float ox = pTarget->info.x;
 	float oy = pTarget->info.y;

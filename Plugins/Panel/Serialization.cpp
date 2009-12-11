@@ -11,16 +11,33 @@ void ExtObject::Serialize(bin& ar)
 	SerializeVersion(ar, Version);
 
 	if (ar.loading) {
-		//ar >> info >> privateVars 
-		//	>> cr_colors.c1 >> cr_colors.c2 >> cr_colors.fill
-		//	>> transparent >> padding;
-		//pRuntime->SerializeObjectPtr(objAttach, ar);
+		ar >> info >> privateVars;
+
+		pRuntime->SerializeObjectPtr(objAttach, ar);
+
+		ar >> padding; // Padding for attached object
+		int temp;
+		ar >> temp;
+		hotspot_pos = (hotspot_position)temp;
+
+		ar >> hs_xf >> hs_yf >> oldw >> oldh;
+
+		ar >> vertex_filter[0] >> vertex_filter[1] >> vertex_filter[2] >> vertex_filter[3];
+		ar >> image_left_margin >> image_right_margin >> image_top_margin >> image_bottom_margin;
+
+		//TextureHandle iTexture; - Needs to be a way to serialize texture :(
 	}
 	else {
-		//ar << info << privateVars 
-		//	<< cr_colors.c1 << cr_colors.c2 << cr_colors.fill
-		//	<< transparent << padding;
-		//pRuntime->SerializeObjectPtr(objAttach, ar);
+		ar << info << privateVars;
+
+		pRuntime->SerializeObjectPtr(objAttach, ar);
+
+		ar << padding;				// Padding for attached object
+		ar << (int)hotspot_pos;
+		ar << hs_xf << hs_yf << oldw << oldh;
+
+		ar << vertex_filter[0] << vertex_filter[1] << vertex_filter[2] << vertex_filter[3];
+		ar << image_left_margin << image_right_margin << image_top_margin << image_bottom_margin;
 
 	}
 }

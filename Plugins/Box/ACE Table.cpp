@@ -3,7 +3,7 @@
 
 // Include any used common ACE definitions.
 #ifdef RUN_ONLY
-#include "CommonAceDef_custom.hpp"
+#include "..\..\Common\CommonAceDef.hpp"
 #endif
 
 //////////////////////////////////////////////////////////////////////////////////

@@ -186,30 +186,31 @@ void ExtObject::OnCreate()
 	int Version = 0;
 	ar >> Version;
 
-	ar >> gravity >> fMass >> immovable >> lineardamp >> shape >> angulardamp
-		>> norotation;
+	ar >> gravity >> fMass >> immovable >> lineardamp >> shape >> angulardamp >> norotation;
 
 	// Default values for older versions
 	contactFriction = 0.8f;
 	contactElasticity = 0.4f;
 
-	if(Version >= 2){
-				ar >> editMode
-			 >> boolAddingPoints
-			 >> AddingPointsIndex
-			 >> AddingPointsCollision;
-			int size = m_CompoundCollisions.size();
-			ar >> size;
-			for(int i = 0; i < size; i++)
-			{
-				CollisionShape myshape;
-				myshape.Serialize(ar);
-				m_CompoundCollisions.push_back(myshape);
-			}
+	if(Version >= 2)
+	{
+		ar >> editMode;
+		ar >> boolAddingPoints;
+		ar >> AddingPointsIndex;
+		ar >> AddingPointsCollision;
+		int size = m_CompoundCollisions.size();
+		ar >> size;
+		for(int i = 0; i < size; i++)
+		{
+			CollisionShape myshape;
+			myshape.Serialize(ar);
+			m_CompoundCollisions.push_back(myshape);
+		}
 	}
-	if(Version >= 3){
-		ar >> contactFriction
-			>> contactElasticity;
+	if(Version >= 3)
+	{
+		ar >> contactFriction;
+		ar >> contactElasticity;
 	}
 
 	mass = fMass;
@@ -228,39 +229,8 @@ void ExtObject::OnCreate()
 	//hinge = NULL;
 
 	// Create the physics world if no other object has.
-	if (physicsCount == 0) {
-		/*
-		nWorld.Create();
-
-		NewtonSetPlatformArchitecture(nWorld, 2);	// Attempt to use best platform config
-
-		int solver = 0;
-
-		switch (worldSolver) {
-		case 0:		// Linear
-			solver = 8;		// 8-pass linear
-			break;
-		case 1:		// Adaptive
-			solver = 1;		// Adaptive
-			break;
-		case 2:		// Exact
-			solver = 0;	// Exact
-			break;
-		}
-
-		// Default: exact friction model
-		int friction = 0;
-
-		// User picked 'Adaptive'
-		if (worldFriction == 0)
-			friction = 1;		// Adaptive
-
-		NewtonSetSolverModel(nWorld, solver);
-		NewtonSetFrictionModel(nWorld, friction);
-
-		dVector worldBegin(-100, -100, -10.0);
-		dVector worldEnd(300, 300, 10.0);
-		NewtonSetWorldSize(nWorld, &worldBegin[0], &worldEnd[0]);*/
+	if (physicsCount == 0) 
+	{
 	
 		b2AABB worldAABB;
 		worldAABB.lowerBound.Set(-100, -100);
@@ -297,45 +267,30 @@ void ExtObject::OnCreate()
 	//body = NULL;
 	do_recreate = false;
 	
-	//int def = NewtonMaterialGetDefaultGroupID(nWorld);
-
-	//NewtonMaterialSetContinuousCollisionMode(nWorld, def, def, 1);
-	//NewtonSetMinimumFrameRate(nWorld,120);
 }
 
 void ExtObject::CreateBody()
 {
-	//MessageBox(0,0,0,0);
-//	float moment;
-
-	float Mass = mass;// * pLink->info.w * pLink->info.h;
+	float Mass = mass;
 	if(immovable)
 		Mass = 0.0f;
 
 
-	// Create a collision body.
-	/*switch (shape) {
-		case 0:		// Bounding box
-			{*/
-		/*	cpVect verts[] = 
-				{
-				cpv(- pLink->info.w * worldXscale/2,  - pLink->info.h * worldYscale/2),
-				cpv(- pLink->info.w * worldXscale/2,    pLink->info.h * worldYscale/2),
-				cpv(pLink->info.w * worldXscale/2  ,    pLink->info.h * worldYscale/2),
-				cpv(pLink->info.w * worldXscale/2  ,  - pLink->info.h * worldYscale/2)
-				};	*/
-			
+		
 	b2PolygonDef ShapeDefBox;
 	b2PolygonDef ShapeDefCustom;
 	b2CircleDef ShapeDefCircle;
 	b2ShapeDef* pShapeDef = NULL;
 
-	if(shape == 0 || shape == 2) { // Shape 2 is 'none', but it needs a shape to simulate.  The collision filter makes it not collide.
+	if(shape == 0 || shape == 2) 
+	{
+		// Shape 2 is 'none', but it needs a shape to simulate.  The collision filter makes it not collide.
 		ShapeDefBox.SetAsBox(pLink->info.w * worldXscale/2.0, pLink->info.h * worldYscale/2.0);
 		
 		pShapeDef = &ShapeDefBox;
 	}
-	else if(shape == 1){
+	else if(shape == 1)
+	{
 		if(pLink->info.w != pLink->info.h)
 		{
 			shape = 3;
@@ -349,16 +304,19 @@ void ExtObject::CreateBody()
 			ellipse.height = pLink->info.h;
 			ellipse.angle = 0;
 		}
-		else{
+		else
+		{
 			ShapeDefCircle.radius = pLink->info.w * worldXscale/2.0;
 			pShapeDef = &ShapeDefCircle;
 		}
 	}
-	else if(shape == 3){
+	else if(shape == 3)
+	{
 		pShapeDef = &ShapeDefCustom;
 	}
 
-	if (pShapeDef != NULL) {
+	if (pShapeDef != NULL)
+	{
 		pShapeDef->density = Mass;
 		pShapeDef->friction = contactFriction;
 		pShapeDef->restitution = contactElasticity;
@@ -373,8 +331,6 @@ void ExtObject::CreateBody()
 	double HotSpotDist = sqrt((double)POW2(pLink->info.HotSpotX - pLink->info.w / 2.0f) + POW2(pLink->info.HotSpotY - pLink->info.h / 2.0f));
 	float hotspotOffsetX = cos(HotSpotAngle + RADIANS(pLink->info.angle)) * HotSpotDist;
 	float hotspotOffsetY = sin(HotSpotAngle + RADIANS(pLink->info.angle)) * HotSpotDist;
-
-
 
 
 	BodyDef.position.Set((pLink->info.x - hotspotOffsetX) * worldXscale , (pLink->info.y - hotspotOffsetY)* worldYscale);

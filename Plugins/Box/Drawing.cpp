@@ -17,29 +17,28 @@ void ExtObject::UpdateMyColors()
 void ExtObject::Draw()
 {
 	const point hotspot(info.HotSpotX, info.HotSpotY);
-	const rect r = cr::rect_xywh(info.x, info.y, info.w, info.h);
+	const rect r  = cr::rect_xywh(info.x, info.y, info.w, info.h);
+	const rect r2 = cr::rect_xywh(info.x + 0.5f, info.y + 0.5f, info.w - 1.0f, info.h - 1.0f);	
+
 	const cr::color& c = info.pInfo->filter;
 
-	quad q((r - hotspot).rotate_to_quad(cr::to_radians(info.angle), r.topleft()));
+	quad q ((r2 - hotspot).rotate_to_quad(cr::to_radians(info.angle), r2.topleft()));
 
 	if (!transparent)
 		renderer->Fill(r, cr_colors.fill * c, info.angle, hotspot);
 
 	// Draw
 	if (smoothLines) {
-
-		renderer->SmoothLine(q.tl, q.tr, cr_colors.c1 * c, 1.0);
+		renderer->SmoothLine(q.tr, q.tl, cr_colors.c1 * c, 1.0);
 		renderer->SmoothLine(q.tl, q.bl, cr_colors.c1 * c, 1.0);
+		renderer->SmoothLine(q.bl, q.br, cr_colors.c2 * c, 1.0);
 		renderer->SmoothLine(q.br, q.tr, cr_colors.c2 * c, 1.0);
-		renderer->SmoothLine(q.br, q.bl, cr_colors.c2 * c, 1.0);
-
 	}
-	else {
-		
-		renderer->Line(q.tl, q.tr, cr_colors.c1 * c);
+	else {	
+		renderer->Line(q.tr, q.tl, cr_colors.c1 * c);
 		renderer->Line(q.tl, q.bl, cr_colors.c1 * c);
+		renderer->Line(q.bl, q.br, cr_colors.c2 * c);
 		renderer->Line(q.br, q.tr, cr_colors.c2 * c);
-		renderer->Line(q.br, q.bl, cr_colors.c2 * c);
 	}
 }
 
@@ -107,7 +106,7 @@ void EditExt::Draw()
 	pInfo->originX = hsx;
 	pInfo->originY = hsy;
 
-	CObjectRectangle rect(pInfo->objectX, pInfo->objectY, pInfo->objectWidth, pInfo->objectHeight, pInfo->objectAngle, hsx, hsy);
+	/*CObjectRectangle rect(pInfo->objectX, pInfo->objectY, pInfo->objectWidth, pInfo->objectHeight, pInfo->objectAngle, hsx, hsy);
 
 	double x,y,w,h,a;
 	rect.CalculateBlitValues(x,y,w,h,a);
@@ -130,11 +129,38 @@ void EditExt::Draw()
 	DRAWLINE88(0,1,1,1,d1);
 	DRAWLINE88(1,1,1,0,d2);
 	DRAWLINE88(1,0,0,0,d2);
+*/
 
-	/*pEditTime->Line(rc.left, rc.top, rc.right, rc.top, d1);
-	pEditTime->Line(rc.left, rc.top, rc.left, rc.bottom, d1);
-	pEditTime->Line(rc.right, rc.bottom, rc.left, rc.bottom, d2);
-	pEditTime->Line(rc.right, rc.bottom, rc.right, rc.top, d2);*/
+	// Okay this is the new draw code
+
+	float x = pInfo->objectX;
+	float y = pInfo->objectY;
+	float a = pInfo->objectAngle;
+	float w = pInfo->objectWidth;
+	float h = pInfo->objectHeight;
+	float hx = pInfo->originX * w;
+	float hy = pInfo->originY * h;
+	
+	const point hotspot(hx,hy);
+	const rect r = cr::rect_xywh(x,y,w,h);
+
+	quad q((r - hotspot).rotate_to_quad(cr::to_radians(a), r.topleft()));
+
+	if (!transparent)
+		pEditTime->Blitrc(q.tl.x, q.tl.y, w, h, a, dfill);
+
+	// We need to bring in the edges by 0.5
+
+	const rect r2 = cr::rect_xywh(x + 0.5f, y + 0.5f, w - 1.0f, h - 1.0f );
+	q = quad((r2 - hotspot).rotate_to_quad(cr::to_radians(a), r2.topleft()));
+
+	pEditTime->Line( q.tr.x, q.tr.y, q.tl.x, q.tl.y, d1);
+	pEditTime->Line( q.tl.x, q.tl.y, q.bl.x, q.bl.y, d1);
+	pEditTime->Line( q.bl.x, q.bl.y, q.br.x, q.br.y, d2);
+	pEditTime->Line( q.br.x, q.br.y, q.tr.x, q.tr.y, d2);
+
+
 }
+
 
 #endif // RUN_ONLY

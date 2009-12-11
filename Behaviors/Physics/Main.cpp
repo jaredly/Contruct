@@ -173,29 +173,13 @@ long ExtObject::aSetGravityForce(LPVAL params)
 	return 0;
 }
 
-void ExtObject::SetMass(float mass)
-{
-	immovable = false;
-
-	double value1 = pLink->info.h * worldXscale;
-	double value3 = 0;
-	double value2 = pLink->info.w * worldYscale;
-	
-	mass *= pLink->info.w * pLink->info.h / 100.0;
-
-	double Ixx = 0.7F * mass * (value2 * value2 + value3 * value3) / 12.0f;
-	double Iyy = 0.7F * mass * (value1 * value1 + value3 * value3) / 12.0f;
-	double Izz = 0.7F * mass * (value1 * value1 + value2 * value2) / 12.0f;
-	body->WakeUp();
-//	NewtonBodySetMassMatrix(body, mass, Ixx, Iyy, Izz);
-
-//	NewtonWorldUnfreezeBody(nWorld, body);
-}
-
 long ExtObject::aSetMass(LPVAL params)
 {
-	SetMass(params[0].GetFloat());
-	body->WakeUp();
+	if(mass < 0) return 0;
+
+	do_recreate = true;
+	mass = params[0].GetFloat();
+
 	return 0;
 }
 
