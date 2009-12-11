@@ -10,7 +10,13 @@
 // Parameters can be passed, eg. MyObject(3,7).  You can check ExpReturn::Type() or GetNumParams() to check for overloads.
 long ExtObject::ReturnDefaultValue(LPVAL theParams, ExpReturn& ret)
 {
-	return ret = 0;
+	// ACCESS PRIVATE VALUE
+	if (theParams[0].Type() == EXPTYPE_VARIABLENAME) {
+		return ret.ReturnCustom(pRuntime, privateVars[theParams[0].GetVariableIndex(pRuntime, pType)]);
+	}
+	else {
+		return ret = 0;
+	}
 }
 
 // Called for undefined expression names, if your extension allows it.
