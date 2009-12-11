@@ -297,10 +297,10 @@ SYSTEMROUTINE SysActRoutines[] = {
 	&SystemObject::aCreateRelativeIP,
 	&SystemObject::aSetLayerScrollXRatio,
 	&SystemObject::aSetLayerScrollYRatio,	// 30
-	&SystemObject::aSetLayerZoomRatio,
-	NULL,
-	NULL,
-	NULL,
+	&SystemObject::aSetLayerZoomOffset,
+	&SystemObject::aSetLayerScrollXOffset,
+	&SystemObject::aSetLayerScrollYOffset,
+	&SystemObject::aSetLayerZoomRate,
 	&SystemObject::aSetLayerVisible,		// 35
 	&SystemObject::aSetLayerOpacity,
 	&SystemObject::aSetLayerFilter,
@@ -2505,7 +2505,7 @@ long SystemObject::aSerialize(LPVAL params)
 		loading = true;
 		loadPath = path;
 
-		// Mark all nonserializing objects as dead so objects dont keep pointers to them (dropping them in OnFrame2)
+		// Mark all nonserializing objects as dead so objects don't keep pointers to them (dropping them in OnFrame2)
 		for (ObjTypeIterator t = pCRuntime->objects.begin(); t != pCRuntime->objects.end(); t++) {
 			if (!(*t)->noSerialize)
 				(*t)->MarkAllDestroying();
@@ -2631,7 +2631,7 @@ long SystemObject::aSetLayerScrollYRatio(LPVAL theParams)
 	return 0;
 }
 
-long SystemObject::aSetLayerZoomRatio(LPVAL theParams)
+long SystemObject::aSetLayerZoomOffset(LPVAL theParams)
 {
 	CRunLayer* pLayer = GetLayerParam(theParams[0]);
 	if (pLayer == NULL) return 0;
@@ -2656,6 +2656,27 @@ long SystemObject::aSetLayerZoomRatio(LPVAL theParams)
 		if (pLayer->zoomYoffset < minLayerZoomY)
 			pLayer->zoomYoffset = minLayerZoomY;
 	}
+
+	return 0;
+}
+
+long SystemObject::aSetLayerScrollXOffset( LPVAL theParams )
+{
+	return 0;
+}
+
+long SystemObject::aSetLayerScrollYOffset( LPVAL theParams )
+{
+	return 0;
+}
+
+long SystemObject::aSetLayerZoomRate( LPVAL theParams )
+{
+	CRunLayer* pLayer = GetLayerParam(theParams[0]);
+	if (pLayer == NULL) return 0;
+
+	pLayer->zoomXf = theParams[1].GetFloat() / 100.0f;
+	pLayer->zoomYf = theParams[2].GetFloat() / 100.0f;
 
 	return 0;
 }
@@ -5427,7 +5448,6 @@ long SystemObject::eRunScript(LPVAL theParams, ExpReturn& ret)
 	ret.ReturnCustom(pCRuntime, p);
 	return 0;
 }
-
 
 
 #endif

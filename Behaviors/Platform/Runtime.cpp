@@ -409,10 +409,10 @@ BOOL ExtObject::OnFrame()
 
 	if(pStandOnMoving && bMove_with_platform)
 	{
-		pLink->info.x += floor(pStandOnMoving->info.x) - moving_oldx;
-		pLink->info.y += floor(pStandOnMoving->info.y) - moving_oldy;
-		moving_oldx = floor(pStandOnMoving->info.x);
-		moving_oldy = floor(pStandOnMoving->info.y);
+		pLink->info.x += (pStandOnMoving->info.x) - moving_oldx;
+		pLink->info.y += floor(pStandOnMoving->info.y + 0.5) - moving_oldy;
+		moving_oldx = (pStandOnMoving->info.x);
+		moving_oldy = floor(pStandOnMoving->info.y + 0.5);
 		pRuntime->UpdateBoundingBox(pLink);
 	}
 	else
@@ -1053,7 +1053,7 @@ BOOL ExtObject::OnFrame()
 		{
 			pStandOnMoving = pObjectList[i];
 			moving_oldx = pStandOnMoving->info.x;
-			moving_oldy = pStandOnMoving->info.y;
+			moving_oldy = floor(pStandOnMoving->info.y + 0.5);
 			break;
 		}
 	}
@@ -1066,8 +1066,8 @@ BOOL ExtObject::OnFrame()
 			if(pRuntime->QueryCollision(pLink, pObjectList[i]))
 			{
 				pStandOnMoving = pObjectList[i];
-				moving_oldx = floor(pStandOnMoving->info.x);
-				moving_oldy = floor(pStandOnMoving->info.y);
+				moving_oldx = (pStandOnMoving->info.x);
+				moving_oldy = floor(pStandOnMoving->info.y + 0.5);
 				standing_on_platform = true;
 				break;
 			}
@@ -1141,10 +1141,10 @@ BOOL ExtObject::OnFrame2()
 {
 	if(pStandOnMoving && bMove_with_platform)
 	{
-		pLink->info.x += floor(pStandOnMoving->info.x) - moving_oldx;
-		pLink->info.y += floor(pStandOnMoving->info.y) - moving_oldy;
-		moving_oldx = floor(pStandOnMoving->info.x);
-		moving_oldy = floor(pStandOnMoving->info.y);
+		pLink->info.x += (pStandOnMoving->info.x) - moving_oldx;
+		pLink->info.y += floor(pStandOnMoving->info.y + 0.5) - moving_oldy;
+		moving_oldx = (pStandOnMoving->info.x);
+		moving_oldy = floor(pStandOnMoving->info.y + 0.5);
 		pRuntime->UpdateBoundingBox(pLink);
 	}
 	return !activated;

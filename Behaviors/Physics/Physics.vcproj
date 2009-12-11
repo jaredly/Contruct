@@ -705,23 +705,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\Common\PropReturn.hpp"
-				>
-			</File>
-			<File
 				RelativePath="resource.h"
 				>
 			</File>
 			<File
 				RelativePath="StdAfx.h"
-				>
-			</File>
-			<File
-				RelativePath="..\Common\VEdittime.h"
-				>
-			</File>
-			<File
-				RelativePath="..\Common\VRuntime.h"
 				>
 			</File>
 		</Filter>
@@ -746,7 +734,7 @@
 				>
 			</File>
 			<File
-				RelativePath="res\ICON.BMP"
+				RelativePath="ICON.BMP"
 				>
 				<FileConfiguration
 					Name="Runtime|Win32"
@@ -758,7 +746,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ICON.BMP"
+				RelativePath="res\ICON.BMP"
 				>
 				<FileConfiguration
 					Name="Runtime|Win32"

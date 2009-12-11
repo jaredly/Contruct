@@ -428,12 +428,15 @@ void CRuntime::ScreenToLayer(const CRunLayout* pLayout, int layer, float& x, flo
 	double Yscale;
 	
 	
-	Xscale = pLayout->zoomX * pLayer->zoomXoffset;
-	Yscale = pLayout->zoomY * pLayer->zoomYoffset;
+	Xscale = pLayout->zoomX;
+	Yscale = pLayout->zoomY;
 	if(pLayer->zoomXf != 1)
 		Xscale = pow(Xscale, (double)pLayer->zoomXf);
 	if(pLayer->zoomYf != 1)
 		Yscale = pow(Yscale, (double)pLayer->zoomYf);	
+
+	Xscale *= pLayer->zoomXoffset;
+	Yscale *= pLayer->zoomYoffset;
 
 	double zoomedWindowWidth = (double)winWidth / Xscale;
 	double zoomedWindowHeight = (double)winHeight / Yscale;
@@ -1772,8 +1775,8 @@ CRunLayer::CRunLayer(CRuntime* _pRuntime)
 	pRuntime = _pRuntime;
 	scrollXoffset = 0;
 	scrollYoffset = 0;
-	zoomXoffset = 0;
-	zoomYoffset = 0;
+	zoomXoffset = 1;
+	zoomYoffset = 1;
 	scrollXf = 1;
 	scrollYf = 1;
 	zoomXf = 1;

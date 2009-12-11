@@ -147,8 +147,8 @@ public:
 	CRunObjType* pPlatforms;
 	CRunObject* pStandOnMoving;
 	bool standing_on_platform;
-	int moving_oldx;
-	int moving_oldy;
+	float moving_oldx;
+	float moving_oldy;
 
 	bool bMove_with_platform;
 

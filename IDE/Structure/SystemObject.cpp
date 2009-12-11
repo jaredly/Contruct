@@ -48,10 +48,12 @@ void GetSystemAction(int ID, ACESEntry2*& Out)
 
 	case 29:	SO_SetLayerXScrollRatio(*Out); break;
 	case 30:	SO_SetLayerYScrollRatio(*Out); break;
-	case 31:	SO_SetLayerZoomRatio(*Out); break;
+	case 31:	SO_SetLayerZoomOffset(*Out); break;
+
 	case 32:	SO_SetLayerXScrollOffset(*Out); break;
 	case 33:	SO_SetLayerYScrollOffset(*Out); break;
-	case 34:	SO_SetLayerZoomOffset(*Out); break;
+	case 34:	SO_SetLayerZoomRate(*Out); break;
+
 	case 35:	SO_SetLayerVisible(*Out); break;
 	case 36:	SO_SetLayerOpacity(*Out); break;
 	case 37:	SO_SetLayerFilter(*Out); break;
@@ -1438,9 +1440,9 @@ void SO_SetLayerYScrollRatio(ACESEntry2& Out)
 	param.type = 1;
 	Out.params.push_back(param);
 }
-void SO_SetLayerZoomRatio(ACESEntry2& Out)
+void SO_SetLayerZoomRate(ACESEntry2& Out)
 {
-	Out.aceDisplayText = "Set Layer %0 zoom ratio to (%1, %2)";
+	Out.aceDisplayText = "Set Layer %0 zoom rate to (%1, %2)";
 	Out.scriptName = "SetLayerZoomRatio";
 	Out.aceListName = "Set zoom";
 	Out.aceCategory = "Layers";
@@ -1468,7 +1470,7 @@ void SO_SetLayerZoomRatio(ACESEntry2& Out)
 }
 void SO_SetLayerZoomOffset(ACESEntry2& Out)
 {
-	Out.aceDisplayText = "Set Layer %0 zoom offset to (%0, %1)";
+	Out.aceDisplayText = "Set Layer %0 zoom offset to (%1, %2)";
 	Out.scriptName = "SetLayerZoomOffset";
 	Out.aceListName = "Set zoom offset";
 	Out.aceCategory = "Layers";

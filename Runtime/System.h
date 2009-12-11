@@ -238,7 +238,13 @@ public:
 
 	long	aSetLayerScrollXRatio(LPVAL theParams);
 	long	aSetLayerScrollYRatio(LPVAL theParams);
-	long	aSetLayerZoomRatio(LPVAL theParams);
+	long	aSetLayerZoomOffset(LPVAL theParams);
+
+	long	aSetLayerScrollXOffset(LPVAL theParams);
+	long	aSetLayerScrollYOffset(LPVAL theParams);
+	long	aSetLayerZoomRate(LPVAL theParams);
+
+
 	long	aSetLayerVisible(LPVAL theParams);
 	long	aSetLayerOpacity(LPVAL theParams);
 	long	aSetLayerFilter(LPVAL theParams);

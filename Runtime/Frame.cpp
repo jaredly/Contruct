@@ -1063,12 +1063,14 @@ void CRunLayout::Draw(bool incrementFrameCounter)
 		// Scaling
 		//curXscale = (1 + ((zoomX-1) * (*y)->zoomXf)) * (*y)->zoomXoffset;
 		//curYscale = (1 + ((zoomY-1) * (*y)->zoomYf)) * (*y)->zoomYoffset;
-		curXscale = zoomX * (*y)->zoomXoffset;
-		curYscale = zoomY * (*y)->zoomYoffset;
+		curXscale = zoomX;
+		curYscale = zoomY;
 		if((*y)->zoomXf != 1)
 			curXscale = pow(curXscale, (*y)->zoomXf);
 		if((*y)->zoomYf != 1)
-			curYscale = pow(curYscale, (*y)->zoomYf);	
+			curYscale = pow(curYscale, (*y)->zoomYf);
+		curXscale *= (*y)->zoomXoffset;
+		curYscale *= (*y)->zoomYoffset;
 
 		(*y)->currentAngle = curAngle = display_angle + (*y)->angle;
 
