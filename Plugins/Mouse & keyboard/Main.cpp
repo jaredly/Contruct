@@ -289,9 +289,9 @@ long ExtObject::aSetMouseY(LPVAL params)
 
 long ExtObject::aSetControlState(LPVAL params)
 {
-	pRuntime->SetControlState(params[0].GetString(), params[1].GetInt(), params[2].GetFloat());
+	pRuntime->SetControlState(params[0].GetString(), params[1].GetInt()-1, params[2].GetFloat());
 
-	return 1;
+	return 0;
 }
 
 
@@ -396,9 +396,9 @@ void DefineACES(MicroAceTime* at)
 	ADDACT("Set mouse Y", "Mouse", "Set mouse Y to %0", &ExtObject::aSetMouseY, "SetMouseY", 0);
 
 	ADDPARAM(PARAM_STRING, "Control", "Name of the control to set.");
-	ADDPARAMDEF(PARAM_VALUE, "1", "Player number who has this control.", "1");
-	ADDPARAM(PARAM_VALUE, "State Value", "The Y co-ordinate to place the cursor on screen.");
-	ADDACT("Set control state", "Controls", "Set control state of %0 to %1", &ExtObject::aSetControlState, "SetControlState", 0);
+	ADDPARAMDEF(PARAM_VALUE, "Player", "Player number who has this control.", "1");
+	ADDPARAM(PARAM_VALUE, "State Value", "Value from 0 to 1");
+	ADDACT("Set control state", "Controls", "Set control %0 of player %1 to %2", &ExtObject::aSetControlState, "SetControlState", 0);
 
 
 	// Shortcuts to sys expression
