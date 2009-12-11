@@ -205,8 +205,11 @@ inline void Rotate(float& x, float& y, float radians)
 	float dist = sqrt(x*x + y*y);
 	float angle = atan2(y, x);
 	angle += radians;
-	x = cos(angle) * dist;
-	y = sin(angle) * dist;
+
+	cr::sincosf(angle, &x, &y);
+	x *= dist;
+	y *= dist;
+
 }
 
 
