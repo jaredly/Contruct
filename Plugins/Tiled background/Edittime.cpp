@@ -67,6 +67,11 @@ void EditExt::BtnEditImage()
 	pEditTime->GenerateIcon(pInfo->ObjectIdentifier, true, imgTexture);
 }
 
+bool IsPowerOfTwo(int value)
+{
+	return (value & -value) == value;
+}
+
 // Draw your object in the frame editor.
 // Note the co-ordinates are automatically adjusted; draw at pInfo->objectX/Y
 void EditExt::Draw()
@@ -76,14 +81,22 @@ void EditExt::Draw()
 	size.cx *= pEditTime->GetZoom();
 	size.cy *= pEditTime->GetZoom();
 
-	int cols = pInfo->objectWidth / size.cx;
-	int rows = pInfo->objectHeight / size.cy;
+	SIZE seam_size = size;
 
-	int gutterx = pInfo->objectX + (cols * size.cx);
-	int guttery = pInfo->objectY + (rows * size.cy);
+	// Runtime does this for anti-seaming, so reproduce in layout editor.
+	if (!IsPowerOfTwo(size.cx) || !IsPowerOfTwo(size.cy)) {
+		seam_size.cx--;
+		seam_size.cy--;
+	}
 
-	int gutterw = pInfo->objectWidth - (cols * size.cx);
-	int gutterh = pInfo->objectHeight - (rows * size.cy);
+	int cols = pInfo->objectWidth / seam_size.cx;
+	int rows = pInfo->objectHeight / seam_size.cy;
+
+	int gutterx = pInfo->objectX + (cols * seam_size.cx);
+	int guttery = pInfo->objectY + (rows * seam_size.cy);
+
+	int gutterw = pInfo->objectWidth - (cols * seam_size.cx);
+	int gutterh = pInfo->objectHeight - (rows * seam_size.cy);
 
 	RECTF vertuv;
 	vertuv.left = 0.0f;
@@ -106,19 +119,19 @@ void EditExt::Draw()
 
 	for (x = 0; x < cols; x++) {
 		for (y = 0; y < rows; y++)
-			pEditTime->Blitrc(pInfo->objectX + x*size.cx, pInfo->objectY + y*size.cy, size.cx, size.cy, 0.0f, dc);
+			pEditTime->Blitrc(pInfo->objectX + x * seam_size.cx, pInfo->objectY + y * seam_size.cy, size.cx, size.cy, 0.0f, dc);
 	}
 
 	// Draw the vertical gutter
 	if (gutterw > 0) {
 		for (y = 0; y < rows; y++)
-			pEditTime->Blitrc(gutterx, pInfo->objectY + y*size.cy, gutterw, size.cy, 0.0f, dc, &horizuv);
+			pEditTime->Blitrc(gutterx, pInfo->objectY + y*seam_size.cy, gutterw, size.cy, 0.0f, dc, &horizuv);
 	}
 
 	// Draw the horizontal gutter
 	if (gutterh > 0) {
 		for (x = 0; x < cols; x++)
-			pEditTime->Blitrc(pInfo->objectX + x*size.cx, guttery, size.cx, gutterh, 0.0f, dc, &vertuv);
+			pEditTime->Blitrc(pInfo->objectX + x*seam_size.cx, guttery, size.cx, gutterh, 0.0f, dc, &vertuv);
 	}
 
 	// Draw the bottom right tile

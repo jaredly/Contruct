@@ -2529,8 +2529,12 @@ void CRuntime::Load(bin& ar)
 	// Reset registered windows
 	pluginWnds.clear();
 
+	// Ignore saved object count - creating each object as it's loaded increments the object count. Just reset count
+	int ignored_totalObjects;
+	totalObjects = 0;
+
 	clock_t desiredAppClock;
-	ar >> winWidth >> winHeight >> frameCount >> userFps >> totalObjects >> bkColor >> curUid >> desiredAppClock;
+	ar >> winWidth >> winHeight >> frameCount >> userFps >> ignored_totalObjects >> bkColor >> curUid >> desiredAppClock;
 	clockOffset = GetAppClock() - desiredAppClock;
 
 	ar >> timeScale;

@@ -256,7 +256,7 @@ BOOL ExtObject::OnFrame2()
 		float x = objectSpace.x;
 		float y = objectSpace.y;
 		*/
-		cr::point3d objpos(info.x - scrollX, info.y - scrollX, z);
+		cr::point3d objpos(info.x - scrollX, info.y - scrollY, z);
 		cr::point sizefactor(info.w, info.h);
 
 		cr::point3d vertices[8];
