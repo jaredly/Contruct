@@ -546,8 +546,6 @@ void ExportBlock::detach()
 	next = NULL;
 	prev = NULL;
 	parent = NULL;
-	if(first_child)
-		first_child->setParentForAllSiblings(parent);
 }
 
 ExportBlock* ExportBlock::getPrev()
@@ -593,7 +591,7 @@ ExportBlock::~ExportBlock()
 	ExportBlock* nextloop = NULL;
 	while(loop)
 	{
-		nextloop = loop->first_child;
+		nextloop = loop->next;
 		delete loop; // free this child :D
 
 		loop = nextloop; // move on to the next :P

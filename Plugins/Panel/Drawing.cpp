@@ -22,7 +22,7 @@ public:
 
 		v[0] = 0;
 		v[1] = top / ih;
-		v[2] = (iw - bottom) / ih;
+		v[2] = (ih - bottom) / ih;
 		v[3] = 1;
 
 		// Get a quad of our entire shape
@@ -138,7 +138,7 @@ void ExtObject::Draw()
 	RunDrawing draw(renderer, uv_scale);
 	draw.Draw(x, y, w, h, iw, ih, a, ceil(hsx), ceil(hsy), 
 		image_left_margin, image_top_margin, image_right_margin, image_bottom_margin,
-		vertex_filter[0], vertex_filter[1], vertex_filter[2], vertex_filter[3]);
+		vertex_filter[0] * info.pInfo->filter, vertex_filter[1] * info.pInfo->filter, vertex_filter[2] * info.pInfo->filter, vertex_filter[3] * info.pInfo->filter);
 
 }
 
