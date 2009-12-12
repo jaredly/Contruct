@@ -202,14 +202,10 @@ EditExt::~EditExt()
 
 inline void Rotate(float& x, float& y, float radians)
 {
-	float dist = sqrt(x*x + y*y);
-	float angle = atan2(y, x);
-	angle += radians;
-
-	cr::sincosf(angle, &x, &y);
-	x *= dist;
-	y *= dist;
-
+	cr::point pt(x,y);
+	pt.rotate(radians);
+	x = pt.x;
+	y = pt.y;
 }
 
 
@@ -456,8 +452,12 @@ void EditExt::OnMessage(int message)
 
 	float zoom = pEditTime->GetZoom();
 
-	POINTF pt = { (mouse.x / zoom  - ox) / w, (mouse.y / zoom - oy) / h};
+
+	POINTF pt = { mouse.x / zoom - ox, mouse.y / zoom - oy};
 	Rotate(pt.x, pt.y, RADIANS(-oa));
+	pt.x /= w;
+	pt.y /= h;
+
 
 
 	switch (message)

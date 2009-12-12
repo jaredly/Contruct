@@ -43,7 +43,7 @@ void SO_CreateRelativeIP	(ACESEntry2& Out);
 
 void SO_SetLayerXScrollRatio	(ACESEntry2& Out);
 void SO_SetLayerYScrollRatio	(ACESEntry2& Out);
-void SO_SetLayerZoomRatio		(ACESEntry2& Out);
+void SO_SetLayerZoomRate		(ACESEntry2& Out);
 void SO_SetLayerZoomOffset		(ACESEntry2& Out);
 void SO_SetLayerXScrollOffset	(ACESEntry2& Out);
 void SO_SetLayerYScrollOffset	(ACESEntry2& Out);
