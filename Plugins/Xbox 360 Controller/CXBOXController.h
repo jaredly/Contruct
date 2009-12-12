@@ -47,8 +47,6 @@ namespace XBoxControl {
 		RightTrigger,
 		A,
 		B,
-		C,
-		D,
 		X,
 		Y,
 		LeftThumbUp,

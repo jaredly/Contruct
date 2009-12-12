@@ -70,7 +70,7 @@ void ExtObject::Draw()
 
 		for(int b = i*4; b < i*4 + 4; b++){
 			cr::point vertexpos(cube_vertices[b]._xyz.x * info.w, cube_vertices[b]._xyz.y * info.h);
-			zz = cube_vertices[b]._xyz.z * depth;
+			zz = cube_vertices[b]._xyz.z * depth * riseScale;
 
 			temp = (vertexpos.x * cos_a) - (zz * sin_a);
 			zz = (zz * cos_a) + (vertexpos.x * sin_a);
@@ -84,7 +84,7 @@ void ExtObject::Draw()
 			cr::point3d vertexpos3d(-vertexpos.x, -vertexpos.y, zz);
 
 			cr::point3d vertex = objpos + vertexpos3d;
-			vertex.z *= riseScale;
+			vertex.z /= riseScale;
 
 			renderer->AddVertex(vertex, 
 				cr::point(cube_vertices[b]._uv.u * u, cube_vertices[b]._uv.v * v),
