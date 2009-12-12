@@ -31,15 +31,33 @@ void ExtObject::Serialize(bin& ar)
 // You never need to check 'Version' while saving.
 void EditExt::Serialize(bin& ar)
 {
-	int Version = 1;
+	int Version = 2;
 	SerializeVersion(ar, Version);
 
 	if (ar.loading) {
 
-		for(int i = 0; i < CONTROLLERS; i++)
-			for(int j = 0; j < BUTTONS; j++)
-				ar >> controls[i][j];
+		if(Version == 1)
+		{
+			for(int i = 0; i < CONTROLLERS; i++)
 
+				for(int j = 0; j < 26; j++) //26 was the old number
+				{
+					if(j == 14)
+					{
+						Control blah;
+						ar >> blah;
+						ar >> blah;
+					}
+				}
+		}
+		else
+		{
+			for(int i = 0; i < CONTROLLERS; i++)
+				for(int j = 0; j < BUTTONS; j++)
+				{
+					ar >> controls[i][j];
+				}
+		}
 		ar >> controllerCombo ;
 	}
 	else {

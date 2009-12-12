@@ -85,18 +85,18 @@ if(editObject){
 			PROPERTY_COMBO(controls[i][11].c, "Right Trigger", "", Controls.c_str());
 			PROPERTY_COMBO(controls[i][12].c, "A", "", Controls.c_str());
 			PROPERTY_COMBO(controls[i][13].c, "B", "", Controls.c_str());
-			PROPERTY_COMBO(controls[i][14].c, "C", "", Controls.c_str());
-			PROPERTY_COMBO(controls[i][15].c, "D", "", Controls.c_str());
-			PROPERTY_COMBO(controls[i][16].c, "X", "", Controls.c_str());
-			PROPERTY_COMBO(controls[i][17].c, "Y", "", Controls.c_str());
-			PROPERTY_COMBO(controls[i][18].c, "Left Thumb-Up", "", Controls.c_str());
-			PROPERTY_COMBO(controls[i][19].c, "Left Thumb-Down", "", Controls.c_str());
-			PROPERTY_COMBO(controls[i][20].c, "Left Thumb-Left", "", Controls.c_str());
-			PROPERTY_COMBO(controls[i][21].c, "Left Thumb-Right", "", Controls.c_str());
-			PROPERTY_COMBO(controls[i][22].c, "Right Thumb-Up", "", Controls.c_str());
-			PROPERTY_COMBO(controls[i][23].c, "Right Thumb-Down", "", Controls.c_str());
-			PROPERTY_COMBO(controls[i][24].c, "Right Thumb-Left", "", Controls.c_str());
-			PROPERTY_COMBO(controls[i][25].c, "Right Thumb-Right", "", Controls.c_str());
+//			PROPERTY_COMBO(controls[i][14].c, "C", "", Controls.c_str());
+//			PROPERTY_COMBO(controls[i][15].c, "D", "", Controls.c_str());
+			PROPERTY_COMBO(controls[i][14].c, "X", "", Controls.c_str());
+			PROPERTY_COMBO(controls[i][15].c, "Y", "", Controls.c_str());
+			PROPERTY_COMBO(controls[i][16].c, "Left Thumb-Up", "", Controls.c_str());
+			PROPERTY_COMBO(controls[i][17].c, "Left Thumb-Down", "", Controls.c_str());
+			PROPERTY_COMBO(controls[i][18].c, "Left Thumb-Left", "", Controls.c_str());
+			PROPERTY_COMBO(controls[i][19].c, "Left Thumb-Right", "", Controls.c_str());
+			PROPERTY_COMBO(controls[i][20].c, "Right Thumb-Up", "", Controls.c_str());
+			PROPERTY_COMBO(controls[i][21].c, "Right Thumb-Down", "", Controls.c_str());
+			PROPERTY_COMBO(controls[i][22].c, "Right Thumb-Left", "", Controls.c_str());
+			PROPERTY_COMBO(controls[i][23].c, "Right Thumb-Right", "", Controls.c_str());
 
 	}
 	// Fill in the combo index of the control map

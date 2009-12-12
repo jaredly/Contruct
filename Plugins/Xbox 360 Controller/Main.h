@@ -147,7 +147,7 @@ public:
 };
 
 #define CONTROLLERS 4
-#define BUTTONS 26
+#define BUTTONS 24
 //////////// EDITTIME INFO ////////////
 class EditExt
 {
