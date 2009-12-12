@@ -168,6 +168,12 @@ void PropertiesBar::DoAppProperties()
 	pNumber->_VariantAssign(app->window_information.window_height);
 	pItem->ValueActiveFromDefault();
 
+	pItem = InsertAppItem("Eye Distance (3d)", "If you use 3d box or a 3d mesh distortion, this value determines how far back the eye of the viewer is from the screen", pRoot);
+	pNumber = GetFloat(pItem);
+	pNumber->_VariantAssign(app->window_information.eye_distance);
+	pItem->ValueActiveFromDefault();
+
+
 	//////////////////////
 	// RUNTIME CATEGORY ///////////////////////////////////////////////////
 	pRoot = InsertCategory(PROPERTIES_CRUNTIME, PROPERTIES_DESC_CRUNTIME);

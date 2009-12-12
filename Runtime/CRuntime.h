@@ -95,6 +95,7 @@ struct CRuntimeSetup {
 	HINSTANCE			hInstance;
 	int					winWidth;
 	int					winHeight;
+	float				eyeDistance;
 	bool				screensaver;
 
 #ifdef CONSTRUCT_DIRECTX9
@@ -462,6 +463,7 @@ public:
 
 	int			winWidth;			// Window width
 	int			winHeight;			// Window height
+	float		eyeDistance;
 	int			winWidthOffset;		// For fullscreen
 	int			winHeightOffset;
 	int			realWinWidth;		// Window client width

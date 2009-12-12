@@ -34,92 +34,9 @@ void ExtObject::UpdateAngle()
 
 void ExtObject::Draw()
 {
-	/*
-	// Clear the Z buffer if necessary
-	unsigned int curFrame = pLayout->frameCounter64;
-	unsigned int curLayer = info.layer;
-	unsigned int lastFrame = (unsigned int)pRuntime->GetLayoutKey(pLayout, "zbufferclearframe");
-	unsigned int lastLayer = (unsigned int)pRuntime->GetLayoutKey(pLayout, "zbufferclearlayer");
-
-	// Clear Z buffer if it hasnt yet been this tick
-	if (lastFrame < curFrame || lastLayer != curLayer) {
-		pRuntime->EndBatch();
-		pDevice->Clear(0, NULL, D3DCLEAR_ZBUFFER, 0, 1.0f, 0);
-		pRuntime->SetLayoutKey(pLayout, "zbufferclearframe", (void*)curFrame);
-		pRuntime->SetLayoutKey(pLayout, "zbufferclearlayer", (void*)curLayer);
-	}
-
-	// Setup 3D renderstates
-	pRuntime->SetRenderState(D3DRS_LIGHTING,FALSE);
-	pRuntime->SetRenderState(D3DRS_CULLMODE,D3DCULL_CCW);      //Default culling
-	//pRuntime->SetTransform(D3DTS_VIEW, &view_matrix);
-	//pRuntime->SetTransform(D3DTS_PROJECTION, &projection_matrix);
-	//pDevice->GetViewport(&viewport);
-
-	D3DXMatrixIdentity(&worldMatrix);
-
-	*/
-
 	// Enable the Z stencil
 	cr::renderstate_value old_zbuffer_state = renderer->GetRenderState(cr::rs_zbuffer_enabled);
 	renderer->SetRenderState(cr::rs_zbuffer_enabled, (zbuffer ? cr::rsv_enabled : cr::rsv_disabled));
-
-	/*
-	CRunLayer* pLayer = pRuntime->GetLayer(pLayout, info.layer);
-	float layerZoomX = pLayer->zoomXoffset;
-	float layerZoomY = pLayer->zoomYoffset;
-
-	float zoomX = pLayout->zoomX * layerZoomX;
-	float zoomY = pLayout->zoomY * layerZoomY;
-	
-	// Initialise the drawing variables if not yet done
-	if (!drawInit) {
-
-		// Calculate world units per pixel
-		//D3DXVECTOR3 pt1, pt2;
-		//ProjectScreenToWorld(&pt1, 0.0f, 0.0f, 0.0f);
-		//ProjectScreenToWorld(&pt2, 1.0f, 1.0f, 0.0f);
-		//worldPxX = pt1.x - pt2.x;
-		//worldPxY = pt1.y - pt2.y;
-		//if (worldPxX < 0) worldPxX = -worldPxX;
-		//if (worldPxY < 0) worldPxY = -worldPxY;
-
-		// Calculate the scaling matrix
-		//D3DXMatrixScaling(&scaleMatrix, info.w * worldPxX * zoomX, info.h * worldPxY * zoomY, depth * (64*worldPxX) * max(zoomX, zoomY));
-
-		drawInit = true;
-	}
-	*/
-	/*
-
-	// Width or height changed: recalculate scaling matrix
-	//if (oldW != info.w || oldH != info.h) {
-		D3DXMatrixScaling(&scaleMatrix, -info.w, -info.h, depth * 64);
-		oldW = info.w;
-		oldH = info.h;
-	//}
-	*/
-
-	// Angle changed:  new rotation matrix
-	/*
-	if (oldAngle != info.angle) {
-		UpdateAngle();
-		oldAngle = info.angle;
-	}
-	*/
-
-	// Calculate the X and Y world coords
-	//ProjectScreenToWorld(&objectSpace, (info.x - pLayout->scrollX) * zoomX, (info.y - pLayout->scrollY) * zoomY, 0.0f);
-
-	// Multiply the translation, rotation and scaling matrices together to the world matrix
-	/*
-	D3DXMatrixTranslation(&transMatrix, info.x - pLayout->scrollX, info.y - pLayout->scrollY,(z * 64 + depth/2.0f * 64));
-	D3DXMatrixMultiply(&worldMatrix, &rotMatrix, &transMatrix);
-	D3DXMatrixMultiply(&worldMatrix, &scaleMatrix, &worldMatrix);
-
-	// Use our translated, rotated and scaled matrix as the world matrix
-	pRuntime->SetTransform(D3DTS_WORLD, &worldMatrix);
-	*/
 
 	cr::point3d objpos(info.x, info.y, z + (depth / 2.0));
 
@@ -141,27 +58,41 @@ void ExtObject::Draw()
 		renderer->AddIndex(3);
 		renderer->AddIndex(0);
 
+		cr_float sin_a, sin_b, sin_c;
+		cr_float cos_a, cos_b, cos_c;
+
+		cr_float temp;
+		cr_float zz;
+
+		cr::sincosf(-yaw, &sin_a, &cos_a);
+		cr::sincosf(-pitch, &sin_b, &cos_b);
+		cr::sincosf(cr::to_radians(info.angle), &sin_c, &cos_c);
+
 		for(int b = i*4; b < i*4 + 4; b++){
 			cr::point vertexpos(cube_vertices[b]._xyz.x * info.w, cube_vertices[b]._xyz.y * info.h);
+			zz = cube_vertices[b]._xyz.z * depth;
+
+			temp = (vertexpos.x * cos_a) - (zz * sin_a);
+			zz = (zz * cos_a) + (vertexpos.x * sin_a);
+			vertexpos.x = temp;
+			
+			temp = (zz * cos_b) - (vertexpos.y * sin_b);
+			vertexpos.y = (vertexpos.y * cos_b) + (zz * sin_b);
+			zz = temp;
+
 			vertexpos.rotate(cr::to_radians(info.angle));
+			cr::point3d vertexpos3d(-vertexpos.x, -vertexpos.y, zz);
 
-			cr::point3d vertexpos3d(vertexpos.x, vertexpos.y, cube_vertices[b]._xyz.z * depth);
+			cr::point3d vertex = objpos + vertexpos3d;
+			vertex.z *= riseScale;
 
-			renderer->AddVertex(objpos + vertexpos3d, 
-								cr::point(cube_vertices[b]._uv.u * u, cube_vertices[b]._uv.v * v),
-								cr::opaque_white);
+			renderer->AddVertex(vertex, 
+				cr::point(cube_vertices[b]._uv.u * u, cube_vertices[b]._uv.v * v),
+				cr::opaque_white);
 		}
 	}
 
 	renderer->SetRenderState(cr::rs_zbuffer_enabled, old_zbuffer_state);
-
-	/*
-	// Disable the Z stencil
-	pRuntime->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
-
-	// Restore 2D mode
-	pRuntime->Restore2DMode();
-	*/
 }
 
 #else // RUN_ONLY
@@ -193,8 +124,8 @@ void EditExt::Draw()
 	float oy = pInfo->objectY - (pInfo->objectHeight / 2);
 	CRect objectRec(ox, oy, ox + pInfo->objectWidth, oy + pInfo->objectHeight);
 
-	float scaledZ = z / (100.0 / 8.0);
-	float scaledHeight = height / (100.0 / 8.0);
+	float scaledZ = z / (pInfo->pEditTime->GetEyeDistance3d() / 8.0 * riseScale);
+	float scaledHeight = height / (pInfo->pEditTime->GetEyeDistance3d() / 8.0 * riseScale);
 
 	pEditTime->EndBatch();
 

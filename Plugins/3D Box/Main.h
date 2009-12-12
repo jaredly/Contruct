@@ -178,6 +178,7 @@ public:
 	float z;
 	double yaw;
 	double pitch;
+	float riseScale;
 
 	/*
 	// Z buffer
@@ -244,6 +245,7 @@ public:
 
 	float height;
 	float z;
+	float riseScale;
 
 	void EditFace(int face);
 

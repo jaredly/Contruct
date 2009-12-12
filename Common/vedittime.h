@@ -124,6 +124,8 @@ public:
 	virtual int			GetControlPlayer(int index) = 0;
 
 	virtual const char*	GetAnimationName(int iHandle) = 0;
+
+	virtual float		GetEyeDistance3d() = 0;
 };
 
 // Handy define for loading resources from this ext

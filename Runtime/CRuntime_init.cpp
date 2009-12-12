@@ -257,6 +257,7 @@ bool CRuntime::Initialise(CRuntimeSetup* crSetup)
 
 	crSetup->winWidth = props.winWidth;
 	crSetup->winHeight = props.winHeight;
+	crSetup->eyeDistance = props.eyeDistance;
 	crSetup->screensaver = props.screensaver;
 	fpsMode = props.fpsMode;
 	userFps = props.fps;
@@ -406,6 +407,10 @@ bool CRuntime::Initialise(CRuntimeSetup* crSetup)
 		}
 	}
 
+	// Set the eye distance before we initialize
+	eyeDistance = crSetup->eyeDistance;
+	renderer.SetEyeDistance(eyeDistance);
+
 	// Start up the display engine
 	//Display.Init(&(crSetup->d3dDisplaySetup));
 	renderer.CreateDevice(crSetup->display_params);
@@ -424,6 +429,7 @@ bool CRuntime::Initialise(CRuntimeSetup* crSetup)
 	GetSwapChains();
 
 	// Multi-monitor settings require the temp display target
+
 	if (renderer.GetMultiMonitorMode() != cr::multimonitor_singlescreen) {
 		if (tempDisplayTarget == unallocated_texture)
 				tempDisplayTarget = CreateDisplayTargetTexture();

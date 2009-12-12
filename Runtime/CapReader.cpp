@@ -1809,7 +1809,7 @@ void CCapReader::ReadAppProperties(BYTE* _pData, int _len, AppProperties& props)
 
 	ar >> props.appTitle;
 
-	ar >> props.winWidth >> props.winHeight;
+	ar >> props.winWidth >> props.winHeight >> props.eyeDistance;
 	ar >> props.UseMenu; 
 
 	ar >> props.screensaver;

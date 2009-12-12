@@ -870,7 +870,7 @@ bool CApplication::GetModifiedStatus()
 bool CApplication::Serialize(CArchive& ar) 
 {
 	CString ExpectedName = "CApplication";
-	int     Version      = 17;
+	int     Version      = 18;
 
 	if (!SerializeClassHeader(ExpectedName, Version, ar))
 		return false;
@@ -896,6 +896,13 @@ bool CApplication::Serialize(CArchive& ar)
 		
 		ar >> window_information.window_width;
 		ar >> window_information.window_height;
+
+		if(Version >= 18)
+		{
+			ar >> window_information.eye_distance;
+		}
+		else
+			window_information.eye_distance = 100;
 		
 		ar >> game_information.run_without_ps;
 
@@ -1398,6 +1405,7 @@ bool CApplication::Serialize(CArchive& ar)
 		
 		ar << window_information.window_width;
 		ar << window_information.window_height;
+		ar << window_information.eye_distance;
 		
 		ar << game_information.run_without_ps;
 

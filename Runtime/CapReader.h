@@ -89,6 +89,7 @@ struct AppProperties {
 	CString appTitle;
 	int winWidth;
 	int winHeight;
+	float eyeDistance;
 	int	UseMenu;
 	cr::framerate_mode fpsMode;
 	int fps;

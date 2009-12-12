@@ -30,12 +30,20 @@ void ExtObject::Serialize(bin& ar)
 // Save and load all your object's edittime data here.
 void EditExt::Serialize(bin& ar)
 {
-	int Version = 3;
+	int Version = 4;
 	SerializeVersion(ar, Version);
 
 	if (ar.loading) {
 
 		ar >> height >> z >> pInfo->objectAngle;
+		if(Version >= 4)
+		{
+			ar >> riseScale;
+		}
+		else
+		{
+			riseScale = 3.2;
+		}
 
 		for (int i = 0; i < 6; i++)
 			pEditTime->SerializeImage(imageHandles[i], ar);
@@ -51,7 +59,7 @@ void EditExt::Serialize(bin& ar)
 	}
 	else {
 
-		ar << height << z << pInfo->objectAngle;
+		ar << height << z << pInfo->objectAngle << riseScale;
 		
 		for (int i = 0; i < 6; i++)
 			pEditTime->SerializeImage(imageHandles[i], ar);

@@ -25,6 +25,8 @@ BEGIN_PROPERTY_TABLE();
 	PROPERTY_FLOAT(height, "Depth", "The depth of the box.");
 	PROPERTY_FLOAT(z, "Z", "The Z depth of the box.");
 	PROPERTY_BOOL(zbuffer, "Z buffer", "Enabled for 3D rendering, disabled for boxes drawn on top of each other.");
+	PROPERTY_FLOAT(riseScale, "Rise Scale", "Effects how the z units are scaled. eg: A depth of 20 will actually be 64 if the scale is 3.2");
+
 PROPERTY_NEW_CATEGORY("Textures", "Edit the cube textures.");
 	PROPERTY_BUTTON("Edit", "Front face", "Edit the texture for the front face", EditFace(FRONT_FACE));
 	PROPERTY_BUTTON("Edit", "Top face", "Edit the texture for the top face", EditFace(TOP_FACE));
@@ -92,8 +94,9 @@ void EditExt::OnPut()
 	for (int i = 0; i < 6; i++)
 		imageHandles[i] = pEditTime->AddImageFromResource(AfxGetResourceHandle(), MAKEINTRESOURCE(IDR_UNKNOWNPNG));
 
-	height = 20.0f;
+	height = 64.0f;
 	z = 0.0f;
+	riseScale = 1;
 }
 
 

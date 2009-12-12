@@ -139,6 +139,8 @@ int CAppPropertyValueMgr::OnChange()
 		application->window_information.window_width = value.i;
 	else if (propName == "Window Height") 
 		application->window_information.window_height = value.i;
+	else if (propName == "Eye Distance (3d)") 
+		application->window_information.eye_distance = value.i;
 	else if (propName == "Caption")
 		application->window_information.caption = value.i!=0;
 	else if (propName == "Minimize Box")

@@ -102,6 +102,7 @@ void CExport::GenerateApplicationData(int layoutid)
 
 	appBlock << application->window_information.window_width;
 	appBlock << application->window_information.window_height;
+	appBlock << application->window_information.eye_distance;
 
 	appBlock << application->window_information.show_menu;
 	appBlock << m_bScreensaver;

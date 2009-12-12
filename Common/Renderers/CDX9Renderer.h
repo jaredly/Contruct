@@ -243,6 +243,7 @@ namespace cr {
 		point			GetScale() const;
 		void			SetAngle(cr_float rads);
 		cr_float		GetAngle() const;
+		void			SetEyeDistance(float distance);
 
 		void			UpdateTransform(bool enable_transform = true);
 		void			SetZOffset(cr_float z);

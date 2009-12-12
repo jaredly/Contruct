@@ -466,7 +466,7 @@ namespace cr {
 
 		// Set 3D things
 		world.origin = D3DXVECTOR3(0, 0, 0);
-		world.eye_vector = D3DXVECTOR3(0, 0, 100.0);		// Eye 100 units above layout
+		world.eye_vector = D3DXVECTOR3(0, 0, 500);		// Eye 100 units above layout
 		world.lookat_vector = world.origin;
 		world.up_vector = D3DXVECTOR3(0, -1.0, 0);
 	}
@@ -669,6 +669,11 @@ namespace cr {
 
 		// Initialise 2D renderstates
 		Prepare2D();
+	}
+
+	void CDX9Renderer::SetEyeDistance(float distance)
+	{
+		world.eye_vector = D3DXVECTOR3(0, 0, distance);
 	}
 
 	// Set render states & stream sources etc. for normal 2D rendering.  Done on startup, and should be called
@@ -922,7 +927,7 @@ namespace cr {
 								  D3DX_PI/4,									//Field of View, in radians.
 								  rendertarget_width / rendertarget_height,		//Aspect ratio
 								  1.0f,										//Near view plane
-								  1100.0f);									//Far view plane
+								  1000.0f);									//Far view plane
 
 		d3d9_device->SetTransform(D3DTS_PROJECTION, &world.projection_matrix);
 
@@ -945,7 +950,7 @@ namespace cr {
 		D3DXVec3Project(&pt2, &bottomright, &world.viewport, &world.projection_matrix, &world.view_matrix, &identity);
 
 		world.scale.x = 1.0 / (pt2.x - pt1.x);
-		world.scale.y = 1.0 / (pt2.y - pt1.y);
+		world.scale.y = 1.0 / (pt2.x - pt1.x);
 
 		// Calculate world matrix
 		D3DXMatrixScaling(&world.world_matrix, world.scale.x, world.scale.y, 1.0);

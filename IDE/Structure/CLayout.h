@@ -90,6 +90,8 @@ public:
 	editInfo*			GetObjectByID(int InstanceID);
 	editInfo*			FindObjectByAnID(int InstanceID, int ObjectID);
 
+	float				GetEyeDistance3d();
+
 	// Fonts
 	list<CD3DDisplayFont> Fonts;
 

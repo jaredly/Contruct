@@ -127,7 +127,7 @@ void ExtObject::OnCreate()
 	int Version = 0;
 	ar >> Version;
 
-	ar >> depth >> z >> info.angle;
+	ar >> depth >> z >> info.angle >> riseScale;
 
 	for (int i = 0; i < 6; i++) {
 		ImageHandleInfo* imgHandle = pRuntime->LoadSerializedImageHandle(ar);

@@ -187,6 +187,7 @@ public:
 			hide_maximize(false),
 			window_width(640),
 			window_height(480),
+			eye_distance(500),
 			caption(true),
 			minimize_box(false),
 			maximize_box(false),
@@ -199,6 +200,7 @@ public:
 		bool hide_minimize;
 		bool hide_maximize;
 		int window_width, window_height;
+		float eye_distance;
 
 		bool caption;
 		bool minimize_box;

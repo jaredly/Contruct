@@ -1929,3 +1929,8 @@ const char* CLayout::GetAnimationName(int iHandle)
 	return anim->m_Name;
 
 }
+
+float CLayout::GetEyeDistance3d()
+{
+	return application->window_information.eye_distance;
+}
