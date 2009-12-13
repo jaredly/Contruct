@@ -169,8 +169,8 @@ BOOL ExtObject::OnFrame2()
 		}
 	}
 
-	// Update audio engine
-	XAudio2.Tick(pRuntime->GetTimeScale());
+	// Update audio engine (leave timescale at 1 if scaling disabled)
+	XAudio2.Tick(data.enableTimescale ? pRuntime->GetTimeScale() : 1.0f);
 
 	// Check the listener object isn't dead
 	if (listenerObj && listenerObj->info.destroying)

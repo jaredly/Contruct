@@ -37,6 +37,8 @@ public:
 	float maxPan;
 	float panDist;
 
+	bool enableTimescale;		// set sound frequency with timescale
+
 	CXAudio2Data();
 	void Serialize(bin& ar);
 };

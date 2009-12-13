@@ -42,6 +42,7 @@ BEGIN_PROPERTY_TABLE();
 	PROPERTY_FLOAT(data.maxFrequencyRatio, "Max frequency ratio", "Maximum ratio for changing channel frequency: lower values conserve memory");
 	PROPERTY_FLOAT(data.masterGain, "Master volume", "Default master volume: -3 dB or lower is recommended to help prevent clipping.");
 	PROPERTY_COMBO(cacheMode_int, "Cache", "Choose which sounds to save in memory.", "Off|Sounds under 3mb|All but OGG|All");
+	PROPERTY_BOOL(data.enableTimescale, "Timescale audio", "If enabled, changing the timescale affects the frequency of audio playback.");
 
 	PROPERTY_NEW_CATEGORY("Positioned sounds", "Properties relating to sounds played at a position");
 

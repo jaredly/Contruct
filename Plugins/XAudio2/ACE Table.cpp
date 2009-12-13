@@ -15,13 +15,14 @@ CXAudio2Data::CXAudio2Data()
 	minDist(100.0f),
 	rolloff(1.0f),
 	maxPan(18.0f),
-	panDist(2000.0f)
+	panDist(2000.0f),
+	enableTimescale(true)
 {
 }
 
 void CXAudio2Data::Serialize(bin& ar)
 {
-	int Version = 3;
+	int Version = 4;
 
 	if (ar.loading) {
 		ar >> Version;
@@ -36,6 +37,9 @@ void CXAudio2Data::Serialize(bin& ar)
 
 		if (Version >= 3)
 			ar >> limiter_enable >> limiter_release >> limiter_threshold;
+
+		if (Version >= 4)
+			ar >> enableTimescale;
 	}
 	else {
 		ar << Version;
@@ -47,6 +51,9 @@ void CXAudio2Data::Serialize(bin& ar)
 
 		//v3
 		ar << limiter_enable << limiter_release << limiter_threshold;
+
+		//v4
+		ar << enableTimescale;
 	}
 }
 
