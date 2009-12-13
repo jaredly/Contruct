@@ -1069,7 +1069,42 @@ CString EventSheetEditor::FormString(CStringArray& strings, CString string, int 
 
 CString EventSheetEditor::StripHTML(LPCSTR String)
 {
-	CString Result = String;
+	CString str = String;
+
+	// First replace the negate icon
+	str.Replace("<img>2</img>", "[negated] ");
+
+	// Remove all <img>...</img>
+	int tagIndex;
+
+	while (1) {
+		tagIndex = str.Find("<img>");
+
+		if (tagIndex == -1)
+			break;
+		else {
+			int closeTag = str.Find("</img>");
+
+			// erase entire tag
+			str.Delete(tagIndex, (closeTag - tagIndex) + 6);
+		}
+	}
+
+	// remove all <special_image>...</special_image>
+	while (1) {
+		tagIndex = str.Find("<special_image>");
+
+		if (tagIndex == -1)
+			break;
+		else {
+			int closeTag = str.Find("</special_image>");
+
+			// erase entire tag
+			str.Delete(tagIndex, (closeTag - tagIndex) + 16);
+		}
+	}
+
+	CString Result = str;
 	CString Work;
 
 	bool bInTag = false;
@@ -1108,6 +1143,15 @@ CString EventSheetEditor::StripHTML(LPCSTR String)
 		if (!bInTag && Result[i] != '>' && !bParamNum)
 			Work += Result[i];
 	}
+
+	// Collapse spaces in Work
+	while (Work.Replace("  ", " ") != 0);
+
+	// Collapse " ." to "."
+	Work.Replace(" .", ".");
+
+	// Replace &amp; with &
+	Work.Replace("&amp;", "&");
 
 	return Work;
 }

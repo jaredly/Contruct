@@ -108,6 +108,7 @@ CString CFindReplaceDlg::StripHTML(LPCSTR String)
 	}
 
 	return Work;
+	
 }
 
 // CFindReplaceDlg message handlers

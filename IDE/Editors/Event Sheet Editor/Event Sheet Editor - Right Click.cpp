@@ -233,20 +233,34 @@ void EventSheetEditor::HandleConditionColumnRightClick(CPoint point)
 				CString Event;
 				for (int i = 0; i < pEvent->m_Conditions.size(); i++)
 				{
+					Event += "+ ";
+
+					CString nameStr;
+
 					int ID = pEvent->m_Conditions[i]->oid;
 					if (ID == -1)
-						Event += "System";
+						nameStr = "System";
 					else
-						Event += application->FindObjTypeFromNumber(ID)->GetName();
+						nameStr = application->FindObjTypeFromNumber(ID)->GetName();
 
-					Event += ": ";
-					Event += StripHTML(pEvent->m_Conditions[i]->m_Text);
+					nameStr += ": ";
+					Event += nameStr;
+
+					CString conditionText = StripHTML(pEvent->m_Conditions[i]->m_Text);
+					conditionText.Trim();
+
+					if (conditionText.Left(nameStr.GetLength()) == nameStr)
+						conditionText.Delete(0, nameStr.GetLength());
+
+					conditionText.Trim();
+
+					Event += conditionText;
 					Event += "\r\n";
 				}
 
 				for (int i = 0; i < pEvent->m_Actions.size(); i++)
 				{
-					Event += "> ";
+					Event += "-> ";
 
 					int ID = pEvent->m_Actions[i]->oid;
 					if (ID == -1)
@@ -254,6 +268,7 @@ void EventSheetEditor::HandleConditionColumnRightClick(CPoint point)
 					else
 						Event += application->FindObjTypeFromNumber(ID)->GetName();
 
+					Event += ": ";
 					Event += StripHTML(pEvent->m_Actions[i]->m_Text);
 					Event += "\r\n";
 				}
