@@ -152,6 +152,7 @@ public:
 	 virtual void ChangeBrushSize(double size)
 	 {
 		(m_pProp->Size) = size;
+		UpdateStep();
 	 }
 	 virtual void ChangeHardness(double hard) 
 	 {
@@ -168,6 +169,7 @@ public:
 	 virtual void ChangeStep(double step)
 	 {
 		(m_pProp->Step) = step;
+		UpdateStep();
 	 }
 	 virtual void ChangeLineThickness(double thick)
 	 {
@@ -195,6 +197,7 @@ public:
 	 }
 	 virtual COLORREF GetColor();
 	 virtual COLORREF GetColor2();
+	 void UpdateStep();
 };
 
 

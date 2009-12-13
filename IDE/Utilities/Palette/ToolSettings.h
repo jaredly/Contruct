@@ -32,7 +32,7 @@ CSize OnQueryFixedBarNewSize(
 	) const
 {
 		ASSERT_VALID( this );
-		return CSize(400,36);
+		return CSize(460,36);
 }
 
 

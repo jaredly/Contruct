@@ -423,6 +423,11 @@ void CPictureEditor::Rotate(int Angle)
 
 	Load(&picture);
 	ClearTemp();
+
+	CxImage* other = m_pImageEditor->m_pImgEdDlg->getOtherImageForThisFrame();
+	if(other) other->Rotate2(Angle, NULL, CxImage::IM_BILINEAR,
+		CxImage::OM_COLOR, &trans);
+
 	CreateUndo("Rotate");
 }
 
@@ -1428,13 +1433,19 @@ void CTool::OnMouseMove(CFloatPoint pt)
 	PicEd->ScreentoCanvas(pt);
 }
 
+void CTool::UpdateStep()
+{
+	if(m_pProp)
+		maxsteps = max(1, m_pProp->Step / 200.0 * m_pProp->Size);
+}
 
 void CTool::Initialise(ToolProperties* props)
 {
-	maxsteps = props->Step;
 	MouseSteps = 0;
 	m_pProp = props;
 	m_draw = false;
+
+	UpdateStep();
 
 	PicEd->ClearTemp();
 
@@ -1696,7 +1707,6 @@ void CBrushTool::OnMouseMove(CFloatPoint pt)
 	MouseCoords = pt;
 	float localx = pt.x;
 	float localy = pt.y;
-
 
 	if(m_draw)
 	{

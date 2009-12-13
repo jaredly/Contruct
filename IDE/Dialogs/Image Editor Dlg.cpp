@@ -160,7 +160,7 @@ BOOL CImageEditorDlg::OnInitDialog()
 	Props.Angle =		pMainWnd->m_INI.GetDouble("ImageEditor", "Angle", 0);
 	Props.Thickness =		pMainWnd->m_INI.GetDouble("ImageEditor", "Thickness", 100);
 	Props.Size =		pMainWnd->m_INI.GetDouble("ImageEditor", "Size", 1);
-	Props.Step = 		pMainWnd->m_INI.GetDouble("ImageEditor", "Step", 1);
+	Props.Step = 		pMainWnd->m_INI.GetDouble("ImageEditor", "Step", 30);
 	Props.LineThickness =		pMainWnd->m_INI.GetDouble("ImageEditor", "LineThickness",1);
 	Props.bSmooth =		pMainWnd->m_INI.GetBool("ImageEditor", "Smooth",0);
 	Props.Opacity =		pMainWnd->m_INI.GetDouble("ImageEditor", "Opacity",255);
@@ -510,26 +510,28 @@ void CImageEditorDlg::LoadImageInternally()
 {
 	CPictureEditor* pEd = &m_pXDVView->m_PicEd;
 
+	pEd->m_modded = false; // when you go to a new internal image it hasn't been edited until you do something
+
 	if(m_sourceImages.size() == 0) // using the image editor to edit a single image
 	{
 		// Dont change m_pMyImage
 	}
-	else // using the image editor to edit an animation or an imageresource.
+	else // using the image editor to edit an animation or an image resource.
 	{
 		CImageResource* img_res = m_sourceImages.at(m_animation_frame_index);
 
 		m_pMyImage = NULL;
 
 		if(m_editCollision) 
-		{
-			if(img_res->m_Collision.IsValid())
-				m_pMyImage = &img_res->m_Collision;
-		
+		{	
 			if(m_newCollision.find(img_res) != m_newCollision.end())
 			{
 				if(m_newCollision[img_res].IsValid())
 					m_pMyImage = &m_newCollision[img_res];
 			}
+			else
+				if(img_res->m_Collision.IsValid())
+					m_pMyImage = &img_res->m_Collision;
 		}
 
 		// Note: If we are editing a collision mask, but there isn't currently a collision mask, we load
@@ -537,12 +539,10 @@ void CImageEditorDlg::LoadImageInternally()
 		
 		if(!m_pMyImage)
 		{
-			m_pMyImage = &img_res->bitmap;
-
 			if(m_newImages.find(img_res) != m_newImages.end())
-			{
 				m_pMyImage = &m_newImages[img_res];
-			}
+			else
+				m_pMyImage = &img_res->bitmap;
 		}
 	}
 
@@ -1310,15 +1310,55 @@ void CImageEditorDlg::CropAll()
 	}
 
 
+}
+
+
+CxImage* CImageEditorDlg::getOtherImageForThisFrame()
+{
+	if(this->m_sourceImages.size() == 0)
+		return NULL;
+
+	CImageResource* res = m_sourceImages[m_animation_frame_index];
+
+	if(m_editCollision)
+	{
+		if( m_newImages.find(res) == m_newImages.end() )
+			return &(m_newImages[res] = res->bitmap);			
+		else
+			return &m_newImages[res]; 
+	}
+	else
+	{
+		if( m_newCollision.find(res) == m_newCollision.end() )
+			return &(m_newCollision[res] = res->m_Collision);			
+		else
+			return &m_newCollision[res]; 
+	}
+}
 
 
 
 
-
-
-
+void CImageEditorDlg::AskToDeleteCollisionMask()
+{
+	if(this->m_sourceImages.size() == 0)
+		return;
+	int result = MessageBox("Are you sure you want to delete the collison mask?", "Construct Picture Editor", MB_YESNOCANCEL);
+	if( result == IDYES)
+	{
+		CImageResource* res = m_sourceImages[m_animation_frame_index];
+		if( m_newCollision.find(res) != m_newCollision.end() )
+		{
+			m_newCollision[res].Destroy();
+		}
+		else
+		{
+			res->m_Collision.Destroy();
+		}
+	}
 
 }
+
 //////////////////////////////////
 //
 //		CPicEdSettingsDlg

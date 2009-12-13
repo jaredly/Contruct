@@ -80,6 +80,7 @@ public:
 	CImageEditor* m_pXDVView;
 	CFrameWnd* m_pFrameWnd;
 
+	void AskToDeleteCollisionMask();
 
 	CExtToolControlBar m_Tools;
 	CExtToolControlBar m_Main;
@@ -152,6 +153,8 @@ public:
 	void LoadImageInternally();
 	void SetNoAlpha(bool val);
 	bool m_result;
+
+	CxImage* getOtherImageForThisFrame(); //If we are flipping or mirroring the image, we need to do the same to the collision mask
 
 	bool m_noAlpha;
 

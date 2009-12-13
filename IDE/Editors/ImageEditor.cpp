@@ -764,12 +764,20 @@ void CImageEditor::OnRedo()
 void CImageEditor::OnMirror()
 {
 	m_PicEd.Mirror();
+
+	CxImage* other = m_pImgEdDlg->getOtherImageForThisFrame();
+	if(other) other->Mirror();
+
 	Invalidate();
 }
 
 void CImageEditor::OnFlip()
 {
 	m_PicEd.Flip();
+
+	CxImage* other = m_pImgEdDlg->getOtherImageForThisFrame();
+	if(other) other->Flip();
+
 	Invalidate();
 }
 
@@ -1012,10 +1020,18 @@ void CImageEditor::OnNew()
 
  void CImageEditor::OnMask()
  {
-	m_pImgEdDlg->SaveImageInternally(true);
-	m_pImgEdDlg->m_editCollision = !m_pImgEdDlg->m_editCollision;
-	m_pImgEdDlg->LoadImageInternally();
-	m_PicEd.SetEditCollision( m_pImgEdDlg->m_editCollision );
+	if( GetKeyState(VK_SHIFT) >> 4 )
+	{
+		m_pImgEdDlg->AskToDeleteCollisionMask();
+	}
+	else
+	{
+		m_pImgEdDlg->SaveImageInternally(true);
+		m_pImgEdDlg->m_editCollision = !m_pImgEdDlg->m_editCollision;
+		m_pImgEdDlg->LoadImageInternally();
+		m_PicEd.SetEditCollision( m_pImgEdDlg->m_editCollision );
+	}
+
  }
 
  void CImageEditor::OnCrop()
