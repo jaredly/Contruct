@@ -518,7 +518,7 @@ void ProjectBar::OnDoubleClick(NMHDR* pNMHDR, LRESULT* pResult)
 			CImageEditorDlg dialog;
 			dialog.m_Icon = true;
 			dialog.application = (CApplication*)tree.GetItemData(tree.GetParentItem(tree.GetParentItem(selected)));
-			dialog.EditImage(&((IconResource*)tree.GetItemData(selected))->icon);
+			dialog.EditImage(&((IconResource*)tree.GetItemData(selected))->icon, false);
 			dialog.application->ChangeModifiedStatus();
 		}
 

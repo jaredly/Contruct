@@ -55,7 +55,7 @@ void CManageActionPointsDlg::OnBnClickedButton1()
 
 	CImageEditorDlg* imgDlg = m_pToolSettings->m_pImgEd->m_pImgEdDlg;
 
-	CImageResource* currentImage = imgDlg->m_sourceImages.at(imgDlg->m_animation_index);
+	CImageResource* currentImage = imgDlg->m_sourceImages.at(imgDlg->m_animation_frame_index);
 
 	(imgDlg->m_newAction[currentImage])[NewActionName] = imgDlg->m_newHotspots[currentImage];
 	

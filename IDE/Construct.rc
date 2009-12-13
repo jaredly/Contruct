@@ -538,7 +538,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    ID_BUTTON29178          "Toggle the background from white and back\n Background toggle"
+    ID_BACKGROUNDCOLOR          "Toggle the background from white and back\n Background toggle"
     ID_MENU_EVENTSHEETEDITOR "Switch to the event sheet editor"
     ID_MENU_LAYOUTEDITOR    "Switch to the layout editor"
 END
@@ -1900,7 +1900,7 @@ BEGIN
     BUTTON      ID_CROP
     BUTTON      ID_RESIZE
     BUTTON      ID_WRAP
-    BUTTON      ID_BUTTON29178
+    BUTTON      ID_BACKGROUNDCOLOR
     BUTTON      ID_MASK
     BUTTON      ID_GRID
 END

@@ -461,8 +461,8 @@ public:
 	D3DTEXTUREFILTERTYPE GetBlendType();
 
 	CImageEditor* m_pImageEditor;
-	CPoint& GetHotspot();
-	map<CString, CPoint>& GetAction();
+	CPoint* GetHotspot();
+	map<CString, CPoint>* GetAction();
 	map<int, int> m_shapes;
 	vector<CPicUndo*> m_undo;
 	vector<CPicUndo*> m_redo;
@@ -474,11 +474,15 @@ public:
 
 	bool bSeamless;
 
+	bool bEditingCollision; // Used to display the image editor differently so we know its editing a collision mask
+	void SetEditCollision(bool val); 
+
 	void Blit(float x, float y, float w, float h, float angle = 0.0f, D3DCOLOR filter = 0xFFFFFFFF, const RECTF* uv = NULL);
 
 public:
 	CPictureEditor()
 	{
+		bEditingCollision = 0;
 		m_Width = 0;
 		m_Height = 0;
 		CurrentTool = 0;

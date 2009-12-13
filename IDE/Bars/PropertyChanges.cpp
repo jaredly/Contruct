@@ -777,7 +777,7 @@ int CPluginStdPropertyValueMgr::OnChange()
 				CImageEditorDlg imageEditor;
 				imageEditor.m_Icon = true;
 				imageEditor.application = this->frame->application;
-				imageEditor.EditImage(&(pType->m_Image));
+				imageEditor.EditImage(&(pType->m_Image), true);
 			}
 			catch (CD3DError e) 
 			{
@@ -810,7 +810,7 @@ int CPluginStdPropertyValueMgr::OnChange()
 				CImageEditorDlg imageEditor;
 				imageEditor.m_Icon = true;
 				imageEditor.application = this->frame->application;
-				imageEditor.EditImage(&(pType->small_image));
+				imageEditor.EditImage(&(pType->small_image), true);
 			}
 			catch (CD3DError e) 
 			{

@@ -65,15 +65,16 @@ public:
 			m_Color_Mixer.pColor2 = NULL;
 		}
 	}
-
-	bool m_Animation;
+	
+	bool m_Animation; // used to determine if the animation bar should be shown
 	bool m_Icon;
 
 	CxImage* m_pMyImage;
-	CxImage* m_pMyCollision;
+	bool m_editCollision;
 
 	CApplication* application;
-	INT_PTR EditImage(CxImage* MyImage, bool Individual = false, CxImage* MyCollision = NULL);
+	INT_PTR EditImage(CxImage* MyImage, bool noAlphaChannel); // use for editing arbitrary images such as icons
+	INT_PTR EditImage(CImageResource* image, CApplication* pApp); 
 	INT_PTR EditAnimation(int animation_id,int index, CApplication* pApp);
 	CImageEditorDlg(CWnd* pParent = NULL);   // standard constructor
 	CImageEditor* m_pXDVView;
@@ -91,7 +92,6 @@ public:
 
 
 	vector<CImageResource*> m_sourceImages;
-	list<CImageResource> m_newImageResources;
 
 	map<CImageResource*, CxImage> m_newImages;
 	map<CImageResource*, CxImage> m_newCollision;
@@ -100,7 +100,7 @@ public:
 	
 	void ApplyHotspotToAll(int x, int y);
 	
-	int m_animation_index;
+	int m_animation_frame_index;
 //	CPaletteWindow paletteWindow;
 	CPaletteBar m_PaletteBar;
 
@@ -148,11 +148,15 @@ public:
 	void CopyNeededDataFromImages();
 	void CopyNeededDataToImages();
 	void GetActionNames(map<CString, int>& actions);
+	void SaveImageInternally(bool updateThumbnails);
+	void LoadImageInternally();
+	void SetNoAlpha(bool val);
 	bool m_result;
+
+	bool m_noAlpha;
 
 
 };
-
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 

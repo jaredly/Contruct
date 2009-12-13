@@ -86,7 +86,7 @@ BEGIN_MESSAGE_MAP(CImageEditor, CScrollView)
 	ON_COMMAND(ID_ELLIPSE, OnEllipse)
 	ON_COMMAND(ID_HOTSPOT, OnHotspot)
 	ON_COMMAND(ID_ACTIONPOINT, OnActionpoint)
-	ON_COMMAND(ID_BUTTON29178, OnBackground)
+	ON_COMMAND(ID_BACKGROUNDCOLOR, OnBackground)
 
 	// main toolbar
 	ON_COMMAND(ID_RESIZE,OnResize)
@@ -108,7 +108,7 @@ BEGIN_MESSAGE_MAP(CImageEditor, CScrollView)
 	ON_COMMAND(ID_EDIT_PASTE, OnPaste)
 	ON_COMMAND(ID_EDIT_SELECTALL, OnEditSelectAll)
 	ON_COMMAND(ID_WRAP, OnWrap)
-	ON_COMMAND(ID_WRAP, OnMask)
+	ON_COMMAND(ID_MASK, OnMask)
 
 	ON_COMMAND(ID_CROP, OnCrop)
 
@@ -721,9 +721,12 @@ void CImageEditor::OnFileOpen(CString path)
 		m_PicEd.m_CanvasHeight = m_PicEd.m_Height = height;
 		m_PicEd.CanvasToTemp();
 
-		m_PicEd.GetHotspot().x = width / 2;
-		m_PicEd.GetHotspot().y = height / 2;
-
+		if(m_PicEd.GetHotspot())
+		{
+			m_PicEd.GetHotspot()->x = width / 2;
+			m_PicEd.GetHotspot()->y = height / 2;
+		}
+	
 		m_PicEd.ClearTemp();
 		m_PicEd.CreateUndo("Load");
 	}
@@ -1009,7 +1012,10 @@ void CImageEditor::OnNew()
 
  void CImageEditor::OnMask()
  {
-
+	m_pImgEdDlg->SaveImageInternally(true);
+	m_pImgEdDlg->m_editCollision = !m_pImgEdDlg->m_editCollision;
+	m_pImgEdDlg->LoadImageInternally();
+	m_PicEd.SetEditCollision( m_pImgEdDlg->m_editCollision );
  }
 
  void CImageEditor::OnCrop()

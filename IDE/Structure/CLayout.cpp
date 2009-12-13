@@ -659,7 +659,7 @@ bool CLayout::EditImage(int a)
 
 	CImageResource* it = application->resources.FindImageResourceFromNumber(a);
 
-	if(!it)
+/*	if(!it)
 		return 0;
 
 	try
@@ -688,12 +688,37 @@ bool CLayout::EditImage(int a)
 			// Image bank content has changed
 			app->resources.images_changed = true;
 		}
+
+
+
+
+	}
+	catch (CD3DError e) 
+	{
+		CErrorDlg err;
+		err.Error("Image Editor Error", e.GetString());
+	}*/
+
+
+
+	try
+	{
+		CImageEditorDlg MyDlg;
+		MyDlg.application = application;
+		MyDlg.EditImage(it, application);
 	}
 	catch (CD3DError e) 
 	{
 		CErrorDlg err;
 		err.Error("Image Editor Error", e.GetString());
 	}
+	catch (...) {
+		CErrorDlg err;
+		err.Error("Image Editor Error", "Error opening the image editor.  Please report this bug to Scirra.");
+	}
+
+
+
 
 	g_SuspendFrameEditor = false;
 
@@ -719,7 +744,7 @@ bool CLayout::EditImageInAnimation(int aHandle, int index)
 		err.Error("Image Editor Error", "Error opening the image editor.  Please report this bug to Scirra.");
 	}
 
-
+	g_SuspendFrameEditor = false;
 	return 0;
 }
 int CLayout::AddImage(int iWidth, int iHeight)

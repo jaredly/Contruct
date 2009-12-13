@@ -757,7 +757,7 @@
 #define ID_MENU_LOOPS                   29171
 #define ID_MENU_VARIABLES               29172
 #define ID_MENU_POINTCOLLISIONS         29175
-#define ID_BUTTON29178                  29178
+#define ID_BACKGROUNDCOLOR              29178
 #define ID_MENU_EVENTSHEETEDITOR        29182
 #define ID_MENU_LAYOUTEDITOR            29183
 #define ID__CLONELAYOUT                 29184

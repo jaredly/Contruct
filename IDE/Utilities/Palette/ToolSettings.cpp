@@ -215,13 +215,13 @@ void CAnimationToolbar::OnPaint()
 	GetClientRect(&rect);
 
 	CRect middle;
-	int index = m_pImgEd->m_pImgEdDlg->m_animation_index - rect.Width()/32/2;
+	int index = m_pImgEd->m_pImgEdDlg->m_animation_frame_index - rect.Width()/32/2;
 	for(int x = 0; x < rect.Width(); x += 32, index++)
 	{
 		dc.FillSolidRect(x,0, 32, 40, 0x000000);
 		dc.FillSolidRect(x,4, 32, 32,0x999999);
 
-		if(index == m_pImgEd->m_pImgEdDlg->m_animation_index)
+		if(index == m_pImgEd->m_pImgEdDlg->m_animation_frame_index)
 			middle = CRect(x,4,32+x,32+4);
 		for(int o = 0; o < 34; o+= 2)
 		{
@@ -243,6 +243,9 @@ void CAnimationToolbar::OnPaint()
 
 void CAnimationToolbar::UpdateThumbnail(int index)
 {
+	if(m_pImgEd->m_pImgEdDlg->m_sourceImages.size() == 0)
+		return; // urf?!
+
 	CxImage& dest = m_thumbnails[index];
 	if(index < 0) return;
 	if(index > this->m_pImgEd->m_pImgEdDlg->m_sourceImages.size() ) return;
@@ -263,109 +266,36 @@ void CAnimationToolbar::ChangeFrame(int newindex)
 	if (m_pImgEd == NULL) return;
 
 	CImageEditorDlg* Dlg = m_pImgEd->m_pImgEdDlg;
-	m_pImgEd->SetRedraw(false);
+	if(newindex == Dlg->m_animation_frame_index)
+		return; //the frame didn't change
 
-	int oldindex = Dlg->m_animation_index;
+	Dlg->SaveImageInternally(true);
+	
+	m_pImgEd->SetRedraw(false);
 
 	if(newindex >= Dlg->m_sourceImages.size())
 		return m_pImgEd->SetRedraw(true);	//todo: add new frame
 	if(newindex < 0)
 		return m_pImgEd->SetRedraw(true); //todo: add new frame before
 	{
-		if(m_pImgEd->m_PicEd.m_modded)
-		{
-			m_pImgEd->m_PicEd.Save(&
-			Dlg->m_newImages[ Dlg->m_sourceImages.at(oldindex) ] );
-		// this->m_sourceImages[m_animation_index] = m_newImages[ m_sourceImages.at(m_animation_index) ] 
-		}
-		this->UpdateThumbnail(oldindex);
 
 
+	Dlg->m_animation_frame_index = newindex;
 
-		Dlg->m_animation_index = newindex;
-		CImageResource* newimage = Dlg->m_sourceImages.at(newindex);
+	Dlg->LoadImageInternally();
 
-
-		
-		CPictureEditor* pEd = &m_pImgEd->m_PicEd;
-		Dlg->m_pMyImage = &Dlg->m_sourceImages.at(newindex)->bitmap;
-		if(Dlg->m_newImages.find(newimage) != Dlg->m_newImages.end())
-		{
-			Dlg->m_pMyImage = &Dlg->m_newImages[newimage];
-		}
-		
-		// we need to free each layer.
-		for(int a = 0; a < pEd->layers.size(); a++)
-		{
-			pEd->display->RemoveTexture(pEd->layers.at(a));
-		}
-		pEd->layers.clear();
-
-		// Now its time to load up the layers in the new image we are editing
-		int m_CanvasBG = pEd->display->AddTextureFromCxImage(*Dlg->m_pMyImage);
-
-		pEd->m_CanvasWidth = pEd->m_Width = Dlg->m_pMyImage->GetWidth();
-		pEd->m_CanvasHeight = pEd->m_Height = Dlg->m_pMyImage->GetHeight();
-
-		pEd->layers.push_back(pEd->display->AddTextureRT(pEd->m_Width,pEd->m_Height));
-		pEd->m_pCanvas = &pEd->layers.at(0);
-		pEd->m_pLayer = pEd->m_pCanvas;
-
-
-
-		
-		pEd->display->SetRenderTarget(*pEd->m_pCanvas);
-		pEd->display->SetTexture(-1);
-
-		pEd->SaveDisplayState();
-		pEd->display->SetTexture(m_CanvasBG);
-		
-		
-		pEd->display->ClearRT();
-				
-		pEd->display->SetRenderState(D3DRS_SRCBLEND , D3DBLEND_ONE);
-		pEd->display->SetRenderState(D3DRS_DESTBLEND , D3DBLEND_ZERO);
-
-		pEd->display->Blit(0,0);
-		pEd->RestoreDisplayState();
-
-
-
-
-
-		pEd->display->RemoveTexture(m_CanvasBG);
-
-		pEd->m_RectTempToCanvas.SetRect(0,0,pEd->m_Width,pEd->m_Height);
-		pEd->CanvasToTemp();
-
-		pEd->m_pImageEditor->ChangeTool();
-
-		m_pImgEd->UpdateScrollbars();
-
-		while(pEd->m_undo.size()>0)
-		{
-			pEd->m_undo.back()->Release();
-			delete pEd->m_undo.back();
-			pEd->m_undo.pop_back();
-		}
-		while(pEd->m_redo.size()>0)
-		{
-			pEd->m_redo.back()->Release();
-			delete pEd->m_redo.back();
-			pEd->m_redo.pop_back();
-		}
 		
 		m_pImgEd->SetRedraw(true);
 		Invalidate();
 		m_pImgEd->RedrawWindow();
-		pEd->CreateUndo();
+		
 	}
 }
 
 void CAnimationToolbar::AdvanceFrames(int offset)
 {
 	CImageEditorDlg* Dlg = m_pImgEd->m_pImgEdDlg;
-	int newindex = Dlg->m_animation_index + offset;
+	int newindex = Dlg->m_animation_frame_index + offset;
 	
 
 	if(newindex >= Dlg->m_sourceImages.size())
@@ -384,7 +314,7 @@ void CAnimationToolbar::OnLButtonDown(UINT nFlags, CPoint point)
 	int newindex = -1;
 	bool found = false;
 
-	int index = m_pImgEd->m_pImgEdDlg->m_animation_index - rect.Width()/32/2;
+	int index = m_pImgEd->m_pImgEdDlg->m_animation_frame_index - rect.Width()/32/2;
 	for(int x = 0; x < rect.Width(); x += 32, index++)
 	{
 		CRect zone(x,4, x+32,4+32);

@@ -240,6 +240,7 @@ void CManageFamiliesDlg::OnBnClickedAdd()
 
 		if(Dlg.EditImage(&Image.bitmap, true))
 		{
+			application->resources.images_changed = true;
 			Dlg.CopyNeededDataToImages();
 
 			// Save to disk

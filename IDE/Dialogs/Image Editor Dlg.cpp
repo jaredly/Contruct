@@ -25,12 +25,17 @@ CImageEditorDlg::CImageEditorDlg(CWnd* pParent /*=NULL*/)
 {
 	m_pFrameWnd = 0;
 	m_pXDVView = 0;
-			m_pMyImage = 0;
-		m_Animation = false;
-		m_animation_index = 0;
-		m_result = 0;
+	m_pMyImage = 0;
+	m_Animation = false;
+	m_animation_frame_index = 0;
+	m_result = 0;
 
 	m_Icon = false;
+
+	m_editCollision = false;
+	application = NULL;
+
+	m_noAlpha = false;
 
 	//{{AFX_DATA_INIT(CImageEditorDlg)
 		// NOTE: the ClassWizard will add member initialization here
@@ -85,7 +90,7 @@ BEGIN_MESSAGE_MAP(CImageEditorDlg, CExtResizableDialog)
 	ON_COMMAND(ID_ELLIPSE, nothing)
 	ON_COMMAND(ID_HOTSPOT, nothing)
 	ON_COMMAND(ID_ACTIONPOINT, nothing)
-	ON_COMMAND(ID_BUTTON29178, nothing)
+	ON_COMMAND(ID_BACKGROUNDCOLOR, nothing)
 	ON_COMMAND(ID_WRAP, nothing)
 	ON_COMMAND(ID_MASK, nothing)
 	// main toolbar
@@ -478,6 +483,127 @@ void CImageEditorDlg::AnimRight()
 	}
 }
 
+
+void CImageEditorDlg::SaveImageInternally(bool updateThumbnails)
+{
+	CPictureEditor& m_PicEd = m_pXDVView->m_PicEd;
+	if(m_PicEd.m_modded)
+	{
+		if(m_sourceImages.size() == 0)
+			m_PicEd.Save(m_pMyImage);
+		else if(m_editCollision)
+			m_PicEd.Save(&m_newCollision[ m_sourceImages.at(m_animation_frame_index) ] );
+		else
+			m_PicEd.Save(&m_newImages[ m_sourceImages.at(m_animation_frame_index) ] );
+	}
+	if(m_Animation)
+		m_Tool_Animation.UpdateThumbnail(m_animation_frame_index);
+}
+
+void CImageEditorDlg::SetNoAlpha( bool val )
+{
+	m_noAlpha = val;
+}
+
+
+void CImageEditorDlg::LoadImageInternally()
+{
+	CPictureEditor* pEd = &m_pXDVView->m_PicEd;
+
+	if(m_sourceImages.size() == 0) // using the image editor to edit a single image
+	{
+		// Dont change m_pMyImage
+	}
+	else // using the image editor to edit an animation or an imageresource.
+	{
+		CImageResource* img_res = m_sourceImages.at(m_animation_frame_index);
+
+		m_pMyImage = NULL;
+
+		if(m_editCollision) 
+		{
+			if(img_res->m_Collision.IsValid())
+				m_pMyImage = &img_res->m_Collision;
+		
+			if(m_newCollision.find(img_res) != m_newCollision.end())
+			{
+				if(m_newCollision[img_res].IsValid())
+					m_pMyImage = &m_newCollision[img_res];
+			}
+		}
+
+		// Note: If we are editing a collision mask, but there isn't currently a collision mask, we load
+		// the CxImage of the bitmap.
+		
+		if(!m_pMyImage)
+		{
+			m_pMyImage = &img_res->bitmap;
+
+			if(m_newImages.find(img_res) != m_newImages.end())
+			{
+				m_pMyImage = &m_newImages[img_res];
+			}
+		}
+	}
+
+	
+	// we need to free each layer.
+	for(int a = 0; a < pEd->layers.size(); a++)
+	{
+		pEd->display->RemoveTexture(pEd->layers.at(a));
+	}
+	pEd->layers.clear();
+
+	// Now its time to load up the layers in the new image we are editing
+	pEd->m_CanvasWidth = pEd->m_Width = m_pMyImage->GetWidth();
+	pEd->m_CanvasHeight = pEd->m_Height = m_pMyImage->GetHeight();
+
+	pEd->layers.push_back(pEd->display->AddTextureRT(pEd->m_Width,pEd->m_Height));
+	pEd->m_pCanvas = &pEd->layers.at(0);
+	pEd->m_pLayer = pEd->m_pCanvas;
+
+
+	pEd->display->SetRenderTarget(*pEd->m_pCanvas);
+	pEd->display->SetTexture(-1);
+
+
+	// Copy the image onto the canvas
+	int m_CanvasBG = pEd->display->AddTextureFromCxImage(*m_pMyImage);
+
+	pEd->SaveDisplayState();
+	pEd->display->SetTexture(m_CanvasBG);
+	pEd->display->ClearRT();
+	pEd->display->SetRenderState(D3DRS_SRCBLEND , D3DBLEND_ONE);
+	pEd->display->SetRenderState(D3DRS_DESTBLEND , D3DBLEND_ZERO);
+	pEd->display->Blit(0,0);
+	pEd->RestoreDisplayState();
+
+	pEd->display->RemoveTexture(m_CanvasBG);
+
+	// Set stuff
+	pEd->m_RectTempToCanvas.SetRect(0,0,pEd->m_Width,pEd->m_Height);
+	pEd->CanvasToTemp();
+
+	pEd->m_pImageEditor->ChangeTool();
+
+	m_pXDVView->UpdateScrollbars();
+
+	while(pEd->m_undo.size()>0)
+	{
+		pEd->m_undo.back()->Release();
+		delete pEd->m_undo.back();
+		pEd->m_undo.pop_back();
+	}
+	while(pEd->m_redo.size()>0)
+	{
+		pEd->m_redo.back()->Release();
+		delete pEd->m_redo.back();
+		pEd->m_redo.pop_back();
+	}
+	pEd->CreateUndo();
+}
+
+
 LRESULT CImageEditorDlg::OnKickIdle(WPARAM, LPARAM)
 {
 /*	CToolBar* pToolbar = &m_pXDVView->m_Tools;
@@ -548,32 +674,55 @@ void CImageEditorDlg::OnPaint()
 	CPaintDC dc(this); // device context for painting
 }
 
-INT_PTR CImageEditorDlg::EditImage(CxImage* MyImage, bool Individual, CxImage* MyCollision)
+INT_PTR CImageEditorDlg::EditImage( CxImage* MyImage, bool noAlphaChannel )
 {
 	m_pMyImage = MyImage;
-	m_pMyCollision = MyCollision;
-
 	m_Animation = false;
-	this->DoModal();
-
-	if (m_result && !Individual)
-		application->resources.images_changed = true;
-
+	m_noAlpha = noAlphaChannel;
+	DoModal();
 	return m_result;
 }
 
+INT_PTR CImageEditorDlg::EditImage(CImageResource* image, CApplication* pApp)
+{	
+	m_animation_frame_index = 0;
+
+	m_Animation = false;
+	m_sourceImages.push_back(image);
+	m_pMyImage = &image->bitmap;
+	if(!m_pMyImage)
+		return false; 
+	CopyNeededDataFromImages();
+
+	DoModal();
+
+	if(m_result)
+	{
+		CopyNeededDataToImages();
+		application->resources.images_changed = true;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 INT_PTR CImageEditorDlg::EditAnimation(int animation_id, int index, CApplication* pApp)
-{
-	
-	m_animation_index = index;
+{	
 	CAnimation* anim = pApp->resources.FindAnimationFromNumber(animation_id);
 	if(!anim)
 		return 0;
+
+	if(!anim->m_Images.size()) // there should be at least 1 image
+		return 0;
 	
-	if(anim->m_Images.size() <= index)
-		return 0;
+	if(anim->m_Images.size() <= index) // fix wrong index's
+		index = 0;
 	if(index < 0)
-		return 0;
+		index = 0;
+
+	m_animation_frame_index = index;
 
 	m_Animation = true;
 	for(int i = 0; i < anim->m_Images.size(); i++)
@@ -601,7 +750,6 @@ INT_PTR CImageEditorDlg::EditAnimation(int animation_id, int index, CApplication
 	{
 		return false;
 	}
-	
 }
 
 void CImageEditorDlg::OnClose() 
@@ -632,24 +780,29 @@ void CImageEditorDlg::OnClose()
 			m_result = true;
 
 			if(m_Animation)
-				 m_pXDVView->m_PicEd.Save(&
-					 m_newImages[ m_sourceImages.at(m_animation_index) ] );
+			{
+				SaveImageInternally(false);
+			}
 			else
 			{
-				m_pXDVView->m_PicEd.Save(m_pMyImage);
+				SaveImageInternally(false);
 
-				if(m_sourceImages.size() == 0)
+
+				if(m_sourceImages.size() == 0) // If theres no source image its an icon.
 				{
-					for(int x = 0; x < m_pMyImage->GetWidth(); x++)
+					if(m_noAlpha) // we have requested for there to be no alpha channel so flatten it against a white background
 					{
-						for( int y = 0; y < m_pMyImage->GetHeight(); y++)
+						for(int x = 0; x < m_pMyImage->GetWidth(); x++)
 						{
-							RGBQUAD c = m_pMyImage->GetPixelColor(x, y, true);
-							c.rgbRed += (255-c.rgbReserved);
-							c.rgbGreen += (255-c.rgbReserved);
-							c.rgbBlue += (255-c.rgbReserved);
-							c.rgbReserved = 255;
-							m_pMyImage->SetPixelColor(x,y,c,true);
+							for( int y = 0; y < m_pMyImage->GetHeight(); y++)
+							{
+								RGBQUAD c = m_pMyImage->GetPixelColor(x, y, true);
+								c.rgbRed += (255-c.rgbReserved);
+								c.rgbGreen += (255-c.rgbReserved);
+								c.rgbBlue += (255-c.rgbReserved);
+								c.rgbReserved = 255;
+								m_pMyImage->SetPixelColor(x,y,c,true);
+							}
 						}
 					}
 				}
@@ -929,6 +1082,10 @@ BOOL CImageEditorDlg::PreTranslateMessage(MSG* pMsg)
 
 void CImageEditorDlg::CopyNeededDataFromImages()
 {
+
+	// Images and Collisions are read from the source and copied if they are modified. We just copying all
+	// the hotspots and action points because it makes the code a lot easier
+
 	for(vector<CImageResource*>::iterator i = m_sourceImages.begin(); i!= m_sourceImages.end(); i++)
 	{
 		m_newHotspots[*i] = (*i)->m_Hotspot;
@@ -944,6 +1101,8 @@ void CImageEditorDlg::CopyNeededDataFromImages()
 void CImageEditorDlg::CopyNeededDataToImages()
 {
 	// This assumes that all went okay, and we want to copy our data back again
+	
+	// Copy the images
 	{
 		for(map<CImageResource*, CxImage>::iterator i = m_newImages.begin(); i!= m_newImages.end(); i++)
 		{
@@ -961,6 +1120,17 @@ void CImageEditorDlg::CopyNeededDataToImages()
 
 		}
 	}
+
+	// Copy the collisions.
+	{
+		for(map<CImageResource*, CxImage>::iterator i = m_newCollision.begin(); i!= m_newCollision.end(); i++)
+		{
+			// Copy image over
+			i->first->m_Collision = i->second;
+		}
+	}
+
+
 	// Copy over hotspots
 	{
 		for(map<CImageResource*, CPoint>::iterator i = m_newHotspots.begin(); i!= m_newHotspots.end(); i++)
@@ -1089,7 +1259,7 @@ void CImageEditorDlg::CropAll()
 {
 	for(int a = 0; a < m_sourceImages.size(); a++)
 	{
-		if(a == m_animation_index)
+		if(a == m_animation_frame_index)
 			continue;
 		CImageResource* img = m_sourceImages.at(a);
 
@@ -1109,28 +1279,34 @@ void CImageEditorDlg::CropAll()
 		// we are after...we just need to make sure we dont forget to change the value back!
 
 		CPictureEditor* pEd = &m_pXDVView->m_PicEd;
-		int backup = m_animation_index;
-		m_animation_index = a;
+		int backup = m_animation_frame_index;
+		m_animation_frame_index = a;
 
 		CRect crop = CropImage(*image, !(GetKeyState(VK_SHIFT)>>2));
 
-		CPoint& hotspot = pEd->GetHotspot();
-		hotspot.x -= crop.left;
-		hotspot.y -= crop.bottom;
-
-		map<CString, CPoint>& actions = pEd->GetAction();
-
-		for( map<CString, CPoint>::iterator it = actions.begin(); it != actions.end(); it++)
+		CPoint* hotspot = pEd->GetHotspot();
+		if(hotspot)
 		{
-			CPoint& action = it->second;
-			action.x -= crop.left;
-			action.y -= crop.bottom;
+			hotspot->x -= crop.left;
+			hotspot->y -= crop.bottom;
 		}
 
+
+		map<CString, CPoint>* actions = pEd->GetAction();
+
+		if(actions)
+		{
+			for( map<CString, CPoint>::iterator it = actions->begin(); it != actions->end(); it++)
+			{
+				CPoint& action = it->second;
+				action.x -= crop.left;
+				action.y -= crop.bottom;
+			}
+		}
 	
 				
 		// Revert the animation index back
-		m_animation_index = backup;
+		m_animation_frame_index = backup;
 	}
 
 

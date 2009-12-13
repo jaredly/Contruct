@@ -341,6 +341,11 @@ void CPictureEditor::Render()
 	// draw the outside bo for the texture
 	display->Box(Offset.cx - 1, Offset.cy - 1, BlitWidth + 2, BlitHeight + 2, 0xff000000);
 
+	if(bEditingCollision)
+	{
+		display->Box(Offset.cx - 2, Offset.cy - 2, BlitWidth + 4, BlitHeight + 4, 0xffff0000); // red outline
+	}
+
 	// if we're drawing a grid, whack that in too
 	if (grid)
 	{
@@ -671,17 +676,22 @@ void CPictureEditor::OnEditCrop()
 		CRect crop = CropImage(picture, (GetKeyState(VK_SHIFT)>>4));
 		//Save(&picture);
 
-		CPoint& hotspot = GetHotspot();
-		hotspot.x -= crop.left;
-		hotspot.y -= crop.bottom;
-
-		map<CString, CPoint>& actions = GetAction();
-
-		for( map<CString, CPoint>::iterator it = actions.begin(); it != actions.end(); it++)
+		CPoint* hotspot = GetHotspot();
+		if(hotspot)
 		{
-			CPoint& action = it->second;
-			action.x -= crop.left;
-			action.y -= crop.bottom;
+			hotspot->x -= crop.left;
+			hotspot->y -= crop.bottom;
+		}
+
+		map<CString, CPoint>* actions = GetAction();
+		if(actions)
+		{
+			for( map<CString, CPoint>::iterator it = actions->begin(); it != actions->end(); it++)
+			{
+				CPoint& action = it->second;
+				action.x -= crop.left;
+				action.y -= crop.bottom;
+			}
 		}
 		
 		// We need to crop each side. 
@@ -3331,9 +3341,12 @@ void CHotspotTool::OnMouseDown(CFloatPoint pt)
 void CHotspotTool::OnMouseUp(CFloatPoint pt)
 {
 	CTool::OnMouseUp(pt);
-	PicEd->GetHotspot().x = hotspot.x;
-	PicEd->GetHotspot().y = hotspot.y;
-
+	CPoint* image_hotspot = PicEd->GetHotspot(); 
+	if(image_hotspot)
+	{
+		image_hotspot->x = hotspot.x;
+		image_hotspot->y = hotspot.y;
+	}
 	UpdateDisplayOffset();
 }
 
@@ -3366,8 +3379,13 @@ void CHotspotTool::OnKeyDown(long key)
 	}
 	if(update)
 	{
-		PicEd->GetHotspot().x = hotspot.x;
-		PicEd->GetHotspot().y = hotspot.y;
+		CPoint* saved_hotspot = PicEd->GetHotspot();
+		if(saved_hotspot)
+		{
+			saved_hotspot->x = hotspot.x;
+			saved_hotspot->y = hotspot.y;
+		}
+
 		PicEd->m_modded = true;
 		UpdateDisplayOffset();
 		PicEd->m_pImageEditor->Invalidate();
@@ -3376,9 +3394,11 @@ void CHotspotTool::OnKeyDown(long key)
 
 void CHotspotTool::Modify()
 {
-	hotspot.x = PicEd->GetHotspot().x;
-	hotspot.y = PicEd->GetHotspot().y;
-
+	if( PicEd->GetHotspot() )
+	{
+		hotspot.x = PicEd->GetHotspot()->x;
+		hotspot.y = PicEd->GetHotspot()->y;
+	}
 	UpdateDisplayOffset();
 }
 void CHotspotTool::UpdateDisplayOffset()
@@ -3388,8 +3408,12 @@ void CHotspotTool::UpdateDisplayOffset()
 }
 void CHotspotTool::Cancel()
 {
-	hotspot.x = PicEd->GetHotspot().x;
-	hotspot.y = PicEd->GetHotspot().y;
+	if( PicEd->GetHotspot() )
+	{
+		hotspot.x = PicEd->GetHotspot()->x;
+		hotspot.y = PicEd->GetHotspot()->y;
+	}
+
 }
 ////////////////////////////
 ////
@@ -3451,10 +3475,10 @@ void CActionTool::OnMouseUp(CFloatPoint pt)
 	CString action;
 	this->PicEd->m_pImageEditor->m_pImgEdDlg->m_Tool_Settings.m_ActionPointCombo.GetWindowText(action);
 	
-	if(action!= "")
+	if(action!= "" && PicEd->GetAction())
 	{
-		PicEd->GetAction()[action].x = hotspot.x;
-		PicEd->GetAction()[action].y = hotspot.y;
+		(*PicEd->GetAction())[action].x = hotspot.x;
+		(*PicEd->GetAction())[action].y = hotspot.y;
 	}
 }
 
@@ -3471,12 +3495,12 @@ void CActionTool::Modify()
 	CString action;
 	this->PicEd->m_pImageEditor->m_pImgEdDlg->m_Tool_Settings.m_ActionPointCombo.GetWindowText(action);
 	
-	if(action!="")
+	if(action!="" && PicEd->GetAction())
 	{
-		if(PicEd->GetAction().find(action) != PicEd->GetAction().end())
+		if(PicEd->GetAction()->find(action) != PicEd->GetAction()->end())
 		{
-			hotspot.x = PicEd->GetAction()[action].x;
-			hotspot.y = PicEd->GetAction()[action].y;
+			hotspot.x = (*PicEd->GetAction())[action].x;
+			hotspot.y = (*PicEd->GetAction())[action].y;
 		}
 	}
 
@@ -3999,27 +4023,26 @@ void CShapeTool::Render()
 	
 }
 
-CPoint g_cpoint_0_0(0, 0);
-map<CString, CPoint> g_apoint;
 
-CPoint& CPictureEditor::GetHotspot()
+
+CPoint* CPictureEditor::GetHotspot()
 {
 	CImageEditorDlg* dlg = m_pImageEditor->m_pImgEdDlg;
 
 	if (dlg->m_sourceImages.size() > 0)
-		return dlg->m_newHotspots[ dlg->m_sourceImages.at(dlg->m_animation_index) ];		
-	else
-		return g_cpoint_0_0;
+		return &dlg->m_newHotspots[ dlg->m_sourceImages.at(dlg->m_animation_frame_index) ];
+	
+	return NULL;
 }
 
-map<CString, CPoint>& CPictureEditor::GetAction()
+map<CString, CPoint>* CPictureEditor::GetAction()
 {
 	CImageEditorDlg* dlg = m_pImageEditor->m_pImgEdDlg;
 
 	if (dlg->m_sourceImages.size() > 0)
-		return dlg->m_newAction[ dlg->m_sourceImages.at(dlg->m_animation_index) ];	
-	else
-		return g_apoint;
+		return &dlg->m_newAction[ dlg->m_sourceImages.at(dlg->m_animation_frame_index) ];	
+	
+	return NULL;
 }
 
 //////////ZOOM
@@ -4157,4 +4180,9 @@ CPictureEditor::~CPictureEditor()
 		display->SetSamplerState(D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
 		break;
 	}
+}
+
+void CPictureEditor::SetEditCollision( bool val )
+{
+	bEditingCollision = val;
 }
