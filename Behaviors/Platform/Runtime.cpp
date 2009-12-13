@@ -396,6 +396,23 @@ void ExtObject::CheckForPlatformsVertically()
 	pLink->info.y = oldy;
 }
 
+
+bool sameSign(float a, float b)
+{
+	if(a < 0 && b < 0)
+		return true;
+	if(b >= 0 && b >= 0)
+		return true;
+	return false;
+}
+
+int signOf(float a)
+{
+	if(a < 0)
+		return -1;
+	return 1;
+}
+
 // Called every frame, before the events and after drawing, for you to update your object if necessary
 // Return 1 (do not call again) or 0 (continue calling)
 BOOL ExtObject::OnFrame()
@@ -782,14 +799,14 @@ BOOL ExtObject::OnFrame()
 	// Control
 
 	// First modify object
-	bool left = false, right = false, jump = false, curjump = false;
+	bool jump = false, curjump = false;
+	float leftright = 0;
 
 	if (!ignoringInput) {
-		left = vk_left > 0.5;
-		right = vk_right > 0.5;
+		leftright = vk_right - vk_left;
 
 		if(inv)
-			swap(left,right);
+			leftright *= -1;
 
 		// Prevent bunnyhop-jumping unless bunnyhop bool is true
 		curjump = vk_jump > 0.5;
@@ -802,31 +819,12 @@ BOOL ExtObject::OnFrame()
 		if(please_dont_jump)
 			jump = false;
 		
-
-		// Cannot hold both keys
-		if (right && left) {
-			left = false;
-			right = false;
-		}
 	}
-
-	bool canMoveLeft = false;
-	bool canMoveRight = false;
 
 	if (GetFocus() != pRuntime->GetFrameHwnd(pLink->pLayout)) {
-		left = right = jump = false;
+		leftright = 0;
+		jump = false;
 	}
-
-
-
-
-
-	if (speedh <= 0)
-		canMoveLeft = CanMoveLeft();
-	if (speedh >= 0)
-		canMoveRight = CanMoveRight();
-
-
 
 
 
@@ -834,19 +832,16 @@ BOOL ExtObject::OnFrame()
 	float maxspeed = max_floor_speed;
 	float acc = floor_acc;
 	float dec = floor_dec;
-	acc += dec;
-	
 
 	if (!onFloor)
 	{
 		maxspeed = max_air_speed;
 		acc = air_acc;
 		dec = air_dec;
-		acc += dec;
 
 		float gravity = 0;
 		
-		if(dy < 0) // jumping
+		if(speedv < 0) // jumping
 		{
 			if(jump_sustain > 0 && pRuntime->GetLayoutClock(pLayout) - lastjump <= jump_sustain)
 				gravity = grav_jump_sustain;
@@ -862,147 +857,90 @@ BOOL ExtObject::OnFrame()
 		dx += gravity * timedelta * cosga;
 	}
 
-	if(speedh < -maxspeed)
-		left = false;
-	if(speedh > maxspeed)
-		right = false;
+	//-----------------------------------------------------------------------
+	//     WORK OUT HOW WE ARE GOING TO ACCELERATE
+	//-----------------------------------------------------------------------
+	// Okay at this point acc and dec represent acceleration and deceleration
+	speedh = dy * cosga + dx * singa;
+	
+	if (speedh <= 0)
+		if(!CanMoveLeft())
+			leftright = max(leftright, 0);
+	if (speedh >= 0)
+		if(!CanMoveRight())
+			leftright = min(leftright, 0);
 
+	bool sameDirection = sameSign(speedh, leftright);
 
+	if(sameDirection) // this stops the player going faster then their maximum speed. If they are using a gamepad it controls the speed as well
+	{
+		float speedratio = 0;
+		if(maxspeed)
+			speedratio = abs(speedh / maxspeed);
+
+		if( abs(leftright) <= speedratio) // speed ratio will be bigger than 1 if its over the maxspeed
+			leftright = 0;
+	}
+
+	bool isAccelerating = (leftright != 0);
+
+	// Okay heres the tricky part... we need to multiply dec and acc by timedelta.
+	dec *= timedelta;
+	acc *= timedelta;
+
+	if(dec < 0) // lower than 0 means instant so we do it after timedelta!
+		dec = abs(maxspeed);
+	if(acc < 0) // lower than 0 means instant so we do it after timedelta!
+		acc = abs(maxspeed);
+
+	// deceleration can never be more then the speed
+	if( abs(dec) > abs(speedh) )
+	{
+		dec = abs(speedh);
+	}
 
 	// Handle left/right movement
+	if( sameDirection && isAccelerating)
+	{
+		if( leftright < 0) // left
+		{
+			acc *= -1; //accelerate to the left
+		}
+	}
+	else
+	{
+		// We are going in the opposite direction
+		if( isAccelerating )
+		{
+			acc = max(acc, dec);
+		}
+		else
+			acc = dec;
+
+		// now make the acceleration be in the opposite direction
+		if(speedh >= 0) // right
+			acc *= -1; //accelerate opposite		
+	}
+
+	//-----------------------------------------------------------------------
+	//     Okay awesome
+	//-----------------------------------------------------------------------
+	if(autochangeangle)
+	{
+		if(leftright < 0)
+			pLink->info.angle = 180;
+		else
+			pLink->info.angle = 0;
+	}
 	
-		if (left) 
-		{
-			if(autochangeangle)
-				pLink->info.angle = 180;
+	// FINALLY - Now apply the acceleration
+		
+	dx += acc * singa;
+	dy -= acc * cosga;
 
-			if (acc < 0){
-				if(singa)
-					dx = -maxspeed * singa;
-				if(cosga)
-					dy = maxspeed * cosga;
-			}
-			else {
-				dx -= acc * timedelta * singa;
-				dy += acc * timedelta * cosga;
-
-				if(singa && dx * singa < -maxspeed)
-					dx = -maxspeed * singa;
-				if(cosga && dy * cosga > maxspeed)
-					dy = maxspeed * cosga;				
+			
 					
-			}
-		}
-		if (right) {
-			if(autochangeangle)
-				pLink->info.angle = 0;
-
-			if (acc < 0){
-				if(singa)
-					dx = maxspeed * singa;
-				if(cosga)
-					dy = -maxspeed * cosga;
-			}
-			else {
-				dx += acc * timedelta * singa;
-				dy -= acc * timedelta * cosga;
-
-				if(singa && dx * singa > maxspeed)
-					dx = maxspeed * singa;
-				if(cosga && dy * cosga < -maxspeed)
-					dy = -maxspeed * cosga;						
-			}
-		}
-
-		// decelerate
-		if(singa > 0)
-		{
-			if (dx > 0 && !right) {
-				if (dec < 0)
-					dx = 0;
-				else
-				{
-					dx -= dec * timedelta;
-					if (dx < 0) 
-						dx = 0;
-				}
-			}
-			else if (dx < 0 && !left) {
-				if (dec < 0)
-					dx = 0;
-				else {
-					dx += dec * timedelta;
-					if (dx > 0) 
-						dx = 0;
-				}
-			}
-		}
-		if(singa < 0)
-		{
-			if (dx > 0 && !left) {
-				if (dec < 0)
-					dx = 0;
-				else
-				{
-					dx -= dec * timedelta;
-					if (dx < 0) 
-						dx = 0;
-				}
-			}
-			else if (dx < 0 && !right) {
-				if (dec < 0)
-					dx = 0;
-				else {
-					dx += dec * timedelta;
-					if (dx > 0) 
-						dx = 0;
-				}
-			}
-		}
-		if(cosga < 0)
-		{
-			if (dy > 0 && !right) {
-				if (dec < 0)
-					dy = 0;
-				else
-				{
-					dy -= dec * timedelta;
-					if (dy < 0) 
-						dy = 0;
-				}
-			}
-			else if (dy < 0 && !left) {
-				if (dec < 0)
-					dy = 0;
-				else {
-					dy += dec * timedelta;
-					if (dy > 0) 
-						dy = 0;
-				}
-			}
-		}
-		if(cosga > 0)
-		{
-			if (dy > 0 && !left) {
-				if (dec < 0)
-					dy = 0;
-				else
-				{
-					dy -= dec * timedelta;
-					if (dy < 0) 
-						dy = 0;
-				}
-			}
-			else if (dy < 0 && !right) {
-				if (dec < 0)
-					dy = 0;
-				else {
-					dy += dec * timedelta;
-					if (dy > 0) 
-						dy = 0;
-				}
-			}
-		}
+	//---------------------------------------------------------------------------------
 
 
 

@@ -79,7 +79,7 @@ EditExt::EditExt(VEditTime* pVEditTime, editInfo* pEInfo)
 	player = 0;
 	
 
-	autochangeangle = true;
+	autochangeangle = false;
 }
 
 // Destructor: when your object is deleted or the application closed:
