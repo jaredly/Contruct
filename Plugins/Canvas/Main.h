@@ -112,8 +112,7 @@ public:
 	bool textureChanged;
 	bool generateMask;
 
-
-	// TEMP PATHFINDING DEBUG STUFF
+	// debug stuff
 	bool pfdebug;
 	list<CPoint>* pWaypoints;
 	int pfcellW;

@@ -170,7 +170,7 @@ void ExtObject::PerformDrawingQueue()
 		renderer->ClearRenderTarget();
 		renderer->SetTexture(startTexture);
 		renderer->SetScreenTranslation(true);		// disable scroll offset, has to draw to 0,0
-		renderer->Quad_xy(0, 0);
+		renderer->Quad_xywh(0, 0, info.curTexture->image_widthf, info.curTexture->image_heightf);
 		renderer->SetScreenTranslation(false);		// enable scroll offset
 		renderer->RestoreRenderTarget();
 	}
