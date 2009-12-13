@@ -111,21 +111,7 @@ long ExtObject::aSetDebuggingPf(LPVAL params)
 
 long ExtObject::aPasteObject(LPVAL params)
 {
-	if (!drawQueue.empty()) {
-		renderer->SetRenderTarget(info.curTexture);
-
-		vector<DrawCommand*>::iterator i = drawQueue.begin();
-
-		for ( ; i != drawQueue.end(); i++) {
-			(*i)->Do(this);
-			delete (*i);
-		}
-		
-		drawQueue.resize(0);
-
-		renderer->RestoreRenderTarget();
-	}
-
+	PerformDrawingQueue();
 
 	CRunObjType* pType = params[0].GetObjectParam(pRuntime);
 	int count;
@@ -176,6 +162,46 @@ long ExtObject::eGetValue(LPVAL params, ExpReturn& ret)
 	return ret.ReturnCustom(pRuntime, privateVars[params[0].GetVariableIndex(pRuntime, pType)]);
 }
 
+void ExtObject::PerformDrawingQueue()
+{
+	if (firstFrame) {
+		firstFrame = 0;
+		renderer->SetRenderTarget(info.curTexture);
+		renderer->ClearRenderTarget();
+		renderer->SetTexture(startTexture);
+		renderer->SetScreenTranslation(true);		// disable scroll offset, has to draw to 0,0
+		renderer->Quad_xy(0, 0);
+		renderer->SetScreenTranslation(false);		// enable scroll offset
+		renderer->RestoreRenderTarget();
+	}
+
+	if (!drawQueue.empty()) {
+		renderer->SetRenderTarget(info.curTexture);
+
+		vector<DrawCommand*>::iterator i = drawQueue.begin();
+
+		for ( ; i != drawQueue.end(); i++) {
+			(*i)->Do(this);
+			delete (*i);
+		}
+
+		drawQueue.resize(0);
+
+		renderer->RestoreRenderTarget();
+
+		textureChanged = true;
+	}
+}
+
+void ExtObject::GenerateCollision()
+{
+	if (textureChanged && generateMask) {
+		textureChanged = false;
+		generateMask = false;
+
+		pRuntime->GenerateCollisionMaskFromTexture(this, info.curTexture);
+	}
+}
 #endif // #ifdef RUN_ONLY
 
 //////////////////////////////////////////////////////////////////////////////////

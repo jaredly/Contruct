@@ -159,16 +159,7 @@ void ExtObject::Draw()
 	}
 
 
-	if (firstFrame) {
-		firstFrame = 0;
-		renderer->SetRenderTarget(info.curTexture);
-		renderer->ClearRenderTarget();
-		renderer->SetTexture(startTexture);
-		renderer->SetScreenTranslation(true);		// disable scroll offset, has to draw to 0,0
-		renderer->Quad_xy(0, 0);
-		renderer->SetScreenTranslation(false);		// enable scroll offset
-		renderer->RestoreRenderTarget();
-	}
+
 
 	/*
 	if (pfdebug) {
@@ -224,29 +215,10 @@ void ExtObject::Draw()
 	*/
 
 	// Render the draw queue if anything waiting
-	if (!drawQueue.empty()) {
-		renderer->SetRenderTarget(info.curTexture);
 
-		vector<DrawCommand*>::iterator i = drawQueue.begin();
+	PerformDrawingQueue();
+	GenerateCollision();
 
-		for ( ; i != drawQueue.end(); i++) {
-			(*i)->Do(this);
-			delete (*i);
-		}
-		
-		drawQueue.resize(0);
-
-		renderer->RestoreRenderTarget();
-
-		textureChanged = true;
-	}
-
-	if (textureChanged && generateMask) {
-		textureChanged = false;
-		generateMask = false;
-
-		pRuntime->GenerateCollisionMaskFromTexture(this, info.curTexture);
-	}
 
 	renderer->SetTexture(info.curTexture);
 

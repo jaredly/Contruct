@@ -49,6 +49,9 @@ public:
 	BOOL		OnFrame2();
 	// Draw: called when Construct wants you to render your object.
 	void		Draw();
+
+	void GenerateCollision();
+	void PerformDrawingQueue();
 	// WindowProc is called if your extension creates a window and calls RegisterWindow().
 	LRESULT		WindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam);
 	BOOL		PreTranslateMessage(MSG* msg);
