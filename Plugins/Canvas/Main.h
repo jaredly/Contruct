@@ -205,7 +205,7 @@ public:
 	point p1, p2;
 	cr::color c;
 	DrawLine(float _x1, float _y1, float _x2, float _y2, const cr::color& _c)
-		: p1(_x1, _x2), p2(_x2, _y2), c(_c) {}
+		: p1(_x1, _y1), p2(_x2, _y2), c(_c) {}
 
 	void Do(ExtObject* obj) {
 		obj->renderer->Line(p1, p2, c);
