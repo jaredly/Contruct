@@ -749,7 +749,7 @@ bool ExportEvent::ProcessThisEventForTrigger( ExportBlock* root, list<ExportBloc
 
 			if(getParent() && getParent() != root)
 			{
-				ExportBlock* trigger_root = createConditionOnlyEvents(root);
+				ExportBlock* trigger_root = getParent()->createConditionOnlyEvents(root);
 				trigger_root->addChildBack(newEvent);
 
 				ExportBlock* parent = trigger_root;
