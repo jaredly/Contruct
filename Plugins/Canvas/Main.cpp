@@ -124,8 +124,17 @@ long ExtObject::aPasteObject(LPVAL params)
 		CRunObject* pObj = objs[i];
 
 		OBJHEADER restore = pObj->info;
-		pObj->info.x -= info.x - info.HotSpotX;
-		pObj->info.y -= info.y - info.HotSpotY;
+
+		// unrotate
+		cr::point pos(pObj->info.x, pObj->info.y);
+		pos.rotate(cr::to_radians(-info.angle), cr::point(info.x, info.y));
+		pos -= cr::point(info.x - info.HotSpotX, info.y - info.HotSpotY);
+		
+		pObj->info.angle -= info.angle;
+
+		pObj->info.x = pos.x;
+		pObj->info.y = pos.y;
+
 		pObj->UpdateBoundingBox();
 
 		renderer->SetRenderTarget(info.curTexture);
@@ -170,7 +179,7 @@ void ExtObject::PerformDrawingQueue()
 		renderer->ClearRenderTarget();
 		renderer->SetTexture(startTexture);
 		renderer->SetScreenTranslation(true);		// disable scroll offset, has to draw to 0,0
-		renderer->Quad_xywh(0, 0, info.curTexture->image_widthf, info.curTexture->image_heightf);
+		renderer->Quad_xy(0, 0);//, info.curTexture->image_widthf, info.curTexture->image_heightf);
 		renderer->SetScreenTranslation(false);		// enable scroll offset
 		renderer->RestoreRenderTarget();
 	}
