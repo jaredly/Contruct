@@ -197,8 +197,8 @@ bool CRuntime::QueryCollision(CRunObject *a, CRunObject *b)
 		case COLLISIONMODE_FINE:
 			
 			// First check if the pixel is inside the region
-			if (!PointInsideBox(a->info.x, a->info.y, b->info.box))
-				return false;
+			//if (!PointInsideBox(a->info.x, a->info.y, b->info.box)) - IsOverlapPointInMask performs this now
+			//	return false;
 			
 			// Else use the bitmask of B to find the overlap.
 			return IsOverlapPointInMask(a->info.x, a->info.y, b);
@@ -254,8 +254,8 @@ bool CRuntime::QueryCollision(CRunObject *a, CRunObject *b)
 		case COLLISIONMODE_POINT:
 			
 			// First check the point is inside the object
-			if (!PointInsideBox(b->info.x, b->info.y, a->info.box))
-				return false;
+			//if (!PointInsideBox(b->info.x, b->info.y, a->info.box)) - IsOverlapPointInMask performs this now
+			//	return false;
 
 			// Perform a fine test
 			return IsOverlapPointInMask(b->info.x, b->info.y, a);
@@ -413,9 +413,9 @@ bool CRuntime::QueryPointCollision(int x, int y, CRunObject *obj)
 	// using bitmasks:  check one pixel from the mask
 	case COLLISIONMODE_FINE:
 		
-		// First check if the pixel is inside the region
-		if (!PointInsideBox(fx, fy, obj->info.box))
-			return false;
+		// First check if the pixel is inside the region - IsOverlapPointInMask performs this now
+		//if (!PointInsideBox(fx, fy, obj->info.box))
+		//	return false;
 		
 		// Else use the bitmask of B to find the overlap.
 		return IsOverlapPointInMask(fx, fy, obj);
@@ -920,6 +920,9 @@ bool CRuntime::IsOverlapPointInMask(int x, int y, CRunObject *obj)
 	x -= obj->info.box.left;
 	y -= obj->info.box.top;
 
+	if(x < 0 || y < 0 || x >= m->width || y >= m->height)
+		return false;
+
 	// Calculate the bit representing this pixel
 	// 0 -> high order bit, 7 -> low order bit
 	BYTE b = 1 << (7 - (x % 8));
@@ -1101,6 +1104,9 @@ int CRuntime::IsOverlapMaskInMask64MMX(CRunObject *a, CRunObject *b, CollisionMa
 		overlapA.bottom = Round(boxB.top + collB.height - boxA.top); 
 		overlapB.bottom = Round(boxB.top + collB.height - boxB.top);
 	}
+
+	if(overlapA.bottom <= overlapA.top || overlapB.bottom <= overlapB.top)
+		return false;
 
 	// A is leftmost: use preshifted mask to shunt A's bits in line to B's.
 	//A 11101110 against
