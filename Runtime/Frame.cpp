@@ -575,16 +575,10 @@ void CRunLayout::RenderEffectChain(EffectList& effects, TextureHandle sourceText
 		if (e->fx->vBoxHeight)			params.boxHeight = tbox.bottom - tbox.top;
 		if (e->fx->vHotspotX)			params.hotspotX = tbox.left + (float)(hsX) / zoomedWindowWidth;
 		if (e->fx->vHotspotY)			params.hotspotY = tbox.top + (float)(hsY) / zoomedWindowHeight;
-		/*if(y != layers.end())
-		{
-			if (e->fx->vPixelWidth)			params.pixelWidth = ((*y)->zoomXoffset * zoomX) / (float)winWidth;
-			if (e->fx->vPixelHeight)		params.pixelHeight = ((*y)->zoomYoffset * zoomY) / (float)winWidth;
-		}
-		else*/
-		{
-			if (e->fx->vPixelWidth)			params.pixelWidth = (zoomX) / (float)winWidth;
-			if (e->fx->vPixelHeight)		params.pixelHeight = (zoomY) / (float)winWidth;
-		}
+
+		if (e->fx->vPixelWidth)			params.pixelWidth = (zoomX) / (float)winWidth;
+		if (e->fx->vPixelHeight)		params.pixelHeight = (zoomY) / (float)winWidth;
+	
 
 		if (e->fx->vBgStart) {
 			// Re-purposed for scrolling
