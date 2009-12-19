@@ -24,8 +24,8 @@ Global
 		SDL_pd Release|Win32 = SDL_pd Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.App Release|Win32.ActiveCfg = DX9 Release|Win32
-		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.App Release|Win32.Build.0 = DX9 Release|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.App Release|Win32.ActiveCfg = DX9_p Release|Win32
+		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.App Release|Win32.Build.0 = DX9_p Release|Win32
 		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.App_p Debug|Win32.ActiveCfg = App_p Debug|Win32
 		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.App_p Debug|Win32.Build.0 = App_p Debug|Win32
 		{B78CD1CF-01BF-474D-A8A9-B2B910D00A2D}.App_p Release|Win32.ActiveCfg = App_p Release|Win32

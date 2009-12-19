@@ -151,57 +151,109 @@ bool ExtObject::IsOnCeiling()
 	return onFloor;
 }
 
-
-
 // Check if can move left/right by same method as IsOnFloor
 bool ExtObject::CanMoveLeft()
 {
 	if (pObstacles == NULL && pPlatforms == NULL) return true;
-	
+
+	float oldx = pLink->info.x;
+	float oldy = pLink->info.y;
+
 	float ga = RADIANS(grav_dir * 90);
 	int cosga = cos(ga)*1.5f;
 	int singa = sin(ga)*1.5f;
 
-	pLink->info.x -= singa;
-	pLink->info.y -= cosga;
-	pRuntime->UpdateBoundingBox(pLink);
-
 	//Hack - dont check platforms
 	CRunObjType* mem = pPlatforms;
 	pPlatforms = NULL;
-	bool can = IsOverlapping();
+
+
+	bool can = true;
+
+	// test left
+	pLink->info.x -= singa;
+	pLink->info.y -= cosga;
+	pRuntime->UpdateBoundingBox(pLink);
+	if ( IsOverlapping() )
+	{
+		// test up a pixel
+		pLink->info.x -= cosga;
+		pLink->info.y -= singa;
+		pRuntime->UpdateBoundingBox(pLink);
+	
+		if ( IsOverlapping() )
+		{
+			// test up a pixel
+			pLink->info.x -= cosga;
+			pLink->info.y -= singa;
+			pRuntime->UpdateBoundingBox(pLink);
+		
+			if ( IsOverlapping() )
+			{
+				can = false;
+			}
+		}
+	}
+
 	pPlatforms = mem;
 
-	pLink->info.x += singa;
-	pLink->info.y += cosga;
+	pLink->info.x = oldx;
+	pLink->info.y = oldy;
 	pRuntime->UpdateBoundingBox(pLink);
 
-	return !can;
+	return can;
 }
 
 bool ExtObject::CanMoveRight()
 {
 	if (pObstacles == NULL && pPlatforms == NULL) return true;
 
+	float oldx = pLink->info.x;
+	float oldy = pLink->info.y;
+
 	float ga = RADIANS(grav_dir * 90);
 	int cosga = cos(ga)*1.5f;
 	int singa = sin(ga)*1.5f;
 
-	pLink->info.x += singa;
-	pLink->info.y += cosga;
-	pRuntime->UpdateBoundingBox(pLink);
-
 	//Hack - dont check platforms
 	CRunObjType* mem = pPlatforms;
 	pPlatforms = NULL;
-	bool can = IsOverlapping();
+
+
+	bool can = true;
+
+	// test right
+	pLink->info.x += singa;
+	pLink->info.y += cosga;
+	pRuntime->UpdateBoundingBox(pLink);
+	if ( IsOverlapping() )
+	{
+		// test up a pixel
+		pLink->info.x -= cosga;
+		pLink->info.y -= singa;
+		pRuntime->UpdateBoundingBox(pLink);
+
+		if ( IsOverlapping() )
+		{
+			// test up a pixel
+			pLink->info.x -= cosga;
+			pLink->info.y -= singa;
+			pRuntime->UpdateBoundingBox(pLink);
+
+			if ( IsOverlapping() )
+			{
+				can = false;
+			}
+		}
+	}
+
 	pPlatforms = mem;
 
-	pLink->info.x -= singa;
-	pLink->info.y -= cosga;
+	pLink->info.x = oldx;
+	pLink->info.y = oldy;
 	pRuntime->UpdateBoundingBox(pLink);
 
-	return !can;
+	return can;
 }
 
 bool ExtObject::OverlapTest(CRunObject* pObj)

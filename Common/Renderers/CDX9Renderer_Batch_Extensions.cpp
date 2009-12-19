@@ -52,6 +52,9 @@ namespace cr {
 			pEffect->SetFloat(i->handle, i->value);
 
 		pEffect->Begin(NULL, 0);
+
+		// The destructor is never called, and the vector allocates dynamic memory...so we need to clear the vector
+		params.customParams.~vector();
 	}
 
 	void CBatchX_FX_BeginPass::Do()
@@ -67,5 +70,7 @@ namespace cr {
 	void CBatchX_FX_End::Do()
 	{
 		fx->End();
+
+		
 	}
 }
