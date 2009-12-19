@@ -29,20 +29,26 @@ public:
 	CString Name;
 };
 
+
 //-----------------------------------------
 
 class ExportAction
 {
 public:
-	ExportAction(int oid, int mid, int actid, ParamVector* params);
+	ExportAction(int oid, int mid, int actid, bool delay, ParamVector* params);
 
 	void Export(CExport* exporter);
+	bool isDelay();
+
+	int getOid(){return oid;}
+
+	const ParamVector* getParams(){return params;}
 
 private:
 	int oid;
 	int mid;
 	int actid;
-
+	bool delay;
 	ParamVector* params;
 };
 
@@ -51,16 +57,25 @@ private:
 class ExportCondition
 {
 public:
-	ExportCondition(int oid, int mid, int cndid, bool negated, bool trigger, ParamVector* params);
+	ExportCondition(int oid, int mid, int cndid, bool negated, bool trigger, bool waituntil, bool delay, ParamVector* params);
 
 	void Export(CExport* exporter);
 	bool isTrigger();
+	bool isWaitUntil();
+	bool isDelay();
+
+	int getOid(){return oid;}
+
+	const ParamVector* getParams(){return params;}
+
 private:
 	int oid;
 	int mid;
 	int cndid;
 	bool negated;
 	bool trigger;
+	bool waituntil;
+	bool delay;
 	ParamVector* params;
 };
 
@@ -95,7 +110,12 @@ public:
 public:
 	virtual void ProcessEventsTriggers(ExportBlock* root, list<ExportBlock*>& append);
 	virtual bool ProcessThisEventForTrigger(ExportBlock* root, list<ExportBlock*>& append);
+
+	virtual void ProcessWaitCommands(ExportBlock* root, list<ExportBlock*>& append, CExport* exporter);
+
 	virtual ExportBlock* createConditionOnlyEvents(ExportBlock* other);
+
+	void MoveBlockAndNextSiblingsToNewParent(ExportBlock* newEvent);
 
 private:
 	ExportBlock* next;
@@ -103,7 +123,6 @@ private:
 	ExportBlock* parent; 
 	ExportBlock* first_child;
 	ExportBlock* last_child;
-
 };
 
 //--------------------------
@@ -122,6 +141,8 @@ public:
 	void RemoveAllTriggers();
 	virtual ExportBlock* createConditionOnlyEvents(ExportBlock* other);
 
+	void ProcessWaitCommands(ExportBlock* root, list<ExportBlock*>& append, CExport* exporter);
+	void ProcessWait( ExportBlock* root, list<ExportBlock*>& append, CExport* exporter);
 public:
 	list<ExportAction> actions;
 	list<ExportCondition> conditions;
@@ -168,6 +189,9 @@ private:
 class CExport
 {
 public:
+	CExport();
+
+
 	int						m_TriggerDepth;
 	int						m_EventSheetNumber;
 
@@ -262,9 +286,19 @@ public:
 
 	void ProcessEventsElse(ExportBlock* root);
 	void ProcessEventsTriggers(ExportBlock* root);
+	void ProcessEventsWait( ExportBlock* root );
 	void ExportEvents(ExportBlock* root);
 
 	int ConvertMID(int mid, int oid);
+
+	list<CEditorParam> extra_params;
+	list<ParamVector> extra_paramVectors;
+	int activateID;
+
+	bool isWaitUntilCnd(int cndID, int oid);
+	bool isDelayCnd(int cndID, int oid);
+	bool isDelayAct(int actID, int oid);
+	map<int, CString> oidToFilename;
 };
 
 

@@ -255,7 +255,9 @@ void CExport::AddEvent(CEditorEvent* curevent, ExportBlock* root, int current_sh
 				CEditorCondition* cnd = *c;
 				if( cnd->Valid(application) && cnd->m_bEnabled && curevent->m_bEnabled)
 				{
-					e_event->conditions.push_back(ExportCondition(cnd->oid, cnd->mid, cnd->cndID, cnd->m_Negate, cnd->IsTrigger(application), &cnd->params ));
+					bool waituntil = isWaitUntilCnd(cnd->cndID, cnd->oid);
+					bool delay = isDelayCnd(cnd->cndID, cnd->oid);
+					e_event->conditions.push_back(ExportCondition(cnd->oid, cnd->mid, cnd->cndID, cnd->m_Negate, cnd->IsTrigger(application), waituntil, delay, &cnd->params ));
 				}
 			}
 
@@ -265,7 +267,8 @@ void CExport::AddEvent(CEditorEvent* curevent, ExportBlock* root, int current_sh
 				CEditorAction* act = *a;
 				if( act->Valid(application) && act->m_bEnabled && curevent->m_bEnabled)
 				{
-					e_event->actions.push_back(ExportAction(act->oid, act->mid, act->actID, &act->params ));
+					bool delay = isDelayAct(act->actID, act->oid);
+					e_event->actions.push_back(ExportAction(act->oid, act->mid, act->actID, delay, &act->params ));
 				}
 			}
 		}
@@ -283,6 +286,26 @@ void CExport::AddEvent(CEditorEvent* curevent, ExportBlock* root, int current_sh
 // Generate events
 void CExport::GenerateEvents()
 {
+
+	// Find all the object types and their filenames
+	CObjType* type;
+	long key;
+
+	POSITION position = application->object_types.GetStartPosition();
+
+	while (position != NULL)
+	{
+		application->object_types.GetNextAssoc(position, key, type);
+
+		int oid = type->ObjectIdentifier;
+		OINFO* info = GetOINFO(type->DLLIndex);
+		CString filename = info->extFileName;
+
+		oidToFilename[oid] = filename;
+	}
+
+	// ----------
+
 	// Tell the runtime how many event sheets we have and their names
 	eventBlock << application->event_sheets.size();
 
@@ -316,6 +339,7 @@ void CExport::GenerateEvents()
 		}
 
 		ProcessEventsElse(&root);
+		ProcessEventsWait(&root);
 		ProcessEventsTriggers(&root);
 		ExportEvents(&root);
 
@@ -332,6 +356,19 @@ void CExport::ExportEvents( ExportBlock* root )
 void CExport::ProcessEventsElse( ExportBlock* root )
 {
 
+}
+
+void CExport::ProcessEventsWait( ExportBlock* root )
+{
+	list<ExportBlock*> append;
+	if(root->getFirstChild())
+		root->getFirstChild()->ProcessWaitCommands(root, append, this);
+
+	list<ExportBlock*>::iterator e = append.begin();
+	for( ; e!= append.end(); e++)
+	{
+		root->addChildBack(*e);
+	}
 }
 
 void CExport::ProcessEventsTriggers( ExportBlock* root )
@@ -827,12 +864,13 @@ void ExportEvent::RemoveAllTriggers()
 
 //-------------------------------------------------
 
-ExportAction::ExportAction( int oid, int mid, int actid, ParamVector* params )
+ExportAction::ExportAction( int oid, int mid, int actid, bool delay, ParamVector* params )
 {
 	this->oid = oid;
 	this->mid = mid;
 	this->actid = actid;
 	this->params = params;
+	this->delay = delay;
 }
 
 void ExportAction::Export( CExport* exporter )
@@ -867,7 +905,7 @@ void ExportAction::Export( CExport* exporter )
 
 //-------------------------------------------------
 
-ExportCondition::ExportCondition( int oid, int mid, int cndid, bool negated, bool trigger, ParamVector* params )
+ExportCondition::ExportCondition(int oid, int mid, int cndid, bool negated, bool trigger, bool waituntil, bool delay, ParamVector* params)
 {
 	this->oid = oid;
 	this->mid = mid;
@@ -875,6 +913,8 @@ ExportCondition::ExportCondition( int oid, int mid, int cndid, bool negated, boo
 	this->negated = negated;
 	this->params = params;
 	this->trigger = trigger;
+	this->waituntil = waituntil;
+	this->delay = delay;
 }
 
 void ExportCondition::Export( CExport* exporter )
@@ -913,4 +953,16 @@ bool ExportCondition::isTrigger()
 {
 	return trigger;
 }
+
+bool ExportCondition::isWaitUntil()
+{
+	return waituntil;
+}
+
+bool ExportCondition::isDelay()
+{
+	return delay;
+}
+
+
 //-------------------------------------------------

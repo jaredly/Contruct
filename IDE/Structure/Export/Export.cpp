@@ -606,3 +606,204 @@ void CExport::DoExport(bool previewMode, const CString& pathName, bool bApp, int
 	// Now we're done
 	ProgressDlg.SetProgress(100);
 }
+
+bool CExport::isWaitUntilCnd( int cndID, int oid )
+{
+	if(oidToFilename[oid] == "Wait.csx")
+	{
+		return cndID == 255 + 0;
+	}
+	return false;
+}
+
+bool CExport::isDelayCnd( int cndID, int oid )
+{
+	if(oidToFilename[oid] == "Wait.csx")
+	{
+		return cndID == 255 + 1;
+	}
+	return false;
+}
+
+bool CExport::isDelayAct( int actID, int oid )
+{
+	if(oidToFilename[oid] == "Wait.csx")
+	{
+		return actID == 255 + 0;
+	}
+	return false;
+}
+
+CExport::CExport()
+{
+	activateID = 0;
+}
+// -------------------------
+void ExportBlock::MoveBlockAndNextSiblingsToNewParent( ExportBlock* newParent )
+{
+	if(getNext())
+		getNext()->MoveBlockAndNextSiblingsToNewParent(newParent);
+	detach();
+	newParent->addChildFront(this);
+}
+
+void ExportBlock::ProcessWaitCommands( ExportBlock* root, list<ExportBlock*>& append, CExport* exporter )
+{	
+	if(getFirstChild())
+		getFirstChild()->ProcessWaitCommands(root, append, exporter);
+	
+	if(getNext())
+		getNext()->ProcessWaitCommands(root, append, exporter);
+}
+
+void ExportEvent::ProcessWaitCommands( ExportBlock* root, list<ExportBlock*>& append, CExport* exporter )
+{
+	ProcessWait(root, append, exporter);	
+	ExportBlock::ProcessWaitCommands(root, append, exporter);
+}
+
+
+CEditorParam* buildIntegerParam(CExport* exporter, int integer )
+{
+	exporter->extra_params.push_back(CEditorParam());
+	CEditorParam* param = &exporter->extra_params.back();
+	param->ttokens.push_back(Token());
+	Token* tok = &param->ttokens.back();
+	tok->t = T_INTEGER;
+	tok->str.Format("%d", integer);
+
+	return param;
+}
+
+
+ParamVector* buildIntegerParams(CExport* exporter, int integer)
+{
+	exporter->extra_paramVectors.push_back(ParamVector());
+	ParamVector* vec = &exporter->extra_paramVectors.back();
+	vec->push_back(buildIntegerParam(exporter, integer));
+	return vec;
+}
+
+
+ParamVector* addIntegerAtStartParams(CExport* exporter, int integer, const ParamVector* v)
+{
+	exporter->extra_paramVectors.push_back(ParamVector());
+	ParamVector* vec = &exporter->extra_paramVectors.back();
+	*vec = *v; // copy all contents
+	vec->insert(vec->begin(), buildIntegerParam(exporter, integer));
+	return vec;
+}
+
+void ExportEvent::ProcessWait( ExportBlock* root, list<ExportBlock*>& append, CExport* exporter )
+{
+	// activates
+	const int actid_activate_wait_delay = 255 + 1;
+	const int actid_activate_wait_until = 255 + 2;
+	const int actid_deactivate_wait_until = 255 + 3;
+
+	const int cndid_is_activated_wait_until = 255 + 2;
+	const int cndid_wait_delay_complete = 255 + 3; //trigger
+
+	list<ExportCondition>::iterator c = conditions.begin();
+	int cindex = 0;
+	for(; c != conditions.end(); c++, cindex++)
+	{
+		bool isWaitUntil = c->isWaitUntil();
+		bool isDelay = c->isDelay();
+		if(isWaitUntil || isDelay)
+		{
+			const int oid = c->getOid();
+
+			ExportEvent* newEvent = new ExportEvent(linenumber, sheetnumber);
+			append.push_back(newEvent);
+
+			const ParamVector* params = c->getParams();
+			
+			// split conditions 
+			newEvent->conditions = conditions;
+			conditions.erase(c, conditions.end());
+			list<ExportCondition>::iterator c2 = newEvent->conditions.begin();
+			advance(c2, cindex);
+			newEvent->conditions.erase(newEvent->conditions.begin(), c2);
+			newEvent->conditions.pop_front(); // remove the 'Wait until/Wait delay' condition because we are gonna replace it
+			// end move conditions
+
+			// move actions
+			newEvent->actions = actions;
+			actions.clear();
+
+			// move subevents
+			if(getFirstChild())
+				getFirstChild()->MoveBlockAndNextSiblingsToNewParent(newEvent);
+
+			if(isWaitUntil)
+			{
+				// Add activate action
+				actions.push_front(ExportAction(oid, -1, actid_activate_wait_until, false, buildIntegerParams(exporter, exporter->activateID)));
+
+				// Add onactivate condition
+				newEvent->conditions.push_front(ExportCondition(oid, -1, cndid_is_activated_wait_until, false, false, false, false, buildIntegerParams(exporter, exporter->activateID)));
+				newEvent->actions.push_front(ExportAction(oid, -1, actid_deactivate_wait_until, false, buildIntegerParams(exporter, exporter->activateID)));
+			}
+			else if(isDelay)
+			{
+				// Add activate action
+				actions.push_front(ExportAction(oid, -1, actid_activate_wait_delay, false, addIntegerAtStartParams(exporter, exporter->activateID, params)));
+
+				// Add onactivate condition
+				newEvent->conditions.push_front(ExportCondition(oid, -1, cndid_wait_delay_complete, false, false, false, false, buildIntegerParams(exporter, exporter->activateID)));			
+			}
+			
+			exporter->activateID++;
+			newEvent->ProcessWait(root, append, exporter);	
+			return;
+		}
+	}
+
+	list<ExportAction>::iterator a = actions.begin();
+	int aindex = 0;
+	for(; a != actions.end(); a++, aindex++)
+	{
+		if(a->isDelay())
+		{
+			const int oid = a->getOid();
+
+			ExportEvent* newEvent = new ExportEvent(linenumber, sheetnumber);
+			append.push_back(newEvent);
+
+			// do nothing with conditions
+
+			const ParamVector* params = a->getParams();
+			// split actions 
+			newEvent->actions = actions;
+			actions.erase(a, actions.end());
+			list<ExportAction>::iterator a2 = newEvent->actions.begin();
+			advance(a2, aindex);
+			newEvent->actions.erase(newEvent->actions.begin(), a2);
+			newEvent->actions.pop_front(); // remove the 'Wait delay' action because we are gonna replace it
+			// end move actions
+
+			// move subevents
+			if(getFirstChild())
+				getFirstChild()->MoveBlockAndNextSiblingsToNewParent(newEvent);
+
+			// Add activate action
+			actions.push_front(ExportAction(oid, -1, actid_activate_wait_delay, false, addIntegerAtStartParams(exporter, exporter->activateID, params)));
+
+			// Add onactivate condition
+			newEvent->conditions.push_front(ExportCondition(oid, -1, cndid_wait_delay_complete, false, false, false, false, buildIntegerParams(exporter, exporter->activateID)));			
+
+			exporter->activateID++;
+			newEvent->ProcessWait(root, append, exporter);	
+			return;
+		}
+	}
+
+
+
+}
+
+bool ExportAction::isDelay()
+{
+	return delay;
+}
