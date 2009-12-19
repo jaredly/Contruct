@@ -98,17 +98,23 @@ void EditExt::Draw()
 	int gutterw = pInfo->objectWidth - (cols * seam_size.cx);
 	int gutterh = pInfo->objectHeight - (rows * seam_size.cy);
 
+	RECTF uv;
+	uv.left = 0.0f;
+	uv.top = 0.0f;
+	uv.right = float(seam_size.cx) / float(size.cx);
+	uv.bottom = float(seam_size.cy) / float(size.cy);
+
 	RECTF vertuv;
 	vertuv.left = 0.0f;
 	vertuv.top = 0.0f;
-	vertuv.right = 1.0f;
+	vertuv.right = uv.right;
 	vertuv.bottom = float(gutterh) / float(size.cy);
 
 	RECTF horizuv;
 	horizuv.left = 0.0f;
 	horizuv.top = 0.0f;
 	horizuv.right = float(gutterw) / float(size.cx);
-	horizuv.bottom = 1.0f;
+	horizuv.bottom = uv.bottom;
 
 	D3DCOLOR dc = pInfo->filter; //D3D_OPACITYCOLORREF((int)(opacity * 255.0), filter);
 
@@ -119,19 +125,19 @@ void EditExt::Draw()
 
 	for (x = 0; x < cols; x++) {
 		for (y = 0; y < rows; y++)
-			pEditTime->Blitrc(pInfo->objectX + x * seam_size.cx, pInfo->objectY + y * seam_size.cy, size.cx, size.cy, 0.0f, dc);
+			pEditTime->Blitrc(pInfo->objectX + x * seam_size.cx, pInfo->objectY + y * seam_size.cy, seam_size.cx, seam_size.cy, 0.0f, dc);
 	}
 
 	// Draw the vertical gutter
 	if (gutterw > 0) {
 		for (y = 0; y < rows; y++)
-			pEditTime->Blitrc(gutterx, pInfo->objectY + y*seam_size.cy, gutterw, size.cy, 0.0f, dc, &horizuv);
+			pEditTime->Blitrc(gutterx, pInfo->objectY + y*seam_size.cy, gutterw, seam_size.cy, 0.0f, dc, &horizuv);
 	}
 
 	// Draw the horizontal gutter
 	if (gutterh > 0) {
 		for (x = 0; x < cols; x++)
-			pEditTime->Blitrc(pInfo->objectX + x*seam_size.cx, guttery, size.cx, gutterh, 0.0f, dc, &vertuv);
+			pEditTime->Blitrc(pInfo->objectX + x*seam_size.cx, guttery, seam_size.cx, gutterh, 0.0f, dc, &vertuv);
 	}
 
 	// Draw the bottom right tile

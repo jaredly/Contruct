@@ -180,8 +180,8 @@ void ExtObject::Draw()
 		// Seamless tiling with non-power-of-two requires a 1px overlap in SCREEN coordinates
 		CRunLayer* pLayer = pRuntime->GetLayer(pLayout, info.layer);
 		float totalZoom = pLayout->zoomX * pLayer->zoomXoffset;
-		float seamingOffset = 1.0f / totalZoom;	// eg. at 50% zoom, we need to move two layout pixels to reach one screen pixel
-		if (seamingOffset < 1.0f) seamingOffset = 1.0f;	// seems to still seam if zoomed in, works nicely zoomed out though
+		float seamingOffset = 1.0f; /// totalZoom;	// eg. at 50% zoom, we need to move two layout pixels to reach one screen pixel
+		//if (seamingOffset < 1.0f) seamingOffset = 1.0f;	// seems to still seam if zoomed in, works nicely zoomed out though
 
 		// Special case: object size is exact: don't have any seaming
 		if (info.w == info.curTexture->image_widthf && info.h == info.curTexture->image_heightf)
@@ -192,7 +192,7 @@ void ExtObject::Draw()
 
 		// Above code just messes up scrolling
 		sizexf -= seamingOffset;
-		sizeyf -= seamingOffset;;
+		sizeyf -= seamingOffset;
 
 		float scrollx = pLayout->scrollX;
 		float scrolly = pLayout->scrollY;
@@ -217,21 +217,26 @@ void ExtObject::Draw()
 
 		float gutterx = info.x + (float)(cols * sizexf);
 		float guttery = info.y + (float)(rows * sizeyf);
-
 		float gutterw = info.w - (float)(cols * sizexf);
 		float gutterh = info.h - (float)(rows * sizeyf);
+
+		cr::rect uv;
+		uv.left = 0.0f;
+		uv.top = 0.0f;
+		uv.right = sizexf / th->image_widthf;
+		uv.bottom = sizeyf / th->image_heightf;
 
 		cr::rect vertuv;
 		vertuv.left = 0.0f;
 		vertuv.top = 0.0f;
-		vertuv.right = 1.0f;
+		vertuv.right = uv.right;
 		vertuv.bottom = float(gutterh) / float(sizeyf);
 
 		cr::rect horizuv;
 		horizuv.left = 0.0f;
 		horizuv.top = 0.0f;
 		horizuv.right = float(gutterw) / float(sizexf);
-		horizuv.bottom = 1.0f;
+		horizuv.bottom = uv.bottom;
 		
 		renderer->SetTexture(th);
 
@@ -241,15 +246,15 @@ void ExtObject::Draw()
 		for (x = firstVisCol; x < cols; x++) {
 			for (y = firstVisRow; y < rows; y++)
 				renderer->Quad_xywh(info.x + x * sizexf, info.y + y * sizeyf,
-									sizexf + seamingOffset, sizeyf + seamingOffset,
-									0.0, cr::origin, info.pInfo->filter);
+									sizexf, sizeyf,
+									0.0, cr::origin, info.pInfo->filter, &uv);
 		}
 
 		// Draw the vertical gutter
 		if (gutterw > 0) {
 			for (y = firstVisRow; y < rows; y++)
 				renderer->Quad_xywh(gutterx, info.y + y * sizeyf,
-									gutterw, sizeyf + seamingOffset,
+									gutterw, sizeyf,
 									0.0, cr::origin, info.pInfo->filter, &horizuv);
 		}
 
@@ -257,7 +262,7 @@ void ExtObject::Draw()
 		if (gutterh > 0) {
 			for (x = firstVisCol; x < cols; x++)
 				renderer->Quad_xywh(info.x + x * sizexf, guttery,
-									sizexf + seamingOffset, gutterh,
+									sizexf, gutterh,
 									0.0, cr::origin, info.pInfo->filter, &vertuv);
 		}
 
