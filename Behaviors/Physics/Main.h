@@ -167,8 +167,9 @@ public:
 	static double worldXscale;
 	static double worldYscale;
 	static double worldGravity;
-	static int worldSolver;
-	static int worldFriction;
+	//static int worldSolver;
+	//static int worldFriction;
+	static int simulation_steps;
 	static b2World *world;
 	static b2Body* staticbody;
 
@@ -275,8 +276,9 @@ public:
 	float worldGravity;
 	float worldXscale;
 	float worldYscale;
-	int worldSolver;
-	int worldFriction;
+	//int worldSolver; // depreciated
+	//int worldFriction; // depreciated
+	int simulation_steps;
 
 	bool editMode;
 	int boolAddingPoints;

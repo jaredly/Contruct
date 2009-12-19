@@ -16,8 +16,9 @@ b2World* ExtObject::world;
 double ExtObject::worldXscale;
 double ExtObject::worldYscale;
 double ExtObject::worldGravity;
-int ExtObject::worldSolver;
-int ExtObject::worldFriction;
+//int ExtObject::worldSolver;
+//int ExtObject::worldFriction;
+int ExtObject::simulation_steps;
 Box2DCollisionDetector* ExtObject::collisionDetector;
 Box2DCollisionFilter* ExtObject::collisionFilter;
 
@@ -218,8 +219,9 @@ void ExtObject::OnCreate()
 	worldXscale = MakePtrFloat(pRuntime->GetLayoutKey(pLayout, "worldXscale"));
 	worldYscale = MakePtrFloat(pRuntime->GetLayoutKey(pLayout, "worldYscale"));
 
-	worldSolver = (int)pRuntime->GetLayoutKey(pLayout, "worldSolver");
-	worldFriction = (int)pRuntime->GetLayoutKey(pLayout, "worldFriction");
+	//worldSolver = (int)pRuntime->GetLayoutKey(pLayout, "worldSolver");
+	//worldFriction = (int)pRuntime->GetLayoutKey(pLayout, "worldFriction");
+	simulation_steps = (int)pRuntime->GetLayoutKey(pLayout, "simulationSteps");
 
 	ar.detach();
 
@@ -327,8 +329,11 @@ void ExtObject::CreateBody()
 	}
 
 	b2BodyDef BodyDef;
-	double HotSpotAngle = atan2((float)(pLink->info.HotSpotX - pLink->info.w / 2.0f), (float)(pLink->info.HotSpotY - pLink->info.h / 2.0f));
+    double HotSpotAngle = atan2((float)(pLink->info.HotSpotX - pLink->info.w / 2.0f), (float)(pLink->info.HotSpotY - pLink->info.h / 2.0f));
 	double HotSpotDist = sqrt((double)POW2(pLink->info.HotSpotX - pLink->info.w / 2.0f) + POW2(pLink->info.HotSpotY - pLink->info.h / 2.0f));
+
+	//double HotSpotAngle = atan2((float)(pLink->info.HotSpotX), (float)(pLink->info.HotSpotY));
+	//double HotSpotDist = sqrt((double)POW2(pLink->info.HotSpotX) + POW2(pLink->info.HotSpotY));
 	float hotspotOffsetX = cos(HotSpotAngle + RADIANS(pLink->info.angle)) * HotSpotDist;
 	float hotspotOffsetY = sin(HotSpotAngle + RADIANS(pLink->info.angle)) * HotSpotDist;
 
@@ -366,7 +371,7 @@ void ExtObject::CreateBody()
 						vector< b2Vec2> vert;
 						for(vector<POINTF>::iterator p = i->m_pts.begin(); p != i->m_pts.end(); p++)
 						{
-							vert.push_back(b2Vec2(p->x * w + xo*2, p->y * h + yo*2));
+							vert.push_back(b2Vec2(p->x * w + xo*2 , p->y * h + yo*2));
 						}
 						if(vert.size())
 						{
@@ -536,9 +541,7 @@ BOOL ExtObject::OnFrame()
 	if (lastFrameCountUpdate != pLayout->frameCounter64) {
 		lastFrameCountUpdate = pLayout->frameCounter64;
 
-		const int steps = 10;
-		world->Step(pRuntime->GetTimeDelta(), steps);
-		
+		world->Step(pRuntime->GetTimeDelta(), simulation_steps);
 	}
 
 	forceX *= 0.05;

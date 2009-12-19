@@ -104,8 +104,10 @@ BEGIN_PROPERTY_TABLE();
 		PROPERTY_COMBO(shape, "Collision mask", "Choose the shape of the collision mask.", "Bounding box|Ellipse|None|Custom");
 		PROPERTY_BUTTON( "Edit", "Custom Collision","Click this to edit the custom collision", EditCustom());
 
-		PROPERTY_COMBO(worldSolver, "World Solver", "Adjust the accuracy/speed tradeoff of the physics engine.", "Linear (fastest)|Adaptive (medium)|Exact (slowest)");
-		PROPERTY_COMBO(worldFriction, "World Friction", "Adjust the accuracy/speed tradeoff of the friction model.", "Adaptive (fastest)|Exact (slowest)");
+		//PROPERTY_COMBO(worldSolver, "World Solver", "Adjust the accuracy/speed tradeoff of the physics engine.", "Linear (fastest)|Adaptive (medium)|Exact (slowest)");
+		//PROPERTY_COMBO(worldFriction, "World Friction", "Adjust the accuracy/speed tradeoff of the friction model.", "Adaptive (fastest)|Exact (slowest)");
+		
+		PROPERTY_VALUE(simulation_steps,	"Simulation Steps",	"Number of simulation steps the physics uses");
 		PROPERTY_PERCENT(worldXscale, "World X scale", "The ratio that defines how big your world objects are.");
 		PROPERTY_PERCENT(worldYscale, "World Y scale", "The ratio that defines how big your world objects are.");
 		PROPERTY_FLOAT(worldGravity, "World Gravity", "The force of gravity, 9.8 being earth gravity.");
@@ -156,8 +158,10 @@ EditExt::EditExt(VEditTime* pVEditTime, editInfo* pEInfo)
 	worldXscale = 0.02f;
 	worldYscale = 0.02f;
 
-	worldSolver = 0;
-	worldFriction = 0;
+	//worldSolver = 0;
+	//worldFriction = 0;
+
+	simulation_steps = 10;
 
 	contactFriction = 0.8f;
 	contactElasticity = 0.4f;
@@ -177,15 +181,22 @@ EditExt::EditExt(VEditTime* pVEditTime, editInfo* pEInfo)
 	else
 		pEditTime->SetLayoutKey("worldYscale", MakeFloatPtr(worldYscale));
 
-	if (pEditTime->LayoutKeyExists("worldSolver"))
+/*	if (pEditTime->LayoutKeyExists("worldSolver"))
 		worldSolver = (int)pEditTime->GetLayoutKey("worldSolver");
 	else
-		pEditTime->SetLayoutKey("worldSolver", (void*)worldSolver);
+		pEditTime->SetLayoutKey("worldSolver", (void*)worldSolver);*/
 
-	if (pEditTime->LayoutKeyExists("worldFriction"))
+/*	if (pEditTime->LayoutKeyExists("worldFriction"))
 		worldFriction = (int)pEditTime->GetLayoutKey("worldFriction");
 	else
-		pEditTime->SetLayoutKey("worldFriction", (void*)worldFriction);
+		pEditTime->SetLayoutKey("worldFriction", (void*)worldFriction);*/
+
+	if (pEditTime->LayoutKeyExists("simulationSteps"))
+		simulation_steps = (int)pEditTime->GetLayoutKey("simulationSteps");
+	else
+		pEditTime->SetLayoutKey("simulationSteps", (void*)simulation_steps);
+
+
 
 	editMode = false;
 	boolAddingPoints = false;
@@ -328,8 +339,9 @@ void EditExt::OnPropertyUpdated(CString label)
 	if (label == "World Gravity")		pEditTime->SetLayoutKey("worldGravity", MakeFloatPtr(worldGravity));
 	if (label == "World X scale")		pEditTime->SetLayoutKey("worldXscale", MakeFloatPtr(worldXscale));
 	if (label == "World Y scale")		pEditTime->SetLayoutKey("worldYscale", MakeFloatPtr(worldYscale));
-	if (label == "World Solver")		pEditTime->SetLayoutKey("worldSolver", (void*)worldSolver);
-	if (label == "World Friction")		pEditTime->SetLayoutKey("worldFriction", (void*)worldFriction);
+	//if (label == "World Solver")		pEditTime->SetLayoutKey("worldSolver", (void*)worldSolver);
+	//if (label == "World Friction")		pEditTime->SetLayoutKey("worldFriction", (void*)worldFriction);
+	if (label == "Simulation Steps")	pEditTime->SetLayoutKey("simulationSteps", (void*)simulation_steps);
 }
 
 void EditExt::OnBeginPropertyRead(CString label)
@@ -337,8 +349,9 @@ void EditExt::OnBeginPropertyRead(CString label)
 	worldGravity = MakePtrFloat(pEditTime->GetLayoutKey("worldGravity"));
 	worldXscale = MakePtrFloat(pEditTime->GetLayoutKey("worldXscale"));
 	worldYscale = MakePtrFloat(pEditTime->GetLayoutKey("worldYscale"));
-	worldSolver = (int)pEditTime->GetLayoutKey("worldSolver");
-	worldFriction = (int)pEditTime->GetLayoutKey("worldFriction");
+	//worldSolver = (int)pEditTime->GetLayoutKey("worldSolver");
+	//worldFriction = (int)pEditTime->GetLayoutKey("worldFriction");
+	simulation_steps = (int)pEditTime->GetLayoutKey("simulationSteps");
 }
 
 int EditExt::OnShowACEMenu(TABLE ACEType)
