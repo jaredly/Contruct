@@ -86,7 +86,8 @@ void CToolSettings::ToolChanged()
 	m_Flow.ShowWindow(false);
 	m_Alpha1.ShowWindow(false);
 	m_Alpha2.ShowWindow(false);
-
+	m_posX.ShowWindow(false);
+	m_posY.ShowWindow(false);
 
 	m_ActionPointCombo.ShowWindow(false);
 	m_ActionPointAdd.ShowWindow(false);
@@ -121,7 +122,15 @@ void CToolSettings::ToolChanged()
 		SHOW(m_Alpha1)
 		SHOW(m_Alpha2)
 		break;
+	case ID_HOTSPOT:
+		SHOW(m_posX)
+		SHOW(m_posY)
+		break;
 	case ID_ACTIONPOINT:
+
+		SHOW(m_posX)
+		SHOW(m_posY)
+
 		m_ActionPointCombo.ShowWindow(SW_SHOW);
 		m_ActionPointAdd.ShowWindow(SW_SHOW);
 		m_ActionPointAdd.EnableWindow(SW_SHOW);
@@ -147,7 +156,6 @@ void CToolSettings::ToolChanged()
 
 
 	}
-
 
 	int x = 5;
 	for(int a = 0; a < Tools.size();a ++)
@@ -187,6 +195,22 @@ void CToolSettings::OnSmoothModify()
 	}	
 }
 
+void CToolSettings::SetPosXY( int x, int y )
+{
+	CString text;
+	text.Format("%d", x);
+	
+	m_posX.m_Edit.SetWindowText(text);
+	m_posX.m_Edit.m_Min = 0;
+	m_posX.m_Edit.m_Max = m_pImgEd->m_PicEd.m_Width;
+	m_posX.m_Edit.SetModify(false);
+
+	text.Format("%d", y);
+	m_posY.m_Edit.SetWindowText(text);
+	m_posY.m_Edit.m_Min = 0;
+	m_posY.m_Edit.m_Max = m_pImgEd->m_PicEd.m_Height;
+	m_posY.m_Edit.SetModify(false);
+}
 ////////////////////////////////////////////////////////////////////////////////////////
 
 BEGIN_MESSAGE_MAP(CAnimationToolbar, CExtPanelControlBar)

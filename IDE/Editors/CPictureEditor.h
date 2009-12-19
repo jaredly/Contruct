@@ -195,6 +195,15 @@ public:
 	 virtual void Modify()
 	 {
 	 }
+
+	 virtual void ChangeX(double x)
+	 {
+	 }
+
+	 virtual void ChangeY(double x)
+	 {
+	 }
+
 	 virtual COLORREF GetColor();
 	 virtual COLORREF GetColor2();
 	 void UpdateStep();
@@ -268,6 +277,8 @@ public:
 	CFloatPoint hotspot;
 
 	virtual void UpdateDisplayOffset();
+	void ChangeX(double x);
+	void ChangeY(double y);
 };
 
 class CActionTool: public CHotspotTool
@@ -278,6 +289,9 @@ public:
 	virtual void Initialise(ToolProperties* props);
 	virtual void Modify();
 	virtual void UpdateDisplayOffset();
+	void ChangeX(double x);
+	void ChangeY(double y);
+	CString lastAction;
 
 };
 

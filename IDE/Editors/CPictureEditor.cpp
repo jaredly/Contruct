@@ -3356,6 +3356,7 @@ void CHotspotTool::OnMouseUp(CFloatPoint pt)
 	{
 		image_hotspot->x = hotspot.x;
 		image_hotspot->y = hotspot.y;
+		PicEd->m_pImageEditor->m_pTool_Settings->SetPosXY(hotspot.x, hotspot.y);
 	}
 	UpdateDisplayOffset();
 }
@@ -3364,6 +3365,14 @@ void CHotspotTool::Initialise(ToolProperties *props)
 {
 	CTool::Initialise(props);
 	Modify();
+
+	if( PicEd->GetHotspot() )
+	{
+		hotspot.x = PicEd->GetHotspot()->x;
+		hotspot.y = PicEd->GetHotspot()->y;
+	}
+
+	PicEd->m_pImageEditor->m_pTool_Settings->SetPosXY(hotspot.x, hotspot.y);
 }
 void CHotspotTool::OnKeyDown(long key)
 {
@@ -3394,6 +3403,7 @@ void CHotspotTool::OnKeyDown(long key)
 		{
 			saved_hotspot->x = hotspot.x;
 			saved_hotspot->y = hotspot.y;
+			PicEd->m_pImageEditor->m_pTool_Settings->SetPosXY(hotspot.x, hotspot.y);
 		}
 
 		PicEd->m_modded = true;
@@ -3404,11 +3414,6 @@ void CHotspotTool::OnKeyDown(long key)
 
 void CHotspotTool::Modify()
 {
-	if( PicEd->GetHotspot() )
-	{
-		hotspot.x = PicEd->GetHotspot()->x;
-		hotspot.y = PicEd->GetHotspot()->y;
-	}
 	UpdateDisplayOffset();
 }
 void CHotspotTool::UpdateDisplayOffset()
@@ -3422,9 +3427,32 @@ void CHotspotTool::Cancel()
 	{
 		hotspot.x = PicEd->GetHotspot()->x;
 		hotspot.y = PicEd->GetHotspot()->y;
+		PicEd->m_pImageEditor->m_pTool_Settings->SetPosXY(hotspot.x, hotspot.y);
 	}
-
 }
+void CHotspotTool::ChangeX(double x)
+{
+	hotspot.x = (int)x;
+	UpdateDisplayOffset();
+	PicEd->m_modded = true;
+	CPoint* image_hotspot = PicEd->GetHotspot(); 
+	if(image_hotspot)
+		image_hotspot->x = hotspot.x;
+
+	PicEd->m_pImageEditor->Invalidate();
+}
+void CHotspotTool::ChangeY(double y)
+{
+	hotspot.y = (int)y;
+	UpdateDisplayOffset();
+	PicEd->m_modded = true;
+	CPoint* image_hotspot = PicEd->GetHotspot(); 
+	if(image_hotspot)
+		image_hotspot->y = hotspot.y;
+
+	PicEd->m_pImageEditor->Invalidate();
+}
+
 ////////////////////////////
 ////
 ////   Action Point
@@ -3482,14 +3510,41 @@ void CActionTool::PostRender()
 void CActionTool::OnMouseUp(CFloatPoint pt)
 {
 	CTool::OnMouseUp(pt);
-	CString action;
-	this->PicEd->m_pImageEditor->m_pImgEdDlg->m_Tool_Settings.m_ActionPointCombo.GetWindowText(action);
+
+	this->PicEd->m_pImageEditor->m_pImgEdDlg->m_Tool_Settings.m_ActionPointCombo.GetWindowText(lastAction);
+
 	
-	if(action!= "" && PicEd->GetAction())
+	if(lastAction!= "" && PicEd->GetAction())
 	{
-		(*PicEd->GetAction())[action].x = hotspot.x;
-		(*PicEd->GetAction())[action].y = hotspot.y;
+		(*PicEd->GetAction())[lastAction].x = hotspot.x;
+		(*PicEd->GetAction())[lastAction].y = hotspot.y;
+		this->PicEd->m_pImageEditor->m_pTool_Settings->SetPosXY(hotspot.x, hotspot.y);
 	}
+}
+
+void CActionTool::ChangeX(double x)
+{
+	hotspot.x = (int)x;
+	UpdateDisplayOffset();
+	PicEd->m_modded = true;
+
+	this->PicEd->m_pImageEditor->m_pImgEdDlg->m_Tool_Settings.m_ActionPointCombo.GetWindowText(lastAction);
+	if(lastAction!= "" && PicEd->GetAction())
+		(*PicEd->GetAction())[lastAction].x = hotspot.x;
+
+	PicEd->m_pImageEditor->Invalidate();
+}
+void CActionTool::ChangeY(double y)
+{
+	hotspot.y = (int)y;
+	UpdateDisplayOffset();
+	PicEd->m_modded = true;
+
+	this->PicEd->m_pImageEditor->m_pImgEdDlg->m_Tool_Settings.m_ActionPointCombo.GetWindowText(lastAction);
+	if(lastAction!= "" && PicEd->GetAction())
+		(*PicEd->GetAction())[lastAction].y = hotspot.y;
+
+	PicEd->m_pImageEditor->Invalidate();
 }
 
 void CActionTool::Initialise(ToolProperties *props)
@@ -3498,6 +3553,7 @@ void CActionTool::Initialise(ToolProperties *props)
 
 	Modify();
 
+	PicEd->m_pImageEditor->m_pTool_Settings->SetPosXY(hotspot.x, hotspot.y);
 }
 
 void CActionTool::Modify()
@@ -3505,13 +3561,18 @@ void CActionTool::Modify()
 	CString action;
 	this->PicEd->m_pImageEditor->m_pImgEdDlg->m_Tool_Settings.m_ActionPointCombo.GetWindowText(action);
 	
-	if(action!="" && PicEd->GetAction())
+	// We changed via combo box
+	if(lastAction != action)
 	{
-		if(PicEd->GetAction()->find(action) != PicEd->GetAction()->end())
+		if(action!="" && PicEd->GetAction())
 		{
-			hotspot.x = (*PicEd->GetAction())[action].x;
-			hotspot.y = (*PicEd->GetAction())[action].y;
+			if(PicEd->GetAction()->find(action) != PicEd->GetAction()->end())
+			{
+				hotspot.x = (*PicEd->GetAction())[action].x;
+				hotspot.y = (*PicEd->GetAction())[action].y;
+			}
 		}
+		lastAction = action;
 	}
 
 

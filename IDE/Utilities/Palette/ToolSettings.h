@@ -68,6 +68,9 @@ public:
 	CCaptionEditXP		m_Alpha1;
 	CCaptionEditXP		m_Alpha2;
 
+	CCaptionEditXP		m_posX;
+	CCaptionEditXP		m_posY;
+
 	COutlineFillOption	m_OutlineFill;	
 
 	CExtComboBox			m_ActionPointCombo;
@@ -83,6 +86,8 @@ public:
 	void OnActionPointModify();
 	void ActionSelectionChange();
 	void OnSmoothModify();
+
+	void SetPosXY(int x, int y);
 
 
 	// Generated message map functions

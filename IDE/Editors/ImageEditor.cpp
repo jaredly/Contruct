@@ -961,6 +961,13 @@ void CImageEditor::EditImage(CxImage* MyImage, CxImage* MyCollision)
 	m_pTool_Settings->m_Alpha2.m_Edit.SetWindowText(text);
 	m_pTool_Settings->m_Alpha2.m_Edit.SetModify(false);
 
+	text.Format("%d", 0);
+	m_pTool_Settings->m_posX.m_Edit.SetWindowText(text);
+	m_pTool_Settings->m_posX.m_Edit.SetModify(false);
+
+	text.Format("%d", 0);
+	m_pTool_Settings->m_posY.m_Edit.SetWindowText(text);
+	m_pTool_Settings->m_posY.m_Edit.SetModify(false);
 
 
 	m_PicEd.Initialise(m_display,MyImage);

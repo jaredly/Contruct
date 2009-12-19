@@ -4,6 +4,8 @@
 #include "stdafx.h"
 
 #include "EditSpinSlider.h"
+#include "..\..\Utilities\Palette\ToolSettings.h"
+#include "..\Editors\ImageEditor.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -200,6 +202,8 @@ void CEditSpinSlider::OnTimer(UINT nIDEvent)
 			OnNcPaint();
 			GetParent()->SendMessage(1234,100,(long)this->m_hWnd);
 
+			((CToolSettings*)(GetParent()->GetParent()))->m_pImgEd->SetFocus();
+
 		}
 	}
 
@@ -214,6 +218,8 @@ void CEditSpinSlider::OnTimer(UINT nIDEvent)
 		KillTimer(30);
 		SetTimer(30,100-min(95,(m_speed/4)),0);
 		GetParent()->SendMessage(1234,100,(long)this->m_hWnd);
+
+		((CToolSettings*)(GetParent()->GetParent()))->m_pImgEd->SetFocus();
 	}
 	if(nIDEvent == 31)
 	{
@@ -225,10 +231,14 @@ void CEditSpinSlider::OnTimer(UINT nIDEvent)
 		KillTimer(31);
 		SetTimer(31,100-min(95,(m_speed/4)),0);
 		GetParent()->SendMessage(1234,100,(long)this->m_hWnd);
+
+		((CToolSettings*)(GetParent()->GetParent()))->m_pImgEd->SetFocus();
 	}
 	if(nIDEvent == 32)
 	{
 		GetParent()->SendMessage(1234,100,(long)this->m_hWnd);
+
+		((CToolSettings*)(GetParent()->GetParent()))->m_pImgEd->SetFocus();
 	}
 	CEdit::OnTimer(nIDEvent);
 }
@@ -324,8 +334,8 @@ void CEditSpinSlider::OnChange()
 			SetWindowText(Content2);
 		
 
-		
 		this->GetParent()->SendMessage(EN_CHANGE,100,(long)this->m_hWnd);
+
 
 	// TODO: If this is a RICHEDIT control, the control will not
 	// send this notification unless you override the CEdit::OnInitDialog()

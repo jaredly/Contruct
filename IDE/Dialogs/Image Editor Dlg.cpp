@@ -242,9 +242,9 @@ BOOL CImageEditorDlg::OnInitDialog()
 		m_Tool_Settings.m_OutlineFill.pPicEd = &m_pXDVView->m_PicEd;
 
 		// Actionpoints
-		m_Tool_Settings.m_ActionPointCombo.Create(CBS_DROPDOWN |WS_CHILD, CRect(0,0,150,400), &m_Tool_Settings, 127);
+		m_Tool_Settings.m_ActionPointCombo.Create(CBS_DROPDOWN |WS_CHILD, CRect(120,16,150 + 120,400 + 16), &m_Tool_Settings, 127);
 		m_Tool_Settings.m_ActionPointCombo.SetFont( this->GetFont());
-		m_Tool_Settings.m_ActionPointAdd.Create("+",WS_CHILD, CRect(150,0,32+150, 20), &m_Tool_Settings, 128);
+		m_Tool_Settings.m_ActionPointAdd.Create("+",WS_CHILD, CRect(150 + 120,16,32+150 + 120, 20+16), &m_Tool_Settings, 128);
 		m_Tool_Settings.m_ActionPointAdd.SetFont( this->GetFont());
 		
 
@@ -283,6 +283,17 @@ BOOL CImageEditorDlg::OnInitDialog()
 		m_Tool_Settings.m_Alpha2.m_type = ID_ALPHA2;
 		m_Tool_Settings.m_Alpha2.pPicEd = &m_pXDVView->m_PicEd;
 		m_Tool_Settings.m_Alpha2.m_Edit.m_Max = 255;
+
+		// PosX
+		m_Tool_Settings.m_posX.Create(WS_CHILD|WS_CLIPSIBLINGS | WS_TABSTOP|ES_MULTILINE , CRect(0,0,52,32), &m_Tool_Settings, 131);
+		m_Tool_Settings.m_posX.m_type = ID_POSX;
+		m_Tool_Settings.m_posX.pPicEd = &m_pXDVView->m_PicEd;
+
+		// PosY
+		m_Tool_Settings.m_posY.Create(WS_CHILD|WS_CLIPSIBLINGS | WS_TABSTOP|ES_MULTILINE , CRect(0,0,52,32), &m_Tool_Settings, 131);
+		m_Tool_Settings.m_posY.m_type = ID_POSY;
+		m_Tool_Settings.m_posY.pPicEd = &m_pXDVView->m_PicEd;
+
 	}
 
 

@@ -95,6 +95,8 @@ public:
 #define ID_FLOW 7
 #define ID_ALPHA1 8
 #define ID_ALPHA2 9
+#define ID_POSX 10
+#define ID_POSY 11
 
 	int m_type;
 	CEditSpinSlider m_Edit;

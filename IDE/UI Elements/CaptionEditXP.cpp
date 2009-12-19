@@ -122,6 +122,12 @@ void CCaptionEditXP::OnPaint()
 	case ID_ALPHA2:
 		m_CaptionString = "Alpha 2";
 		break;
+	case ID_POSX:
+		m_CaptionString = "X";
+		break;
+	case ID_POSY:
+		m_CaptionString = "Y";
+		break;
 	}
 
 	CRect rcClient;
@@ -229,6 +235,14 @@ void CCaptionEditXP::OnChange()
 					break;
 				case ID_ALPHA2:
 					pPicEd->CurrentTool->ChangeAlpha2(atol(String));
+					pPicEd->UpdateTool();
+					break;
+				case ID_POSX:
+					pPicEd->CurrentTool->ChangeX(atol(String));
+					pPicEd->UpdateTool();
+					break;
+				case ID_POSY:
+					pPicEd->CurrentTool->ChangeY(atol(String));
 					pPicEd->UpdateTool();
 					break;
 				
