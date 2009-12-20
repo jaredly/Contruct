@@ -689,7 +689,7 @@ void CLayoutEditor::CheckSizingHandles(CPoint point)
 
 				CRect sz(pt2,pt2);
 				sz.InflateRect(3,3,4,4);
-				if (sz.PtInRect(point))
+				if (sz.PtInRect(point) && o->m_ShowAngles)
 				{
 					sizeType = 10;
 					sizeCur = IDC_CROSS;
