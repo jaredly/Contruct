@@ -755,7 +755,7 @@ void ExportEvent::ProcessWait( ExportBlock* root, list<ExportBlock*>& append, CE
 			}
 			
 			exporter->activateID++;
-			newEvent->ProcessWait(root, append, exporter);	
+			newEvent->ProcessWaitCommands(root, append, exporter);	
 			return;
 		}
 	}
@@ -794,7 +794,7 @@ void ExportEvent::ProcessWait( ExportBlock* root, list<ExportBlock*>& append, CE
 			newEvent->conditions.push_front(ExportCondition(oid, -1, cndid_wait_delay_complete, false, false, false, false, buildIntegerParams(exporter, exporter->activateID)));			
 
 			exporter->activateID++;
-			newEvent->ProcessWait(root, append, exporter);	
+			newEvent->ProcessWaitCommands(root, append, exporter);	
 			return;
 		}
 	}

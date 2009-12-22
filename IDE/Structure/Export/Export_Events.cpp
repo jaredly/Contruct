@@ -519,8 +519,8 @@ void ExportBlock::addChildBack( ExportBlock* newChild )
 	newChild->detach();
 
 	newChild->parent = this;
-	if(newChild->first_child)
-		newChild->first_child->setParentForAllSiblings(this);
+	//if(newChild->first_child)
+	//	newChild->first_child->setParentForAllSiblings(this);
 
 	if(first_child && last_child)
 	{
@@ -540,8 +540,8 @@ void ExportBlock::addChildFront( ExportBlock* newChild )
 	newChild->detach();
 
 	newChild->parent = this;
-	if(newChild->first_child)
-		newChild->first_child->setParentForAllSiblings(this);
+	//if(newChild->first_child)
+	//	newChild->first_child->setParentForAllSiblings(this);
 
 	if(first_child && last_child)
 	{
