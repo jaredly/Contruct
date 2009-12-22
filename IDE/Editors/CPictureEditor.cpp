@@ -3556,6 +3556,23 @@ void CActionTool::Initialise(ToolProperties *props)
 	PicEd->m_pImageEditor->m_pTool_Settings->SetPosXY(hotspot.x, hotspot.y);
 }
 
+void CActionTool::OnMouseMove(CFloatPoint pt)
+{
+	if(m_draw)
+	{
+		hotspot.x = pt.x;
+		hotspot.y = pt.y;
+
+		if(GetKeyState(VK_MENU) >> 4)	//alt clicks
+		{
+			this->PicEd->m_pImageEditor->m_pImgEdDlg->m_Tool_Settings.m_ActionPointCombo.GetWindowText(lastAction);
+			PicEd->m_pImageEditor->m_pImgEdDlg->ApplyActionPointToAll(hotspot.x, hotspot.y,lastAction);
+		}
+	}
+
+}
+
+
 void CActionTool::Modify()
 {
 	CString action;

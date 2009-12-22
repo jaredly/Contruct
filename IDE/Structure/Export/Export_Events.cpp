@@ -697,7 +697,7 @@ void ExportScript::Export( CExport* exporter )
 	eventBlock<<(int)(1);  // Param Count
 
 	CEditorParam temp;
-	CString script = script;
+	CString script = this->script;
 	script.Replace("\"", "\"\"");
 	script = "\"" + script + "\"";
 	temp.CreateFromString(script, exporter->application, 2, "");

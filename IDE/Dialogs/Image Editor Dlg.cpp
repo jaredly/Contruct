@@ -1244,7 +1244,6 @@ BOOL CImageEditorDlg::OnToolTipText(UINT, NMHDR* pNMHDR, LRESULT* pResult)
 
 void CImageEditorDlg::ApplyHotspotToAll(int x, int y)
 {
-
 	for(vector<CImageResource*>::iterator i = m_sourceImages.begin(); i!= m_sourceImages.end(); i++)
 	{
 		m_newHotspots[(*i)] = CPoint(x,y);
@@ -1255,13 +1254,22 @@ void CImageEditorDlg::ApplyHotspotToAll(int x, int y)
 	{
 		m_newHotspots[i->first] = CPoint(x,y);
 	}
-
-
-	
-
-
-
 }
+
+void CImageEditorDlg::ApplyActionPointToAll(int x, int y, CString name)
+{
+	for(vector<CImageResource*>::iterator i = m_sourceImages.begin(); i!= m_sourceImages.end(); i++)
+	{
+		m_newAction[(*i)][name] = CPoint(x,y);
+	}
+
+	// any added frames
+	for(map<CImageResource*, CxImage>::iterator i = m_newImages.begin(); i!= m_newImages.end(); i++)
+	{
+		m_newAction[i->first][name] = CPoint(x,y);
+	}
+}
+
 
 
 

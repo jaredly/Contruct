@@ -291,6 +291,7 @@ public:
 	virtual void UpdateDisplayOffset();
 	void ChangeX(double x);
 	void ChangeY(double y);
+	void OnMouseMove(CFloatPoint pt);
 	CString lastAction;
 
 };

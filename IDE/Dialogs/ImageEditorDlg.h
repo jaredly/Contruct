@@ -155,7 +155,7 @@ public:
 	bool m_result;
 
 	CxImage* getOtherImageForThisFrame(); //If we are flipping or mirroring the image, we need to do the same to the collision mask
-
+	void ApplyActionPointToAll(int x, int y, CString name);
 	bool m_noAlpha;
 
 
