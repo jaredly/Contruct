@@ -19,7 +19,7 @@ void CParametersDlg::SetScintillaColour(CScintillaWnd* pWindow, long Colour)
 	pWindow->SendMessage(SCI_SETWHITESPACEFORE, (long)true, Colour);
 	pWindow->SendMessage(SCI_STYLESETBACK,STYLE_DEFAULT, Colour);
 	pWindow->SendMessage(SCI_STYLESETBACK,0, Colour);
-	pWindow->SendMessage(SCI_STYLECLEARALL, 0, 0);
+	//pWindow->SendMessage(SCI_STYLECLEARALL, 0, 0);
 	pWindow->SendMessage(SCI_SETMARGINWIDTHN, 0, 0);
 
 

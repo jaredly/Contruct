@@ -83,6 +83,8 @@ CScintillaWnd* CParametersDlg::CreateScintillaParameter(CWnd* pParent, LPCSTR De
 	pScintilla->Create("Scintilla", 
 					   WS_TABSTOP | WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_VSCROLL, 
 					   CRect(5, 86, 352, 185), pParent, 10000);
+
+	pScintilla->Init();
 		
 	// Set colours and styles
 	SetScintillaColour(pScintilla, 0xf8fff8);
@@ -101,9 +103,25 @@ CScintillaWnd* CParametersDlg::CreateScintillaParameter(CWnd* pParent, LPCSTR De
 	pScintilla->SendMessage(SCI_ASSIGNCMDKEY, SCK_RETURN + (0 << 16), 0);
 	pScintilla->SendMessage(SCI_AUTOCSETFILLUPS, 0, (LPARAM)"(),");
 	pScintilla->SendMessage(SCI_AUTOCSETAUTOHIDE, FALSE, 0);
-	pScintilla->SendMessage(SCI_SETLEXER, SCLEX_CPP,0);
+
+	pScintilla->SetLexer(SCLEX_PYTHON);
+	pScintilla->SendMessage(SCI_STYLESETFORE, SCE_P_COMMENTLINE, RGB(0,128,0));
+	pScintilla->SendMessage(SCI_STYLESETFORE, SCE_P_STRING, RGB(128,60,0));
+	pScintilla->SendMessage(SCI_STYLESETFORE, SCE_P_CLASSNAME, RGB(0,0,0));
+	pScintilla->SendMessage(SCI_STYLESETBOLD, SCE_P_CLASSNAME, 1);
+	pScintilla->SendMessage(SCI_STYLESETFORE, SCE_P_DEFNAME, RGB(0,0,100));
+	pScintilla->SendMessage(SCI_STYLESETBOLD, SCE_P_DEFNAME, 1);
+
+	pScintilla->SendMessage(SCI_SETINDENTATIONGUIDES, FALSE, 0);
+	pScintilla->SendMessage(SCI_SETINDENT,0,0);
+
 
 	pScintilla->SetWindowText(DefaultText);
+
+
+
+
+
 
 	return pScintilla;
 }
