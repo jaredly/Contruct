@@ -313,6 +313,7 @@ namespace cr {
 		bool			FontExists(FontHandle fh) const;
 		void			DrawTextCR(FontHandle fh, PCTSTR text, const rect& r, DWORD format, const color& c);
 		void			ReleaseCRFont(FontHandle fh);
+		void			GetTextSize(FontHandle fh, PCTSTR text, rect& r);
 
 		// Batch extensions
 		void			AddBatchExtension(CBatchBase* pCmd);

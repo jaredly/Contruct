@@ -33,7 +33,7 @@ void ExtObject::Serialize(bin& ar)
 
 		vector<ObjectTimer>::iterator i = timers.begin();
 
-		for ( ; i != timers.end(); ) 
+		for ( ; i != timers.end(); ++i) 
 		{
 			ar << i->name;
 			ar << i->repeat;

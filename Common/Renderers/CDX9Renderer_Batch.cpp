@@ -988,6 +988,15 @@ namespace cr {
 		renderer->pD3DXSprite->End();
 	}
 
+	void CDX9Renderer::GetTextSize(FontHandle fh, PCTSTR text, rect& r)
+	{
+		RECT rc;
+		SetRect(&rc, 0, 0, 0, 0);
+		fh->font->DrawText(NULL, text, -1, &rc, DT_CALCRECT, 0xFF000000);
+		r.right = rc.right;
+		r.bottom = rc.bottom;
+	}
+
 	void CDX9Renderer::SetBackBuffer(LPDIRECT3DSURFACE9 s)
 	{
 		batch.push_back(new (this) CBatch_SetBackBuffer(this, s));

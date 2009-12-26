@@ -94,6 +94,7 @@ public:
 	bool			FontExists(FontHandle fh) const;
 	void			DrawTextCR(FontHandle fh, PCTSTR text, const rect& r, DWORD format, const cr_color& c);
 	void			ReleaseCRFont(FontHandle fh);
+	void			GetTextSize(FontHandle fh, PCTSTR text, rect& r);
 
 	void*			GetDevice() const;		// Avoid using if possible, non-portable engine specific device pointer!
 

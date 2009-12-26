@@ -217,26 +217,26 @@ long ExtObject::eGetValue(LPVAL params, ExpReturn& ret)
 
 long ExtObject::eGetTextWidth(LPVAL params, ExpReturn& ret)
 {
-	RECTF rc;
+	cr::rect rc;
 	rc.left = 0;
 	rc.top = 0;
 	rc.right = 0;
 	rc.bottom = 0;
 
-	renderer->DrawTextCR(iFont, GetStringParam(params, 0), rc, DT_CALCRECT, info.pInfo->filter);
+	renderer->GetTextSize(iFont, GetStringParam(params, 0), rc);
 
 	return ret = rc.right;
 }
 
 long ExtObject::eGetTextHeight(LPVAL params, ExpReturn& ret)
 {
-	RECTF rc;
+	cr::rect rc;
 	rc.left = 0;
 	rc.top = 0;
 	rc.right = 0;
 	rc.bottom = 0;
 
-	renderer->DrawTextCR(iFont, GetStringParam(params, 0), rc, DT_CALCRECT, info.pInfo->filter);
+	renderer->GetTextSize(iFont, GetStringParam(params, 0), rc);
 
 	return ret = rc.bottom;
 }

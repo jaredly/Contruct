@@ -287,6 +287,11 @@ void CRenderLayer::DrawTextCR(FontHandle fh, PCTSTR text, const rect& r, DWORD f
 	renderer->DrawTextCR(fh, text, runtime->TranslateRect(r), format, c);
 }
 
+void CRenderLayer::GetTextSize(FontHandle fh, PCTSTR text, rect& r)
+{
+	renderer->GetTextSize(fh, text, r);
+}
+
 void CRenderLayer::ReleaseCRFont(FontHandle fh)
 {
 	renderer->ReleaseCRFont(fh);

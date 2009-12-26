@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="Text"
 	ProjectGUID="{67BC4E7A-0B86-48C8-81CB-4759EAC14BA9}"
 	RootNamespace="Text"
 	Keyword="MFCProj"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -24,6 +25,7 @@
 			UseOfMFC="1"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
+			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -48,8 +50,13 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
-				InlineFunctionExpansion="1"
+				Optimization="1"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="2"
+				OmitFramePointers="true"
+				EnableFiberSafeOptimizations="true"
+				WholeProgramOptimization="true"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -83,6 +90,11 @@
 				ModuleDefinitionFile=".\ConstructSDK.def"
 				ProgramDatabaseFile=".\..\..\..\Construct Compile\Template\Release/Text.pdb"
 				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				LinkTimeCodeGeneration="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\..\..\..\Construct Compile\Template\Release/Text.lib"
 			/>
 			<Tool
@@ -106,9 +118,6 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -121,6 +130,7 @@
 			UseOfMFC="1"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
+			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -146,7 +156,11 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="1"
-				InlineFunctionExpansion="1"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="2"
+				OmitFramePointers="true"
+				EnableFiberSafeOptimizations="true"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;RUN_ONLY"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -180,6 +194,10 @@
 				ModuleDefinitionFile=".\ConstructSDKRun.def"
 				ProgramDatabaseFile=".\..\..\..\Construct Compile\Template\Runtime/Text.pdb"
 				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\..\..\..\Construct Compile\Template\Runtime/Text.lib"
 			/>
 			<Tool
@@ -201,9 +219,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -279,6 +294,8 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\..\..\..\Construct Compile\Template\Debug/Text.pdb"
 				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\..\..\..\Construct Compile\Template\Debug/Text.lib"
 				TargetMachine="1"
 			/>
@@ -301,9 +318,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -379,6 +393,8 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\..\..\..\Construct Compile\Template\Debug Runtime/Text.pdb"
 				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\..\..\..\Construct Compile\Template\Debug Runtime/Text.lib"
 				TargetMachine="1"
 			/>
@@ -401,9 +417,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"

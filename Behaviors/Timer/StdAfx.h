@@ -53,9 +53,16 @@ using namespace std;
 
 #define CONSTRUCT_SDK
 
-////#include "aggressiveoptimize.h" // breaks DEP
+// Includes for renderer stdafx.h - replace where aggressiveoptimize.h used to be
+// to vruntime.h in old SDKs with this snippet in stdafx.h
 #include "..\..\Common\DXSnips.h"
-#include "..\..\Common\Quadrilateral.hpp"
+#include "..\..\Common\Renderers\RendererCommon.h"
+
+// SDK uses the base class for texture handles with no renderer-specific information.  Font handles
+// do not have their pointed-to class defined so are void*
+typedef cr::texture*			TextureHandle;
+typedef void*					FontHandle;
+
 #include "..\..\Common\VEdittime.h"
 #include "..\..\Common\Rundefs.h"
 #include "..\..\Common\VRuntime.h"
