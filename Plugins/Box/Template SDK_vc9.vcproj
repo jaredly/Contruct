@@ -84,7 +84,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="..\..\IDE\Plugins\Template.csx"
+				OutputFile="..\..\IDE\Plugins\Box.csx"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				IgnoreAllDefaultLibraries="false"
@@ -195,7 +195,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="..\..\IDE\Plugins\Runtime\Template.csx"
+				OutputFile="..\..\IDE\Plugins\Runtime\Box.csx"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				IgnoreAllDefaultLibraries="false"
@@ -298,7 +298,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="..\..\IDE\Plugins\Template.csx"
+				OutputFile="..\..\IDE\Plugins\Box.csx"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				ModuleDefinitionFile=".\ConstructSDK.def"
@@ -397,7 +397,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="..\..\IDE\Plugins\Runtime\Template.csx"
+				OutputFile="..\..\IDE\Plugins\Runtime\Box.csx"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				ModuleDefinitionFile=".\ConstructSDKRun.def"
@@ -496,6 +496,10 @@
 						Name="VCCLCompilerTool"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\CommonAceDef_BoxSpecific.hpp"
+				>
 			</File>
 			<File
 				RelativePath=".\Conditions.cpp"
@@ -833,7 +837,7 @@
 				>
 			</File>
 			<File
-				RelativePath="res\ICON.BMP"
+				RelativePath="ICON.BMP"
 				>
 				<FileConfiguration
 					Name="Runtime|Win32"
@@ -845,7 +849,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ICON.BMP"
+				RelativePath="res\ICON.BMP"
 				>
 				<FileConfiguration
 					Name="Runtime|Win32"

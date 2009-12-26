@@ -90,8 +90,17 @@ void CRunObjType::FlushDelayed()
 	ObjIterator i = delayed.begin();
 	ObjConstIterator delayed_end = delayed.end();
 
-	for ( ; i != delayed_end; i++)
+	for ( ; i != delayed_end; i++) {
+
+		// Add to teams.
+		ObjTypeIterator t = teams.begin();
+		ObjTypeConstIterator teams_end = teams.end();
+
+		for ( ; t != teams_end; t++)
+			(*t)->instances.push_back(*i);
+
 		instances.push_back(*i);
+	}
 
 	delayed.resize(0);
 }
@@ -898,11 +907,14 @@ CRunObject* CRuntime::CreateRunObject(initialObject* et, int layer, CRunLayout* 
 		onFrame2Callees.push_back(pRunObject);
 
 	// Add this instance to the instance list of any family/trait the object is in
+	// Bug 2916023: need to do this at same time as moving in delayed object since can crash when family spawning instance
+	/*
 	ObjTypeIterator t = pObjType->teams.begin();
 	ObjTypeConstIterator teams_end = pObjType->teams.end();
 
 	for ( ; t != teams_end; t++)
 		(*t)->instances.push_back(pRunObject);
+		*/
 
 	// Add instance to target layer and make iterator point to itself
 	// Not valid for movement exts or non-drawing exts.
@@ -929,7 +941,7 @@ CRunObject* CRuntime::CreateRunObject(initialObject* et, int layer, CRunLayout* 
 
 	// Creating siblings? Instance the sister types
 	if (createSiblings && !(pObjType->sisterTypes.empty())) {
-		t = pObjType->sisterTypes.begin();
+		ObjTypeIterator t = pObjType->sisterTypes.begin();
 		ObjTypeConstIterator sisterTypes_end = pObjType->sisterTypes.end();
 
 		// Create sibling instances

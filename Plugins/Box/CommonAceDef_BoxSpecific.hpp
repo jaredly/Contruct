@@ -196,11 +196,7 @@ long ExtObject::cmn_aSetWidth(LPVAL params)
 	info.w = params[0].GetFloat() * (info.isMirrored?-1:1);
 	//if (info.w < 1) info.w = 1;
 
-	// Keep hotspot in centre
-	info.HotSpotX = info.w / 2;
-	info.HotSpotY = info.h / 2;
-	info.HotSpotAngle = atan(float(info.HotSpotY) / float(info.HotSpotX));
-	info.HotSpotDist = sqrt((double)info.HotSpotX * info.HotSpotX + info.HotSpotY * info.HotSpotY);
+	UpdateHotspotPosition();
 
 	pRuntime->UpdateBoundingBox(this);
 	return 0;
@@ -211,11 +207,7 @@ long ExtObject::cmn_aSetHeight(LPVAL params)
 	info.h = params[0].GetFloat() * (info.isFlipped?-1:1);
 	//if (info.h < 1) info.h = 1;
 
-	// Keep hotspot in centre
-	info.HotSpotX = info.w / 2;
-	info.HotSpotY = info.h / 2;
-	info.HotSpotAngle = atan(float(info.HotSpotY) / float(info.HotSpotX));
-	info.HotSpotDist = sqrt((double)info.HotSpotX * info.HotSpotX + info.HotSpotY * info.HotSpotY);
+	UpdateHotspotPosition();
 
 	pRuntime->UpdateBoundingBox(this);
 	return 0;

@@ -192,6 +192,7 @@ public:
 	} cr_colors;
 
 	void UpdateMyColors();
+	void UpdateHotspotPosition();
 };
 
 //////////// EDITTIME INFO ////////////

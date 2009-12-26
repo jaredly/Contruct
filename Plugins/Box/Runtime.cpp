@@ -68,6 +68,33 @@ void ExtObject::OnCreate()
 	info.w = info.editObject->eWidth;
 	info.h = info.editObject->eHeight;
 
+	UpdateHotspotPosition();
+
+	oldw = info.w;
+	oldh = info.h;
+
+	info.x = info.editObject->eX ;//+ info.HotSpotX;
+	info.y = info.editObject->eY ;//+ info.HotSpotY;
+
+	info.pInfo->filter = info.editObject->eColor;
+	info.angle = info.editObject->eAngle;
+
+	info.visible = true;
+	padding = 0;
+
+	// Setup private vars
+	SetupPrivateVariableVector(pRuntime, this, privateVars);
+
+	objAttach = NULL;
+
+	// Update bounding box
+	pRuntime->UpdateBoundingBox(this);
+
+	UpdateMyColors();
+}
+
+void ExtObject::UpdateHotspotPosition()
+{
 	switch (hotspot_pos) {
 	case hs_topleft:
 		hs_xf = 0.0f;
@@ -109,30 +136,9 @@ void ExtObject::OnCreate()
 
 	info.HotSpotX = info.w * hs_xf;
 	info.HotSpotY = info.h * hs_yf;
-	oldw = info.w;
-	oldh = info.h;
 
 	info.HotSpotAngle = atan(float(info.HotSpotY) / float(info.HotSpotX));
 	info.HotSpotDist = sqrt((double)info.HotSpotX * info.HotSpotX + info.HotSpotY * info.HotSpotY);
-
-	info.x = info.editObject->eX ;//+ info.HotSpotX;
-	info.y = info.editObject->eY ;//+ info.HotSpotY;
-
-	info.pInfo->filter = info.editObject->eColor;
-	info.angle = info.editObject->eAngle;
-
-	info.visible = true;
-	padding = 0;
-
-	// Setup private vars
-	SetupPrivateVariableVector(pRuntime, this, privateVars);
-
-	objAttach = NULL;
-
-	// Update bounding box
-	pRuntime->UpdateBoundingBox(this);
-
-	UpdateMyColors();
 }
 
 // Destructor: called when an instance of your object is destroyed.
