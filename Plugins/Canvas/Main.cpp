@@ -175,13 +175,18 @@ void ExtObject::PerformDrawingQueue()
 {
 	if (firstFrame) {
 		firstFrame = 0;
-		renderer->SetRenderTarget(info.curTexture);
-		renderer->ClearRenderTarget();
-		renderer->SetTexture(startTexture);
-		renderer->SetScreenTranslation(true);		// disable scroll offset, has to draw to 0,0
-		renderer->Quad_xy(0, 0);//, info.curTexture->image_widthf, info.curTexture->image_heightf);
-		renderer->SetScreenTranslation(false);		// enable scroll offset
-		renderer->RestoreRenderTarget();
+
+		// This is nasty, but works around an obscure bug in the renderer... super-kludge
+		// (draws incorrectly if very first thing to render; second pass always renders correctly)
+		for (int i = 0; i < 2; ++i) {
+			renderer->SetRenderTarget(info.curTexture);
+			renderer->ClearRenderTarget();
+			renderer->SetTexture(startTexture);
+			renderer->SetScreenTranslation(true);		// disable scroll offset, has to draw to 0,0
+			renderer->Quad_xywh(0, 0, info.curTexture->image_widthf, info.curTexture->image_heightf);
+			renderer->SetScreenTranslation(false);		// enable scroll offset
+			renderer->RestoreRenderTarget();
+		}
 	}
 
 	if (!drawQueue.empty()) {

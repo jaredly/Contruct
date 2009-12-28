@@ -122,6 +122,13 @@ void CRuntime::FlushDelayedObjects()
 		for ( ; i != delayed_end; i++) {
 			(*t)->instances.push_back(*i);
 
+			// Add to teams.
+			ObjTypeIterator u = (*t)->teams.begin();
+			ObjTypeConstIterator teams_end = (*t)->teams.end();
+
+			for ( ; u != teams_end; u++)
+				(*u)->instances.push_back(*i);
+
 			if (system.loading)
 				(*i)->info.destroying = true;
 		}
