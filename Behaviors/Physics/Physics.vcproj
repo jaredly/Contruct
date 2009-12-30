@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="Physics"
 	ProjectGUID="{C66CBA5C-950F-4113-B883-DE4E38054ED4}"
 	RootNamespace="ConstructSDK"
 	Keyword="MFCProj"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -89,7 +90,11 @@
 				GenerateDebugInformation="false"
 				ProgramDatabaseFile=".\..\..\..\Construct Compile\8DirMov\Release/MouseMov.pdb"
 				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
 				LinkTimeCodeGeneration="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\..\..\..\Construct Compile\8DirMov\Release/MouseMov.lib"
 			/>
 			<Tool
@@ -111,9 +116,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -194,6 +196,10 @@
 				GenerateDebugInformation="false"
 				ProgramDatabaseFile=".\..\..\..\Construct Compile\MouseMov\Runtime/MouseMov.pdb"
 				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\..\..\..\Construct Compile\MouseMov\Runtime/MouseMov.lib"
 			/>
 			<Tool
@@ -215,9 +221,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -293,6 +296,8 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\..\..\..\Construct Compile\8DirMov\Debug/MouseMov.pdb"
 				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\..\..\..\Construct Compile\8DirMov\Debug/MouseMov.lib"
 				TargetMachine="1"
 			/>
@@ -315,9 +320,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -393,6 +395,8 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\..\..\..\Construct Compile\8DirMov\Debug Runtime/MouseMov.pdb"
 				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\..\..\..\Construct Compile\8DirMov\Debug Runtime/MouseMov.lib"
 				TargetMachine="1"
 			/>
@@ -415,9 +419,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
