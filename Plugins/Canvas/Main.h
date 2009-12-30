@@ -90,6 +90,7 @@ public:
 	long aPasteObject(LPVAL theParams);
 	long aGenerateMask(LPVAL theParams);
 	long aLoadFromFile(LPVAL params);
+	long aResize(LPVAL params);
 
 	long eGetValue(LPVAL theParams, ExpReturn& ret);
 

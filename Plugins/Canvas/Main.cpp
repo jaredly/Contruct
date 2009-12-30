@@ -162,6 +162,24 @@ long ExtObject::aLoadFromFile(LPVAL params)
 	return 0;
 }
 
+long ExtObject::aResize(LPVAL params)
+{
+	int width = params[0].GetInt();
+	if(width < 0)
+		return 0;
+
+	int height = params[1].GetInt();
+	if(height < 0)
+		return 0;
+
+	PerformDrawingQueue();
+	if(info.curTexture->rendertarget)
+	{
+		renderer->ResizeRenderTargetTexture(info.curTexture, width, height);
+	}
+	return 0;
+}
+
 //////////////////////////////////////////////////////////////////////////////////
 // Expressions
 //////////////////////////////////////////////////////////////////////////////////
@@ -254,7 +272,6 @@ void DefineACES(MicroAceTime* at)
 	ADDPARAMCOMBO("Comparison", "Select the comparison to make.", "Equal to|Not equal to|Less than|Less or equal|Greater than|Greater or equal");
 	ADDPARAM(PARAM_VALUE, "Value", "Value to compare to");
 	ADDCND("Compare value", "Private variables", "%o Value %0 %1 %2", &ExtObject::cValueCmp, "CompareValue", 0);
-
 	/////////////////////////////
 	// Actions
 
@@ -306,7 +323,11 @@ void DefineACES(MicroAceTime* at)
 
 	ADDACT("Update collision mask", "Canvas", "Update collision mask", &ExtObject::aGenerateMask, "UpdateCollisions", 0);
 
-	
+	ADDPARAM(PARAM_VALUE, "Width", "Number of horizontal pixels");
+	ADDPARAM(PARAM_VALUE, "Height", "Number of vertical pixels");
+	ADDACT("Resize Canvas", "Canvas", "Resize Canvas to (%0, %1)", &ExtObject::aResize, "Resize", 0);
+
+
 	//ADDPARAM(PARAM_OBJECT, "Object", "DEBUG");
 	//ADDACT("Set pathfinding object", "DEBUG", "Set debugging pathfinding from RTS of %0", &ExtObject::aSetDebuggingPf, "SetDebug", 0);
 	
