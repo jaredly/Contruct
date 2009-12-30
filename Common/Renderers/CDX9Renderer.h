@@ -501,6 +501,8 @@ namespace cr {
 		bool					device_is_lost;		// True when device in lost state and waiting for reset
 		bool					device_got_reset;	// True immediately after a device got reset
 
+		int						begin_scene_nest; //incremented and decremented on calls to beginScene and endScene
+
 		uint					multisamples;
 		DWORD					multisample_quality;
 

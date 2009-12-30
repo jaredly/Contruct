@@ -140,6 +140,15 @@ namespace cr {
 		if (batch.empty())
 			return;
 
+		if(begin_scene_nest == 0)
+		{
+			// Its better if this doesn't happen...but if it does...force direct x to have 
+			// a begin scene otherwise it will crash. This messes up parallel processing, 
+			// but its better than the runtime crashing! - Davo
+			CRASSERT(d3d9_device != NULL);
+			hr = d3d9_device->BeginScene();
+		}
+
 		batches_per_present++;
 
 #ifdef CR_DEBUG
@@ -174,6 +183,15 @@ namespace cr {
 
 		for ( ; i != batch_end; ++i)
 			(*i)->Do();
+
+		if(begin_scene_nest == 0)
+		{
+			// Its better if this doesn't happen...but if it does...force direct x to have 
+			// a begin scene otherwise it will crash. This messes up parallel processing, 
+			// but its better than it crashing! - Davo
+			CRASSERT(d3d9_device != NULL);
+			hr = d3d9_device->EndScene();
+		}
 
 		// Put everything back
 		ResetBatch();

@@ -410,7 +410,8 @@ namespace cr {
 		  use_zbuffer(false),
 		  multisamples(0),
 		  multisample_quality(0),
-		  device_got_reset(false)
+		  device_got_reset(false),
+		  begin_scene_nest(0)
 
 #ifdef CR_DEBUG
 		,
@@ -1512,6 +1513,7 @@ namespace cr {
 		CRASSERT(d3d9_device != NULL);
 
 		hr = d3d9_device->BeginScene();
+		begin_scene_nest ++;
 
 		// Clear Z buffer on start of scene if one used
 		if (use_zbuffer)
@@ -1528,6 +1530,8 @@ namespace cr {
 		CRASSERT(d3d9_device != NULL);
 
 		hr = d3d9_device->EndScene();
+
+		begin_scene_nest --;
 
 		if (FAILED(hr))
 			throw error(_T("Could not end scene"), hr);
