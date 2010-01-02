@@ -981,7 +981,7 @@ BOOL ExtObject::OnFrame()
 	{
 		if(leftright < 0)
 			pLink->info.angle = 180;
-		else
+		else if(leftright > 0)
 			pLink->info.angle = 0;
 	}
 	
