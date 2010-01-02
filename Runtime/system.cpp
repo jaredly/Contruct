@@ -4098,7 +4098,9 @@ void ExpToPython(PyObject*& tupple, ExpStore* ret)
 			tupple = Py_BuildValue("f", ret->GetFloat());
 		break;
 		case EXPTYPE_STRING:
+		{
 			tupple = Py_BuildValue("s", ret->GetString());
+		}
 		break;
 		case EXPTYPE_ARRAY:
 			{
@@ -4215,10 +4217,22 @@ long CallSysAC(SYSTEMROUTINE acroutine, PyObject* pParams)
 	return ((*g_pySystem).*acroutine)((ExpReturn*)ParamList);
 }
 
+class ExpStorePy : public ExpStore
+{
+public:
+	void PreventHeapCorruptionHack()
+	{
+		if(Type() == EXPTYPE_STRING)
+			eData.str = new CString;
+	}
+};
+
+
 long CallE(EXPROUTINE exproutine, CRunObject* obj, PyObject* pParams, PyObject*& pythonret)
 {
+	//assert(false);
 	// Call the action
-	ExpStore ret;
+	ExpStorePy ret;
 	
 	// Params
 	int size = 1;
@@ -4237,6 +4251,9 @@ long CallE(EXPROUTINE exproutine, CRunObject* obj, PyObject* pParams, PyObject*&
 	ExpToPython(pythonret, &ret);
 	if(pythonret == Py_None)
 		Py_INCREF( Py_None );
+
+	ret.PreventHeapCorruptionHack(); // We cant free the memory in eData.str because its allocated by a special runtime function
+									 // So this hack forces the str to point to a dynamically allocated string, if its a string
 
 	return returnval;
 }
@@ -4907,8 +4924,6 @@ bool SystemObject::InitPython()
 		// have 1 parameter
 		map<CString, SYSTEMROUTINE> possibleAttribute;
 
-		
-
 		// Actions
 		index = 0;
 		for(; index != sizeof(SysActScript) / sizeof(CString) ; index++)
@@ -5031,6 +5046,11 @@ bool SystemObject::InitPython()
 		for(vector<CRunObjType*>::iterator o = pCRuntime->objects.begin();	o != pCRuntime->objects.end();	o ++)
 		{
 			PluginModule* plug = (*o)->pPlugin;
+
+			if(!plug) // if this is null, its usually because theres an attribute in the application
+			{
+				continue;
+			}
 
 			///////////////////////////////
 			// OBJECT INSTANCE

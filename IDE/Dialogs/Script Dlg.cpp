@@ -52,7 +52,7 @@ BEGIN_MESSAGE_MAP(CScriptDlg, CExtResizableDialog)
 	ON_WM_LBUTTONUP()
 END_MESSAGE_MAP()
 
-#define KEYWORDS "self new and del from not while as elif global or with assert else if pass yield break except import print class exec in raise continue finally is def for lambda try"
+#define KEYWORDS "self new and del from not while as elif global or with assert else if pass yield break except import print class exec in raise continue finally is def for lambda try return True False"
 
 void CScriptDlg::OnNew() 
 {
@@ -1739,6 +1739,10 @@ void CScriptDlg::InitPythonForObject(CObjType* pType, PyInfoClass* pClass)
 				}
 			}
 		}
+		if(a->scriptName.Left(1) == "(" || a->scriptName.Left(1) == "<")
+		{
+			continue;
+		}
 		PyInfoFunc* pFunct = &pClass->functions[a->scriptName];
 		pFunct->name = a->scriptName;
 		pFunct->pParent = pClass;
@@ -1769,6 +1773,9 @@ void CScriptDlg::InitPythonForObject(CObjType* pType, PyInfoClass* pClass)
 		if(c->scriptName == "")
 			continue;
 
+		if(c->scriptName.Left(1) == "("|| c->scriptName.Left(1) == "<")
+			continue;
+
 		PyInfoFunc* pFunct = &pClass->functions[c->scriptName];
 		pFunct->name = c->scriptName;
 		pFunct->pParent = pClass;
@@ -1794,6 +1801,9 @@ void CScriptDlg::InitPythonForObject(CObjType* pType, PyInfoClass* pClass)
 		ACESEntry2* e = pType->GetACESEntry(EXPRESSION, i);
 		if(e->scriptName == "")
 			continue;
+		if(e->scriptName.Left(1) == "(" || e->scriptName.Left(1) == "<")
+			continue;
+
 
 		if(e->params.size() == 0)
 		{

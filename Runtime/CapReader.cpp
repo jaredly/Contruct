@@ -887,7 +887,10 @@ void CCapReader::ReadFrameData(BYTE* _pData, int _len)
 				pType->pPlugin->py_actions.push_back(PyFunct());
 				PyFunct& fct = pType->pPlugin->py_actions.back();
 				ar >> fct.name; 
-				fct.paramCount = ar.read<int>();		
+				fct.paramCount = ar.read<int>();
+
+				if(fct.name.Left(1) == "(" || fct.name.Left(1) == "<")
+					pType->pPlugin->py_actions.pop_back();
 			}
 
 			int conditionCount = ar.read<int>();
@@ -895,7 +898,10 @@ void CCapReader::ReadFrameData(BYTE* _pData, int _len)
 				pType->pPlugin->py_conditions.push_back(PyFunct());
 				PyFunct& fct = pType->pPlugin->py_conditions.back();
 				ar >> fct.name; 
-				fct.paramCount = ar.read<int>();		
+				fct.paramCount = ar.read<int>();	
+
+				if(fct.name.Left(1) == "(" || fct.name.Left(1) == "<")
+					pType->pPlugin->py_conditions.pop_back();
 			}
 
 			int expressionCount = ar.read<int>();
@@ -903,7 +909,10 @@ void CCapReader::ReadFrameData(BYTE* _pData, int _len)
 				pType->pPlugin->py_expressions.push_back(PyFunct());
 				PyFunct& fct = pType->pPlugin->py_expressions.back();
 				ar >> fct.name; 
-				fct.paramCount = ar.read<int>();		
+				fct.paramCount = ar.read<int>();
+
+				if(fct.name.Left(1) == "(" || fct.name.Left(1) == "<")
+					pType->pPlugin->py_expressions.pop_back();
 			}
 #endif
 		}
