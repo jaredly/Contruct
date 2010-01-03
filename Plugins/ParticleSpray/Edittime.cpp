@@ -28,7 +28,7 @@
 
 BEGIN_PROPERTY_TABLE();
 
-	PROPERTY_VALUE	(pp.rate,		"Rate",		"Number of particles to create per second, or in total for one-shot effects");
+	PROPERTY_FLOAT	(pp.rate,		"Rate",		"Number of particles to create per second, or in total for one-shot effects");
 	PROPERTY_BOOL	(pp.oneShot,	"One-shot",	"Create all the particles in one go, then destroy when all particles expired");
 	PROPERTY_BUTTON ("Edit", "Texture", "Edit", BtnEditTexture());
 	PROPERTY_BOOL	(useTexture, "Use texture", "Enable textured particles.");
@@ -190,7 +190,7 @@ BOOL EditExt::OnSizeObject()
 
 void EditExt::Serialize(bin& ar)
 {
-	int Version = 5;
+	int Version = 6;
 	SerializeVersion(ar, Version);
 
 	if(Version >= 4)
@@ -198,8 +198,12 @@ void EditExt::Serialize(bin& ar)
 
 	if (ar.loading) {
 		if(Version < 4){
-			 ar >> pp.sprayCone >> pp.particleSize >> pp.color >> pp.opacity >> pp.speed >> pp.acc >> pp.destroyMode >> pp.lifeTime
-				>> pp.angleRandomiser >> pp.rate >> pp.xRandom >> pp.yRandom >> pp.speedRandom >> pp.gravity >> pp.colorRandom
+			int rate;
+			ar >> pp.sprayCone >> pp.particleSize >> pp.color >> pp.opacity >> pp.speed >> pp.acc >> pp.destroyMode >> pp.lifeTime
+			   >> pp.angleRandomiser >> rate;
+
+			pp.rate = rate;
+			ar  >>  pp.xRandom >> pp.yRandom >> pp.speedRandom >> pp.gravity >> pp.colorRandom
 				>> pp.opacityRandom >> pp.fadeoutTime >> pp.fadeColor >> pp.fadeColorTime;
 		}
 

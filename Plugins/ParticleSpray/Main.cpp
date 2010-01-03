@@ -7,12 +7,24 @@
 // Note: earlier versions no longer use this function as there was no version number in the serialize
 void ParticleParameters::Serialize(bin& ar)
 {
-	int Version = 6;
+	int Version = 7;
 	SerializeVersion(ar, Version);
 
 	if (ar.loading) {
 		ar >> sprayCone >> particleSize >> color >> opacity >> speed >> acc >> destroyMode >> lifeTime
-			>> angleRandomiser >> rate >> xRandom >> yRandom >> speedRandom >> gravity >> colorRandom
+		   >> angleRandomiser;
+
+		if(Version < 7)
+		{
+			int irate;
+			ar >> irate;
+			rate = irate;
+		}
+		else
+			ar >> rate;
+		
+		
+		ar  >> xRandom >> yRandom >> speedRandom >> gravity >> colorRandom
 			>> opacityRandom >> fadeoutTime >> fadeColor >> fadeColorTime;
 
 		if(Version >= 2)
@@ -309,7 +321,7 @@ long ExtObject::aSetAngleRandomiser(LPVAL params)
 }
 long ExtObject::aSetRate(LPVAL params)
 {
-	pp.rate = params[0].GetInt();
+	pp.rate = params[0].GetFloat();
 	return 0;
 }
 long ExtObject::aSetXRandom(LPVAL params)
@@ -322,7 +334,7 @@ long ExtObject::aSetYRandom(LPVAL params)
 	pp.yRandom = params[0].GetFloat();
 	return 0;
 }
-long ExtObject::aSetSpeedRandom(LPVAL params)
+long ExtObject::aSetSpeedSimulationRandom(LPVAL params)
 {
 	pp.speedRandom = params[0].GetFloat();
 	return 0;
@@ -346,6 +358,126 @@ long ExtObject::aSetOn(LPVAL params)
 	return 0;
 }
 
+//////////////////////////
+//
+//    NEW ACTIONS
+//
+/////////////////////////
+
+long ExtObject::aSetOneShot(LPVAL params)
+{
+	pp.oneShot = params[0].GetBool();
+	return 0;
+}
+
+long ExtObject::aSetUseTexture(LPVAL params)
+{
+	useTexture = params[0].GetBool();
+	return 0;
+}
+
+long ExtObject::aSetRenderAdditive(LPVAL params)
+{
+	pp.renderAdditive = params[0].GetBool();
+	return 0;
+}
+
+long ExtObject::aSetDisplayAngle(LPVAL params)
+{
+	pp.particleDisplayAngle = params[0].GetFloat();
+	return 0;
+}
+
+long ExtObject::aSetSizeRandomiser(LPVAL params)
+{
+	pp.sizeRandom = params[0].GetFloat();
+	return 0;
+}
+
+long ExtObject::aSetDisplayAngleRandomiser(LPVAL params)
+{
+	pp.daRandom = params[0].GetFloat();
+	return 0;
+}
+
+long ExtObject::aSetGrowRandomiser(LPVAL params)
+{
+	pp.growRandom = params[0].GetFloat();
+	return 0;
+}
+
+long ExtObject::aSetDisplayAngleTurnRandomiser(LPVAL params)
+{
+	pp.daTurnRandom = params[0].GetFloat();
+	return 0;
+}
+
+long ExtObject::aSetGravityAngle(LPVAL params)
+{
+	pp.gravityangle = params[0].GetFloat();
+	return 0;
+}
+
+long ExtObject::aSetGrow(LPVAL params)
+{
+	pp.grow = params[0].GetFloat();
+	return 0;
+}
+
+long ExtObject::aSetDisplayAngleTurnSpeed(LPVAL params)
+{
+	pp.daTurn = params[0].GetFloat();
+	return 0;
+}
+
+long ExtObject::aSetOpacityRandomiser(LPVAL params)
+{
+	pp.opacityRandom = params[0].GetFloat();
+	return 0;
+}
+
+long ExtObject::aSetOpacity(LPVAL params)
+{
+	pp.opacity = params[0].GetFloat() / 100.0f;
+	return 0;
+}
+
+long ExtObject::aSetDestroyMode(LPVAL params)
+{
+	pp.destroyMode = params[0].GetFloat();
+	return 0;
+}
+
+long ExtObject::aSetColor(LPVAL params)
+{
+	pp.color = params[0].GetColorRef();
+
+	col = cr::color(pp.color);
+
+	return 0;
+}
+
+long ExtObject::aSetFadeToColor(LPVAL params)
+{
+	pp.fadeColor = params[0].GetColorRef();
+	col_fade = cr::color(pp.fadeColor);
+
+	return 0;
+}
+
+long ExtObject::aSetFadeColorTime(LPVAL params)
+{
+	pp.fadeColorTime = params[0].GetFloat();
+	return 0;
+}
+
+long ExtObject::aSetSpeedRandom( LPVAL params )
+{
+	pp.speedRandom = params[0].GetFloat();
+	return 0;
+}
+
+
 //////////////////////////////////////////////////////////////////////////////////
 // Expressions
 //////////////////////////////////////////////////////////////////////////////////
@@ -367,7 +499,7 @@ long ExtObject::eNumParticles(LPVAL params, ExpReturn& ret)
 
 long ExtObject::eSprayCone(LPVAL params, ExpReturn& ret)
 {
-	return ret = pp.sprayCone;
+	return ret = DEGREES(pp.sprayCone);
 }
 
 long ExtObject::eParticleSize(LPVAL params, ExpReturn& ret)
@@ -410,7 +542,7 @@ long ExtObject::eYRandom(LPVAL params, ExpReturn& ret)
 	return ret = pp.yRandom;
 }
 
-long ExtObject::eSpeedRandom(LPVAL params, ExpReturn& ret)
+long ExtObject::eSpeedSimulationRandom(LPVAL params, ExpReturn& ret)
 {
 	return ret = pp.speedRandom;
 }
@@ -434,6 +566,91 @@ long ExtObject::eFadeColorTime(LPVAL params, ExpReturn& ret)
 {
 	return ret = pp.fadeColorTime;
 }
+
+//////
+// NEW EXPRESSIONS
+/////
+
+
+long ExtObject::eOneShot(LPVAL params, ExpReturn& ret)
+{
+	return ret = pp.oneShot;
+}
+long ExtObject::eUseTexture(LPVAL params, ExpReturn& ret)
+{
+	return ret = useTexture;
+}
+long ExtObject::eRenderAdditive(LPVAL params, ExpReturn& ret)
+{
+	return ret = pp.renderAdditive;
+}
+long ExtObject::eDisplayAngle(LPVAL params, ExpReturn& ret)
+{
+	return ret = pp.particleDisplayAngle;
+}
+long ExtObject::eOpacity(LPVAL params, ExpReturn& ret)
+{
+	return ret = pp.opacity * 100;
+}
+
+long ExtObject::eSizeRandomiser(LPVAL params, ExpReturn& ret)
+{
+	return ret = pp.sizeRandom;
+}
+
+long ExtObject::eDisplayAngleRandomiser(LPVAL params, ExpReturn& ret)
+{
+	return ret = pp.daRandom;
+}
+
+long ExtObject::eSpeedRandomiser(LPVAL params, ExpReturn& ret)
+{
+	return ret = pp.speedRandom;
+}
+
+long ExtObject::eGrowRandomiser(LPVAL params, ExpReturn& ret)
+{
+	return ret = pp.growRandom;
+}
+
+long ExtObject::eDisplayAngleTurnRandomiser(LPVAL params, ExpReturn& ret)
+{
+	return ret = pp.growRandom;
+}
+
+long ExtObject::eGravityAngle(LPVAL params, ExpReturn& ret)
+{
+	return ret = pp.gravityangle;
+}
+
+long ExtObject::eGrow(LPVAL params, ExpReturn& ret)
+{
+	return ret = pp.grow;
+}
+
+long ExtObject::eDisplayAngleTurn(LPVAL params, ExpReturn& ret)
+{
+	return ret = pp.daTurn;
+}
+
+long ExtObject::eDestroyMode(LPVAL params, ExpReturn& ret)
+{
+	return ret = pp.destroyMode;
+}
+
+long ExtObject::eColor(LPVAL params, ExpReturn& ret)
+{
+	return ret = (int)pp.color;
+}
+
+long ExtObject::eFadeToColor(LPVAL params, ExpReturn& ret)
+{
+	return ret = (int)pp.fadeColor;
+
+	fadeColorTimef = pp.fadeColorTime;
+}
+
+
 
 
 #endif // #ifdef RUN_ONLY
@@ -513,43 +730,104 @@ void DefineACES(MicroAceTime* at)
 	ADDACT("Subtract from value", "Private variables", "Subtract %1 from %0", &ExtObject::aSubValue, "SubValue", 0);
 
 	ADDPARAM(PARAM_VALUE, "Spray cone", "The cone of spray, in degrees");
-	ADDACT("Set spray cone", "Particles", "Set spray cone to %0 degrees", &ExtObject::aSetSprayCone, "SetSprayCone", 0);
+	ADDACT("Set spray cone", "Particle Creation Randomization", "Set spray cone to %0 degrees", &ExtObject::aSetSprayCone, "SetSprayCone", 0);
 
 	ADDPARAM(PARAM_VALUE, "Particle size", "Particle size, in pixels");
-	ADDACT("Set particle size", "Particles", "Set particle size to %0", &ExtObject::aSetParticleSize, "SetParticleSize", 0);
+	ADDACT("Set particle size", "Particle Creation Settings", "Set particle size to %0", &ExtObject::aSetParticleSize, "SetParticleSize", 0);
 
 	ADDPARAM(PARAM_VALUE, "Particle speed", "Particle speed, in pixels per second");
 	ADDACT("Set speed", "Particles", "Set speed to %0", &ExtObject::aSetSpeed, "SetSpeed", 0);
 
 	ADDPARAM(PARAM_VALUE, "Particle acceleration", "Particle acceleration, in pixels per second per second");
-	ADDACT("Set acceleration", "Particles", "Set acceleration to %0", &ExtObject::aSetAcc, "SetAcc", 0);
+	ADDACT("Set acceleration", "Particle Simulation Settings", "Set acceleration to %0", &ExtObject::aSetAcc, "SetAcc", 0);
 
 	ADDPARAM(PARAM_VALUE, "Particle timeout", "Particle timeout, in milliseconds");
-	ADDACT("Set timeout", "Particles", "Set timeout to %0", &ExtObject::aSetLifetime, "SetTimeout", 0);
+	ADDACT("Set timeout", "Particle Life Settings", "Set timeout to %0", &ExtObject::aSetLifetime, "SetTimeout", 0);
 
 	ADDPARAM(PARAM_VALUE, "Angle randomiser", "Angle randomiser, in degrees");
-	ADDACT("Set angle randomiser", "Particles", "Set angle randomiser to %0", &ExtObject::aSetAngleRandomiser, "SetAngleRandomiser", 0);
+	ADDACT("Set angle randomiser", "Particle Simulation Randomization", "Set angle randomiser to %0", &ExtObject::aSetAngleRandomiser, "SetAngleRandomiser", 0);
 
 	ADDPARAM(PARAM_VALUE, "Spawn rate", "The number of particles to create every second.");
 	ADDACT("Set rate", "Particles", "Set rate to %0 particles per second", &ExtObject::aSetRate, "SetRate", 0);
 
 	ADDPARAM(PARAM_VALUE, "X Randomiser", "Particle X co-ordinate randomiser, pixels");
-	ADDACT("Set X randomiser", "Particles", "Set X randomiser to %0", &ExtObject::aSetXRandom, "SetXRandom", 0);
+	ADDACT("Set X randomiser", "Particle Creation Randomization", "Set X randomiser to %0", &ExtObject::aSetXRandom, "SetXRandom", 0);
 
 	ADDPARAM(PARAM_VALUE, "Y Randomiser", "Particle Y co-ordinate randomiser, pixels");
-	ADDACT("Set Y randomiser", "Particles", "Set Y randomiser to %0", &ExtObject::aSetYRandom, "SetYRandom", 0);
+	ADDACT("Set Y randomiser", "Particle Creation Randomization", "Set Y randomiser to %0", &ExtObject::aSetYRandom, "SetYRandom", 0);
 
 	ADDPARAM(PARAM_VALUE, "Speed Randomiser", "Particle speed randomiser");
-	ADDACT("Set speed randomiser", "Particles", "Set speed randomiser to %0", &ExtObject::aSetSpeedRandom, "SetSpeedRandom", 0);
+	ADDACT("Set speed simulation randomiser", "Particle Simulation Randomization", "Set speed simulation randomiser to %0", &ExtObject::aSetSpeedSimulationRandom, "SetSpeedSimulationRandom", 0);
 
 	ADDPARAM(PARAM_VALUE, "Gravity", "Downwards acceleration of particles, in pixels per second per second");
-	ADDACT("Set gravity", "Particles", "Set gravity to %0", &ExtObject::aSetGravity, "SetGravity", 0);
+	ADDACT("Set gravity", "Particle Simulation Settings", "Set gravity to %0", &ExtObject::aSetGravity, "SetGravity", 0);
 
 	ADDPARAM(PARAM_VALUE, "Fadeout time", "Time for particles to fade to 0 opacity, in milliseconds");
-	ADDACT("Set fadeout time", "Particles", "Set fadeout time to %0", &ExtObject::aSetFadeoutTime, "SetFadeoutTime", 0);
+	ADDACT("Set fadeout time", "Particle Life Settings", "Set fadeout time to %0", &ExtObject::aSetFadeoutTime, "SetFadeoutTime", 0);
 
 	ADDPARAMCOMBO("Particle spray enabled?", "Choose whether spray is on or off.", "Off|On");
 	ADDACT("Set spray enabled", "Particles", "Set spray %0", &ExtObject::aSetOn, "SetEnabled", 0);
+
+	// NEW ACTIONS
+
+	ADDPARAM(PARAM_VALUE, "Rate", "Number of particles to create per second, or in total for one-shot effects");
+	ADDACT("One shot?", "Particles", "Use one shot? %0", &ExtObject::aSetOneShot, "SetOneShot", 0);
+
+	ADDPARAMCOMBO("Use texture?", "Determine whether to use a texture or not", "Yes|No");
+	ADDACT("Use texture?", "Particles", "Use texture? %0", &ExtObject::aSetUseTexture, "SetUseTexture", 0);
+
+	ADDPARAMCOMBO("Render additive?", "Determine whether to render each particle in additive mode", "Yes|No");
+	ADDACT("Render additive?", "Particles", "Render additive? %0", &ExtObject::aSetRenderAdditive, "SetRenderAdditive", 0);
+
+	ADDPARAM(PARAM_VALUE, "Angle", "Display angle of the new spawned particles, in degrees");
+	ADDACT("Set display angle", "Particles", "Set display angle to %0", &ExtObject::aSetDisplayAngle, "SetDisplayAngle", 0);
+
+	ADDPARAM(PARAM_VALUE, "Size", "Number of pixels to randomly add to the particle when they spawn");
+	ADDACT("Set size randomiser", "Particle Creation Randomization", "Set size randomiser to %0", &ExtObject::aSetSizeRandomiser, "SetSizeRandomiser", 0);
+
+	ADDPARAM(PARAM_VALUE, "Angle", "Randomisation of the textures angle on creation");
+	ADDACT("Set display angle randomiser", "Particle Creation Randomization", "Set display angle randomiser to %0", &ExtObject::aSetDisplayAngleRandomiser, "SetDisplayAngleRandomiser", 0);
+
+	ADDPARAM(PARAM_VALUE, "Grow", "Randomisation of the particle size change, in pixels per second");
+	ADDACT("Set grow randomiser", "Particle Creation Randomization", "Set grow randomiser to %0", &ExtObject::aSetGrowRandomiser, "SetGrowRandomiser", 0);
+
+	ADDPARAM(PARAM_VALUE, "Turn Speed", "Randomisation of the textures turning speed on creation");
+	ADDACT("Set display angle turn randomiser", "Particle Creation Randomization", "Set display angle turn randomiser to %0", &ExtObject::aSetDisplayAngleTurnRandomiser, "SetDisplayAngleTurnRandomiser", 0);
+
+	ADDPARAM(PARAM_VALUE, "Angle", "Angle of the gravity");
+	ADDACT("Set gravity angle", "Particle Simulation Settings", "Set gravity angle to %0", &ExtObject::aSetGravityAngle, "SetGravityAngle", 0);
+
+	ADDPARAM(PARAM_VALUE, "Grow", "Particle size change in pixels per second");
+	ADDACT("Set grow", "Particle Simulation Settings", "Set grow to %0", &ExtObject::aSetGrow, "SetGrow", 0);
+
+	ADDPARAM(PARAM_VALUE, "Turn Speed", "Display angle rotation of particles, in degrees per second");
+	ADDACT("Set display angle turn speed", "Particle Simulation Settings", "Set display angle turn speed to %0", &ExtObject::aSetDisplayAngleTurnSpeed, "SetDisplayAngleTurnSpeed", 0);
+
+	ADDPARAM(PARAM_VALUE, "Opacity Random", "Maximum opacity adjustment per second");
+	ADDACT("Set opacity randomiser", "Particle Life Settings", "Set opacity randomiser to %0", &ExtObject::aSetOpacityRandomiser, "SetOpacityRandomiser", 0);
+
+	ADDPARAMCOMBO("Destroy Mode", "Choose when each particle is destroyed", "Timeout Expired|Particle Stopped|Faded to invisible");
+	ADDACT("Set destroy mode", "Particle Life Settings", "Set destroy mode to (%0)", &ExtObject::aSetDestroyMode, "SetDestroyMode", 0);
+
+	ADDPARAM(PARAM_COLOR, "Color", "Initial color of particles");
+	ADDACT("Set color", "Particle Life Settings", "Set color to %0", &ExtObject::aSetColor, "SetColor", 0);
+
+	ADDPARAM(PARAM_COLOR, "Color", "Color for particle to fade to over fade colour time");
+	ADDACT("Set fade to color", "Particle Life Settings", "Set fade-to color to %0", &ExtObject::aSetFadeToColor, "SetFadeToColor", 0);
+
+	ADDPARAM(PARAM_VALUE, "Opacity", "Percentage");
+	ADDACT("Set particle opacity", "Particle Creation Settings", "Set particle opacity to %0", &ExtObject::aSetOpacity, "SetParticleOpacity", 0);
+
+	ADDPARAM(PARAM_VALUE, "Fadeout time", "Time for particles to fade to the second color, in milliseconds");
+	ADDACT("Set fade color time", "Particle Life Settings", "Set fade color time to %0", &ExtObject::aSetFadeColorTime, "SetParticleOpacity", 0);
+
+	ADDPARAM(PARAM_VALUE, "Speed", "Randomisation of the particle speed, in pixels per second");
+	ADDACT("Set speed randomiser", "Particle Creation Randomization", "Set speed randomiser to %0", &ExtObject::aSetSpeedRandom, "SetSpeedRandomiser", 0);
+
+
+
+
+
 
 	/////////////////////////////
 	// Expressions
@@ -566,21 +844,38 @@ void DefineACES(MicroAceTime* at)
 
 	ADDEXP("Get particle count", "Particles", "ParticleCount", &ExtObject::eNumParticles, RETURN_VALUE);
 
-	ADDEXP("Get spray cone", "Particles", "SprayCone", &ExtObject::eSprayCone, RETURN_VALUE);
-	ADDEXP("Get particle size", "Particles", "ParticleSize", &ExtObject::eParticleSize, RETURN_VALUE);
-	ADDEXP("Get speed", "Particles", "Speed", &ExtObject::eSpeed, RETURN_VALUE);
-	ADDEXP("Get acceleration", "Particles", "Acc", &ExtObject::eAcc, RETURN_VALUE);
-	ADDEXP("Get timeout", "Particles", "Timeout", &ExtObject::eLifetime, RETURN_VALUE);
-	ADDEXP("Get angle randomiser", "Particles", "AngleRandomiser", &ExtObject::eAngleRandomiser, RETURN_VALUE);
+	ADDEXP("Get spray cone", "Particle Creation Randomization", "SprayCone", &ExtObject::eSprayCone, RETURN_VALUE);
+	ADDEXP("Get particle size", "Particle Creation Settings", "ParticleSize", &ExtObject::eParticleSize, RETURN_VALUE);
+	ADDEXP("Get speed", "Particle Creation Settings", "Speed", &ExtObject::eSpeed, RETURN_VALUE);
+	ADDEXP("Get acceleration", "Particle Simulation Settings", "Acceleration", &ExtObject::eAcc, RETURN_VALUE);
+	ADDEXP("Get timeout", "Particle Life Settings", "Timeout", &ExtObject::eLifetime, RETURN_VALUE);
+	ADDEXP("Get angle randomiser", "Particle Simulation Randomization", "AngleRandomiser", &ExtObject::eAngleRandomiser, RETURN_VALUE);
 	ADDEXP("Get rate", "Particles", "Rate", &ExtObject::eRate, RETURN_VALUE);
-	ADDEXP("Get X randomiser", "Particles", "XRandomiser", &ExtObject::eXRandom, RETURN_VALUE);
-	ADDEXP("Get Y randomiser", "Particles", "YRandomiser", &ExtObject::eYRandom, RETURN_VALUE);
-	ADDEXP("Get speed randomiser", "Particles", "SpeedRandomiser", &ExtObject::eSpeedRandom, RETURN_VALUE);
-	ADDEXP("Get gravity", "Particles", "Gravity", &ExtObject::eGravity, RETURN_VALUE);
-	ADDEXP("Get opacity randomiser", "Particles", "OpacityRandomiser", &ExtObject::eOpacityRandom, RETURN_VALUE);
-	ADDEXP("Get fadeout time", "Particles", "FadeoutTime", &ExtObject::eFadeoutTime, RETURN_VALUE);
-	ADDEXP("Get color fade time", "Particles", "FadeColorTime", &ExtObject::eFadeColorTime, RETURN_VALUE);
+	ADDEXP("Get X randomiser", "Particle Creation Randomization", "XRandomiser", &ExtObject::eXRandom, RETURN_VALUE);
+	ADDEXP("Get Y randomiser", "Particle Creation Randomization", "YRandomiser", &ExtObject::eYRandom, RETURN_VALUE);
+	ADDEXP("Get speed simulation randomiser", "Particle Simulation Randomization", "SpeedSimulationRandomiser", &ExtObject::eSpeedSimulationRandom, RETURN_VALUE);
+	ADDEXP("Get gravity", "Simulation Settings", "Gravity", &ExtObject::eGravity, RETURN_VALUE);
+	ADDEXP("Get opacity randomiser", "Particle Simulation Randomization", "OpacityRandomiser", &ExtObject::eOpacityRandom, RETURN_VALUE);
+	ADDEXP("Get fadeout time", "Particle Life Settings", "FadeoutTime", &ExtObject::eFadeoutTime, RETURN_VALUE);
+	ADDEXP("Get color fade time", "Particle Life Settings", "FadeColorTime", &ExtObject::eFadeColorTime, RETURN_VALUE);
 
+
+	ADDEXP("Get is one shot?", "Particles", "OneShot", &ExtObject::eOneShot, RETURN_VALUE);
+	ADDEXP("Get is using texture", "Particles", "UseTexture", &ExtObject::eUseTexture, RETURN_VALUE);
+	ADDEXP("Get is rendering additive", "Particles", "RenderAdditive", &ExtObject::eRenderAdditive, RETURN_VALUE);
+	ADDEXP("Get display angle", "Particle Creation Settings", "DisplayAngle", &ExtObject::eDisplayAngle, RETURN_VALUE);
+	ADDEXP("Get particle opacity", "Particle Creation Settings", "ParticleOpacity", &ExtObject::eOpacity, RETURN_VALUE);
+	ADDEXP("Get size randomiser", "Particle Creation Randomization", "SizeRandomiser", &ExtObject::eSizeRandomiser, RETURN_VALUE);
+	ADDEXP("Get display angle randomiser", "Particle Creation Randomization", "DisplayAngleRandomiser", &ExtObject::eDisplayAngleRandomiser, RETURN_VALUE);
+	ADDEXP("Get speed randomiser", "Particle Creation Randomization", "SpeedRandomiser", &ExtObject::eSpeedRandomiser, RETURN_VALUE);
+	ADDEXP("Get grow randomiser", "Particle Creation Randomization", "GrowRandomiser", &ExtObject::eGrowRandomiser, RETURN_VALUE);
+	ADDEXP("Get display angle turn randomiser", "Particle Creation Randomization", "DisplayAngleTurnRandomiser", &ExtObject::eDisplayAngleTurnRandomiser, RETURN_VALUE);
+	ADDEXP("Get gravity angle", "Particle Simulation Settings", "GravityAngle", &ExtObject::eGravityAngle, RETURN_VALUE);
+	ADDEXP("Get grow", "Particle Simulation Settings", "Grow", &ExtObject::eGrow, RETURN_VALUE);
+	ADDEXP("Get display angle turn", "Particle Simulation Settings", "DisplayAngleTurn", &ExtObject::eDisplayAngleTurn, RETURN_VALUE);
+	ADDEXP("Get destroy mode", "Particle Life Settings", "DestroyMode", &ExtObject::eDestroyMode, RETURN_VALUE);
+	ADDEXP("Get color", "Particle Life Settings", "Color", &ExtObject::eColor, RETURN_VALUE);
+	ADDEXP("Get fade to color", "Particle Life Settings", "FadeToColor", &ExtObject::eFadeToColor, RETURN_VALUE);
 
 #include "..\..\Common\CommonAceTable.hpp"
 

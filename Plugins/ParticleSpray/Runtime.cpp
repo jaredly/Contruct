@@ -87,11 +87,6 @@ void ExtObject::OnCreate()
 	fadeTimef = pp.fadeoutTime;
 	fadeColorTimef = pp.fadeColorTime;
 
-	renderWithPoints = false;
-	if(pp.particleDisplayAngle == 0 && pp.daRandom == 0 && pp.daTurnRandom == 0 
-		&& 	pp.sizeRandom == 0 && 	pp.daTurn == 0 && pp.grow == 0 && pp.growRandom == 0) 
-		renderWithPoints = true;
-
 	info.isFlipped = 0;
 	info.isMirrored = 0;
 
@@ -245,7 +240,7 @@ BOOL ExtObject::OnFrame()
 	for ( ; p != end; p++)
 		p->Update(this);
 
-	if (on) {
+	if (on && pp.rate != 0) {
 
 		if (!pp.oneShot) {
 
@@ -291,7 +286,7 @@ BOOL ExtObject::OnFrame()
 				p.Update(this);
 				timeDelta = dt_backup;
 
-				delayNextParticle += 1.0f / (float)pp.rate;
+				delayNextParticle += 1.0f / pp.rate;
 			}
 
 			timeDelta = oldtimeDelta;
@@ -303,7 +298,7 @@ BOOL ExtObject::OnFrame()
 	// Fire the one-shot particles
 	if (pp.oneShot && !oneShotHasFired) {
 		oneShotHasFired = true;
-		int num = pp.rate;
+		int num = floor(pp.rate + 0.5f);
 
 		float oldtimeDelta = timeDelta;
 
@@ -378,6 +373,12 @@ void ExtObject::Draw()
 
 	if(pp.renderAdditive)
 		renderer->SetAdditiveBlending();
+
+	renderWithPoints = false;
+	if(pp.particleDisplayAngle == 0 && pp.daRandom == 0 && pp.daTurnRandom == 0 
+		&& 	pp.sizeRandom == 0 && 	pp.daTurn == 0 && pp.grow == 0 && pp.growRandom == 0) 
+		renderWithPoints = true;
+
 
 	// Draw particles
 	if(renderWithPoints){

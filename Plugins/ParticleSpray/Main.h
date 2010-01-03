@@ -40,7 +40,7 @@ struct ParticleParameters {
 	int destroyMode;
 	int lifeTime;
 	float angleRandomiser;
-	int rate;
+	float rate;
 	float xRandom;
 	float yRandom;
 	float daRandom;// v4
@@ -195,10 +195,31 @@ public:
 	long aSetRate(LPVAL params);
 	long aSetXRandom(LPVAL params);
 	long aSetYRandom(LPVAL params);
-	long aSetSpeedRandom(LPVAL params);
+	long aSetSpeedSimulationRandom(LPVAL params);
 	long aSetGravity(LPVAL params);
-	long aSetFadeoutTime(LPVAL params);
 	long aSetOn(LPVAL params);
+	long aSetFadeoutTime(LPVAL params);
+
+	// New actions
+
+	long aSetOneShot(LPVAL params);
+	long aSetUseTexture(LPVAL params);
+	long aSetRenderAdditive(LPVAL params);
+	long aSetDisplayAngle(LPVAL params);
+	long aSetSizeRandomiser(LPVAL params);
+	long aSetDisplayAngleRandomiser(LPVAL params);
+	long aSetGrowRandomiser(LPVAL params);
+	long aSetDisplayAngleTurnRandomiser(LPVAL params);
+	long aSetGravityAngle(LPVAL params);
+	long aSetGrow(LPVAL params);
+	long aSetDisplayAngleTurnSpeed(LPVAL params);
+	long aSetOpacityRandomiser(LPVAL params);
+	long aSetDestroyMode(LPVAL params);
+	long aSetColor(LPVAL params);
+	long aSetFadeToColor(LPVAL params);
+	long aSetOpacity(LPVAL params);
+	long aSetFadeColorTime(LPVAL params);
+	long aSetSpeedRandom(LPVAL params);
 
 	long eGetValue(LPVAL params, ExpReturn& ret);
 	long eNumPVs(LPVAL params, ExpReturn& ret);
@@ -212,11 +233,29 @@ public:
 	long eRate(LPVAL params, ExpReturn& ret);
 	long eXRandom(LPVAL params, ExpReturn& ret);
 	long eYRandom(LPVAL params, ExpReturn& ret);
-	long eSpeedRandom(LPVAL params, ExpReturn& ret);
+	long eSpeedSimulationRandom(LPVAL params, ExpReturn& ret);
 	long eGravity(LPVAL params, ExpReturn& ret);
 	long eOpacityRandom(LPVAL params, ExpReturn& ret);
 	long eFadeoutTime(LPVAL params, ExpReturn& ret);
 	long eFadeColorTime(LPVAL params, ExpReturn& ret);
+
+	// New Expressions
+	long eOneShot(LPVAL params, ExpReturn& ret);
+	long eUseTexture(LPVAL params, ExpReturn& ret);
+	long eRenderAdditive(LPVAL params, ExpReturn& ret);
+	long eDisplayAngle(LPVAL params, ExpReturn& ret);
+	long eOpacity(LPVAL params, ExpReturn& ret);
+	long eSizeRandomiser(LPVAL params, ExpReturn& ret);
+	long eDisplayAngleRandomiser(LPVAL params, ExpReturn& ret);
+	long eSpeedRandomiser(LPVAL params, ExpReturn& ret);
+	long eGrowRandomiser(LPVAL params, ExpReturn& ret);
+	long eDisplayAngleTurnRandomiser(LPVAL params, ExpReturn& ret);
+	long eGravityAngle(LPVAL params, ExpReturn& ret);
+	long eGrow(LPVAL params, ExpReturn& ret);
+	long eDisplayAngleTurn(LPVAL params, ExpReturn& ret);
+	long eDestroyMode(LPVAL params, ExpReturn& ret);
+	long eColor(LPVAL params, ExpReturn& ret);
+	long eFadeToColor(LPVAL params, ExpReturn& ret);
 
 	////////////////////////////////////////////////////
 	// Private vars
