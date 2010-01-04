@@ -639,7 +639,7 @@ public:
 	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
-
+	bool inPrecisionMode();
 };
 
 #ifndef _DEBUG  // debug version

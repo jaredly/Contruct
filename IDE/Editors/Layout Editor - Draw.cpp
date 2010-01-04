@@ -215,13 +215,13 @@ void CLayoutEditor::DrawObject(CObj *o, CPoint pOffset, bool unmoved, bool bOutl
 
 	o->editObject->objectX = oX 				* m_Zoom;
 	o->editObject->objectY = oY 				* m_Zoom;
-	o->editObject->objectX = floor(o->editObject->objectX+0.5);
-	o->editObject->objectY = floor(o->editObject->objectY+0.5);
+	//o->editObject->objectX = floor(o->editObject->objectX+0.5);
+	//o->editObject->objectY = floor(o->editObject->objectY+0.5);
 
 	o->editObject->objectWidth = (oX+oWidth) * m_Zoom;
 	o->editObject->objectHeight = (oY+oHeight) * m_Zoom;
-	o->editObject->objectWidth = floor(o->editObject->objectWidth+0.5);
-	o->editObject->objectHeight = floor(o->editObject->objectHeight+0.5);
+	//o->editObject->objectWidth = floor(o->editObject->objectWidth+0.5);
+	//o->editObject->objectHeight = floor(o->editObject->objectHeight+0.5);
 
 	o->editObject->objectWidth -= o->editObject->objectX;
 	o->editObject->objectHeight -= o->editObject->objectY;
@@ -1587,6 +1587,39 @@ bool ScalingShouldBeHorizontal(float w, float h, int type)
 	return false;
 }
 
+// I made this quick class to deal with the CPoint rounding shit
+class pointf
+{
+public:
+	pointf()	{
+		x = 0;
+		y = 0;
+	}
+	pointf(CPoint p){
+		x = p.x;
+		y = p.y;
+	}
+
+	float x;
+	float y;
+};
+
+void round_float(float& x)
+{
+	x = floor(x + 0.5);
+}
+
+void round_double(double& x)
+{
+	x = floor(x + 0.5);
+}
+
+bool CLayoutEditor::inPrecisionMode()
+{
+	return (GetKeyState(VK_MENU) >> 4) ? true : false;
+}
+
+
 CObjectRectangle CLayoutEditor::GetTempChangedRect(CObj *o)
 {
 	double x = o->GetX();
@@ -1646,11 +1679,18 @@ CObjectRectangle CLayoutEditor::GetTempChangedRect(CObj *o)
 					diffX = w-1;
 
 				CObjectRectangle oldrect = o->GetObjectRect(this, true); //oldrect.a = 0;
-				info.objectWidth = floor(w - diffX);
+				info.objectWidth = w - diffX;
 				CObjectRectangle newrect = o->GetObjectRect(this, true); //newrect.a = 0;
-				CPoint offset = oldrect.GetPoint(1,1) - newrect.GetPoint(1,1);
+				pointf offset = oldrect.GetPoint(1,1) - newrect.GetPoint(1,1);
 				info.objectX += offset.x / m_Zoom;
 				info.objectY += offset.y / m_Zoom;
+
+				if(!inPrecisionMode())
+				{
+					round_float(info.objectX);
+					round_float(info.objectY);
+					round_float(info.objectWidth);
+				}
 
 				break;
 			}
@@ -1660,7 +1700,11 @@ CObjectRectangle CLayoutEditor::GetTempChangedRect(CObj *o)
 		case 8:
 			{
 				if(proportional)
-					info.objectWidth = floor(w - diffX);
+					info.objectWidth = w - diffX;
+				if(!inPrecisionMode())
+				{
+					round_float(info.objectWidth);
+				}
 			}
 			break;
 		case 3:
@@ -1672,9 +1716,18 @@ CObjectRectangle CLayoutEditor::GetTempChangedRect(CObj *o)
 				CObjectRectangle oldrect = o->GetObjectRect(this, true); //oldrect.a = 0;
 				info.objectWidth = w + diffX;
 				CObjectRectangle newrect = o->GetObjectRect(this, true); //newrect.a = 0;
-				CPoint offset = oldrect.GetPoint(0,0) - newrect.GetPoint(0,0);
+				pointf offset = oldrect.GetPoint(0,0) - newrect.GetPoint(0,0);
 				info.objectX += offset.x / m_Zoom;
 				info.objectY += offset.y / m_Zoom;
+
+
+				if(!inPrecisionMode())
+				{
+					round_float(info.objectX);
+					round_float(info.objectY);
+					round_float(info.objectWidth);
+				}
+
 				break;
 			}
 			break;
@@ -1691,11 +1744,19 @@ CObjectRectangle CLayoutEditor::GetTempChangedRect(CObj *o)
 					diffY = h-1;
 
 				CObjectRectangle oldrect = o->GetObjectRect(this, true); //oldrect.a = 0;
-				info.objectHeight = floor(h - diffY);
+				info.objectHeight = (h - diffY);
 				CObjectRectangle newrect = o->GetObjectRect(this, true); //newrect.a = 0;
-				CPoint offset = oldrect.GetPoint(1,1) - newrect.GetPoint(1,1);
+				pointf offset = oldrect.GetPoint(1,1) - newrect.GetPoint(1,1);
 				info.objectX += offset.x / m_Zoom;
 				info.objectY += offset.y / m_Zoom;
+
+				if(!inPrecisionMode())
+				{
+					round_float(info.objectX);
+					round_float(info.objectY);
+					round_float(info.objectHeight);
+				}
+
 
 				break;
 			}
@@ -1705,7 +1766,12 @@ CObjectRectangle CLayoutEditor::GetTempChangedRect(CObj *o)
 		case 6:
 			{
 				if(proportional)
-					info.objectHeight = floor(h - diffY);
+					info.objectHeight = (h - diffY);
+				if(!inPrecisionMode())
+				{
+					round_float(info.objectHeight);
+				}
+
 			}
 			break;
 		case 7:
@@ -1717,9 +1783,16 @@ CObjectRectangle CLayoutEditor::GetTempChangedRect(CObj *o)
 				CObjectRectangle oldrect = o->GetObjectRect(this, true); //oldrect.a = 0;
 				info.objectHeight = h + diffY;
 				CObjectRectangle newrect = o->GetObjectRect(this, true); //newrect.a = 0;
-				CPoint offset = oldrect.GetPoint(0,0) - newrect.GetPoint(0,0);
+				pointf offset = oldrect.GetPoint(0,0) - newrect.GetPoint(0,0);
 				info.objectX += offset.x / m_Zoom;
 				info.objectY += offset.y / m_Zoom;
+
+				if( inPrecisionMode())
+				{
+					round_float(info.objectX);
+					round_float(info.objectY);
+					round_float(info.objectHeight);
+				}
 				break;
 			}
 			break;
@@ -1737,8 +1810,8 @@ CObjectRectangle CLayoutEditor::GetTempChangedRect(CObj *o)
 	}
 
 	// now round it
-	info.objectX = floor(info.objectX+0.51);
-	info.objectY = floor(info.objectY+0.51);
+	//info.objectX = floor(info.objectX+0.51);
+	//info.objectY = floor(info.objectY+0.51);
 
 	// moving
 

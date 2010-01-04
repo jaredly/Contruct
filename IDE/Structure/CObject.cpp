@@ -171,11 +171,17 @@ CObjectRectangle CObj::GetObjectRect(CLayoutEditor* ed, bool useoinfo)
 {
 	if(useoinfo)
 	{
-
+/*
 		long x = floor(GetX()*ed->m_Zoom + 0.5);
 		long y = floor(GetY()*ed->m_Zoom + 0.5);
 		long w = floor((GetW()+GetX())*ed->m_Zoom+0.5);
-		long h = floor((GetH()+GetY())*ed->m_Zoom+0.5);
+		long h = floor((GetH()+GetY())*ed->m_Zoom+0.5);*/
+
+		long x = (GetX()*ed->m_Zoom );
+		long y = (GetY()*ed->m_Zoom );
+		long w = ((GetW()+GetX())*ed->m_Zoom);
+		long h = ((GetH()+GetY())*ed->m_Zoom);
+
 		w-= x;
 		h-= y;
 

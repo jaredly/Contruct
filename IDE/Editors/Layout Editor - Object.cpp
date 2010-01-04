@@ -46,8 +46,9 @@ float CLayoutEditor::RoundGridX(float value, bool isResizing)
 {
 	if((layout->m_SnapResize && isResizing) || (layout->m_SnapMovements && !isResizing))
 		return floor(value / GridWidth()+0.5)*GridWidth();
-	else
+	else if(isResizing || !inPrecisionMode())
 		return floor(value+0.5);
+	return value;
 	// note : we can return a float value and everything looks fine, however the ide uses pixels, and 
 	// maybe in later versions we'll use decimal place pixels. 
 }
@@ -55,8 +56,9 @@ float CLayoutEditor::RoundGridY(float value, bool isResizing)
 {
 	if((layout->m_SnapResize && isResizing) || (layout->m_SnapMovements && !isResizing))
 		return floor(value / GridHeight()+0.5)*GridHeight();
-	else
+	else if(isResizing || !inPrecisionMode())
 		return floor(value+0.5);
+	return value;
 }
 
 long CLayoutEditor::GetUnusedOID() 

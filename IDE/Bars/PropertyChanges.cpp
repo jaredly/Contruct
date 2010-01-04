@@ -1091,7 +1091,7 @@ int CPluginStdPropertyValueMgr::OnChange()
 		action->Prepare2();
 		frame->m_undo->AddAction(action);
 		// END UNDO INFO //
-		o->SetPos(value.i, o->GetY());
+		o->SetPos(value.f, o->GetY());
 	}
 	else if (propName == "Y") {
 		// START UNDO INFO //
@@ -1104,7 +1104,7 @@ int CPluginStdPropertyValueMgr::OnChange()
 		action->Prepare2();
 		frame->m_undo->AddAction(action);
 		// END UNDO INFO //
-		o->SetPos(o->GetX(), value.i);
+		o->SetPos(o->GetX(), value.f);
 	}
 	else if (propName == "Angle") {
 		// START UNDO INFO //
