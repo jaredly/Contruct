@@ -12,20 +12,16 @@
 #include "..\..\Common\bin.h"
 
 
-
 extern int physicsCount;
 #define UNIQUE_PHYSICS_ID 13371337
 
 #define OBJECTRECT CRect(editObject->objectX, editObject->objectY, editObject->objectX + editObject->objectWidth, editObject->objectY + editObject->objectHeight)
-
 
 #define colshape int
 #define shape_none 0
 #define shape_rectangle 1
 #define	shape_circle 2
 #define shape_polygon 3
-
-
 
 class CollisionShape
 {
@@ -260,6 +256,7 @@ public:
 	void CloseEdit();
 	void ClearEdit();
 	void OnMessage(int message);
+	bool MouseOverPoint(bool deletePoint);
 
 	class VEditTime* pEditTime;	// Pointer to Virtual Edittime
 	class editInfo*  pInfo;		// Pointer to object edittime info
@@ -288,6 +285,13 @@ public:
 
 	float contactFriction;
 	float contactElasticity;
+
+	// A pointer to the point to drag
+	POINTF* dragPoint;
+	POINTF dragPointOffset;
+
+	// Set window focus
+	bool setWindowFocus;
 };
 
 // Internal stuff include

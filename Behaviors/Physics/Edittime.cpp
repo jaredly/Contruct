@@ -54,6 +54,8 @@ void CollisionShape::Serialize(bin& ar)
 
 #ifndef RUN_ONLY
 
+#define SHIFT_DOWN GetKeyState(VK_SHIFT) < 0
+#define CONTROL_UP GetKeyState(VK_CONTROL) >= 0
 
 #define PROPERTY_IF(x) if(editObject && editObject->objectPtr->x){
 #define PROPERTY_ENDIF }
@@ -266,21 +268,44 @@ void EditExt::Draw()
 
 							point.DeflateRect(1,1);
 							pEditTime->Fill(point, 0xffffffff);
-							
-							point.top ++;
-							point.left ++;
-							pEditTime->Fill(point, 0xffeeeeee);
+
+							// Draw a red minus symbol inside the first point
+							if (p == i->m_pts.begin())
+							{
+								pEditTime->Line(x - 2, y , x + 3, y, 0xffff0000);
+							}
+							// Draw a blue plus symbol inside the last point
+							else if(p == i->m_pts.end() - 1)
+							{
+								// Horizontal section
+								pEditTime->Line(x - 2, y , x + 3, y, 0xff0000ff);
+
+								// Vertical section
+								pEditTime->Line(x, y - 2, x, y + 3, 0xff0000ff);
+							}
 						}
 
 
 
-						if(repeat == 0){
+						if(repeat == 0)
+						{
 							if(index != 0)
-								pEditTime->Line(x,y,lastx,lasty, 0xff000000);
+							{
+								// Draw a line between the current point and the previous point
+								pEditTime->Line(x, y, lastx, lasty, 0xff000000);
+							}
 
 							if(index == i->m_pts.size()-1)
 							{
-								pEditTime->Line(x,y,firstx,firsty, 0xff000000);
+								// Draw a line between the last point and the first point
+								pEditTime->Line(x, y ,firstx, firsty, SHIFT_DOWN ? 0x40000000 : 0xff000000);
+
+								// While shift is down, draw lines showing where new collision lines will be if a new point is placed
+								if (SHIFT_DOWN)
+								{
+									pEditTime->Line(x, y, mouse.x, mouse.y, 0xff000000);
+									pEditTime->Line(firstx, firsty, mouse.x, mouse.y, 0xff000000);
+								}
 							}
 						}
 
@@ -423,8 +448,17 @@ void EditExt::Serialize(bin& ar)
 
 void EditExt::EditCustom()
 {
+	// Enable edit mode
 	editMode = true;
 	shape = 3;
+
+	// Have the window focus set at the start
+	setWindowFocus = true;
+
+	// Nullify any existing pointer to a dragging point
+	dragPoint = NULL;
+
+	// Capture the frame editor
 	pEditTime->CaptureFrameEditor(pInfo->instanceID);
 }
 
@@ -453,9 +487,23 @@ void EditExt::ClearEdit()
 
 void EditExt::OnMessage(int message)
 {
+	// Bool for keeping track of whether or not the window should be invalidated
+	bool invalidate = false;
+
 	CWnd* FrameWindow = CWnd::FromHandle(pEditTime->GetFrameHwnd());
+
+	// Set the focus to the frame editor at the start of editing
+	// This is to allow for immediate use of the shift key collision line preview
+	if (setWindowFocus)
+	{
+		FrameWindow->SetFocus();
+		setWindowFocus = false;
+	}
+
+	// Get the cursor position
 	CPoint mouse = pEditTime->GetCursor();
 
+	// Get edit object information
 	editInfo*  pParentInfo = pEditTime->GetObjectBelongingToThisBehavior();
 	float w = pParentInfo->objectWidth;
 	float h = pParentInfo->objectHeight;
@@ -463,39 +511,98 @@ void EditExt::OnMessage(int message)
 	float oy = pParentInfo->objectY;
 	float oa = pParentInfo->objectAngle;
 
+	// Get the editor zoom level
 	float zoom = pEditTime->GetZoom();
 
-
+	// Adjust the current point for object position, size, angle, and editor zoom level
 	POINTF pt = { mouse.x / zoom - ox, mouse.y / zoom - oy};
 	Rotate(pt.x, pt.y, RADIANS(-oa));
 	pt.x /= w;
 	pt.y /= h;
 
-
+	POINTF pt2 = dragPointOffset;
+	pt2.x += mouse.x / zoom - ox;
+	pt2.y += mouse.y / zoom - oy;
+	Rotate(pt2.x, pt2.y, RADIANS(-oa));
+	pt2.x /= w;
+	pt2.y /= h;
 
 	switch (message)
 	{
 		case WM_LBUTTONDOWN:
 		{
-			if(!boolAddingPoints)
+			// Add a new point as long as the mouse isn't over an existing one
+			if (!MouseOverPoint(false))
 			{
-				boolAddingPoints = true;
-				CollisionShape newshape;
-				newshape.m_Shape = shape_polygon;
-				m_CompoundCollisions.push_back(newshape);
-				AddingPointsCollision = m_CompoundCollisions.size() - 1;
-				AddingPointsIndex = 0;
+				if(!boolAddingPoints)
+				{
+					boolAddingPoints = true;
+					CollisionShape newshape;
+					newshape.m_Shape = shape_polygon;
+					m_CompoundCollisions.push_back(newshape);
+					AddingPointsCollision = m_CompoundCollisions.size() - 1;
+					AddingPointsIndex = 0;
+				}
+
+				// Add the new collision point
+				CollisionShape* pShape = &m_CompoundCollisions[AddingPointsCollision];
+				pShape->m_pts.insert(pShape->m_pts.begin() + AddingPointsIndex, pt);
+
+				// Set the new point to be dragged immediately unless the control key is held
+				if (CONTROL_UP)
+				{
+					dragPoint = &pShape->m_pts.back();
+					dragPointOffset.x = 0;
+					dragPointOffset.y = 0;
+				}
+
+				AddingPointsIndex ++;
+
+				// Have the frame window invalidated
+				invalidate = true;
 			}
-			CollisionShape* pShape = &m_CompoundCollisions[AddingPointsCollision];
-			pShape->m_pts.insert(pShape->m_pts.begin() + AddingPointsIndex, pt);
-			AddingPointsIndex ++;
 
-			FrameWindow->Invalidate();
-
+			break;
 		}
+		case WM_LBUTTONUP:
+		{
+			// Nullify the dragPoint pointer
+			dragPoint = NULL;
 
+			break;
+		}
+		case WM_RBUTTONDOWN:
+		{
+			// Delete the point that is currently under the cursor
+			MouseOverPoint(true);
+
+			// Have the frame window invalidated
+			invalidate = true;
+
+			break;
+		}
 	}
 
+	// If there is a point to drag, move it
+	if (dragPoint != NULL)
+	{
+		dragPoint->x = pt2.x;
+		dragPoint->y = pt2.y;
+		invalidate = true;
+	}
+
+	// Shift key is down
+	if (SHIFT_DOWN)
+	{
+		// Have the frame window invalidated
+		invalidate = true;
+	}
+
+	// Invalidate the frame window if previously specified
+	if (invalidate)
+	{
+		FrameWindow->Invalidate();
+	}
 }
 
 
@@ -503,6 +610,81 @@ void WINAPI ETOnMessage(editInfo* editObject, int message)
 {
 	editObject->objectPtr->OnMessage(message);
 
+}
+
+// This function checks each point to see if the mouse is over it
+bool EditExt::MouseOverPoint(bool deletePoint)
+{
+	// Proceed to check each point if the control key isn't held
+	if (CONTROL_UP)
+	{
+		// Get the cursor position
+		CPoint mouse = pEditTime->GetCursor();
+
+		// Get edit object information
+		editInfo*  pParentInfo = pEditTime->GetObjectBelongingToThisBehavior();
+		float w = pParentInfo->objectWidth;
+		float h = pParentInfo->objectHeight;
+		float ox = pParentInfo->objectX;
+		float oy = pParentInfo->objectY;
+		float oa = pParentInfo->objectAngle;
+
+		// Get the editor zoom level
+		float zoom = pEditTime->GetZoom();
+
+		// Adjust the mouse coordinates to account for zoom
+		mouse.x /= zoom;
+		mouse.y /= zoom;
+
+		for(vector<CollisionShape>::iterator i = m_CompoundCollisions.begin(); i!= m_CompoundCollisions.end(); i++)
+		{
+			switch(i->m_Shape)
+			{
+				case shape_polygon:
+				{
+					for(vector<POINTF>::iterator p = i->m_pts.begin(); p != i->m_pts.end(); p++)
+					{
+						// Adjust the point coordinates to account for object size, rotation, and position
+						float x = p->x * w;
+						float y = p->y * h;
+						Rotate(x, y, RADIANS(oa));
+						x += ox; 
+						y += oy;
+
+						// Rectangle representing the current point
+						CRect point(x - 4/zoom, y - 4/zoom, x + 5/zoom, y + 5/zoom);
+
+						// Check if the mouse is hovering over the current point
+						if (mouse.x >= point.left && mouse.x <= point.right && mouse.y >= point.top && mouse.y <= point.bottom)
+						{
+							if (!deletePoint)
+							{
+								// We are going to shuffle the vector so that the point we have selected becomes the last point.
+								vector<POINTF> temp;
+								temp.insert(temp.begin(), p+1, i->m_pts.end());
+								i->m_pts.erase(p+1, i->m_pts.end());
+								i->m_pts.insert(i->m_pts.begin(), temp.begin(), temp.end());
+								// Enable dragging of this point
+								dragPoint = &i->m_pts.back();//&(*p);
+								dragPointOffset.x = x - mouse.x;
+								dragPointOffset.y = y - mouse.y;
+							}
+							else
+							{
+								// Delete the selected point
+								AddingPointsIndex--;
+								i->m_pts.erase(p);
+							}
+
+							return true;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return false;
 }
 
 #else //ifndef RUN_ONLY
