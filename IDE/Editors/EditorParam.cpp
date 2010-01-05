@@ -152,15 +152,18 @@ CString CEditorParam::CreateFormattedParamString(EventSheetEditor* pEd, CEditorA
 		int varid = atoi(ret);
 		CObjType* pType = pApp->FindObjTypeFromNumber(this->oid);
 
-		for(vector<PrivateValue>::iterator v = pType->m_PrivateValues.begin(); v!=  pType->m_PrivateValues.end(); v++)
+		if(pType)
 		{
-			if(v->identifier == varid)
+			for(vector<PrivateValue>::iterator v = pType->m_PrivateValues.begin(); v!=  pType->m_PrivateValues.end(); v++)
 			{
-				CString formatted;
-				formatted.Format("'%s'", v->name);
-				return formatted;
-			}
-		}	
+				if(v->identifier == varid)
+				{
+					CString formatted;
+					formatted.Format("'%s'", v->name);
+					return formatted;
+				}
+			}	
+		}
 	}
 
 	// Global variable
@@ -505,7 +508,32 @@ void CEditorParam::Serialize( CArchive& ar, CChronoEventEditor* Ed)
 			ar >> tok.id;
 			ar >> temp;
 			tok.tsub = (TokenSubType)temp;
+
+			if(Ed) 
+			{
+				int oid = tok.oidOwner;
+				Ed->RegisterObjectID(oid, ar);
+				tok.oidOwner = oid;
+				
+				// Identifier tokens also seem to use oidOwner so i think its fine
+			}
 		}
+
+		// Okay special exception...if m_type is object
+		// and its a single token we can assume its the object selector param, and so that means we need to translate it
+		// incase we are dragging between applications
+		if(m_type == EDITORPARAM_OBJECT && ttokens.size() == 1)
+		{
+			int oid = ttokens[0].id;
+			if(Ed) 
+			{
+				Ed->RegisterObjectID(oid, ar);
+				ttokens[0].id = oid;
+				ttokens[0].str.Format("%d", oid);
+				ttokens[0].length = ttokens[0].str.GetLength();
+			}
+		}
+
 	}
 }
 bool CEditorParam::CharPartOfName(char i)
