@@ -715,7 +715,14 @@ void CImageEditor::OnFileOpen(CString path)
 		Display.SetRenderTarget(-1);
 		Display.SetTexture(-1);
 		*m_PicEd.m_pCanvas = newTextureHandle;
-		Display.Premultiply(*m_PicEd.m_pCanvas);
+
+		if(GetKeyState(VK_CONTROL) >> 4 && GetKeyState('P') >> 4)
+		{
+			// Shift p is a magical keyboard shortcut to NOT premultiply.
+			Display.ConvertToRT(*m_PicEd.m_pCanvas);
+		}
+		else
+			Display.Premultiply(*m_PicEd.m_pCanvas);
 
 		m_PicEd.m_CanvasWidth = m_PicEd.m_Width = width;
 		m_PicEd.m_CanvasHeight = m_PicEd.m_Height = height;
