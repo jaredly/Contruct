@@ -483,6 +483,19 @@ void CEditorParam::Serialize( CArchive& ar, CChronoEventEditor* Ed)
 			ar << ttokens[a].id;
 			ar << (int)ttokens[a].tsub;
 		}
+
+		if(m_type == EDITORPARAM_OBJECT && ttokens.size() == 1)
+		{
+			if(ttokens[0].t == T_INTEGER)
+			{
+				int oid = ttokens[0].id;
+				if(Ed) 
+				{
+					Ed->RegisterObjectID(oid, ar);
+				}
+			}
+		}
+
 	}
 	else
 	{
@@ -524,16 +537,18 @@ void CEditorParam::Serialize( CArchive& ar, CChronoEventEditor* Ed)
 		// incase we are dragging between applications
 		if(m_type == EDITORPARAM_OBJECT && ttokens.size() == 1)
 		{
-			int oid = ttokens[0].id;
-			if(Ed) 
+			if(ttokens[0].t == T_INTEGER)
 			{
-				Ed->RegisterObjectID(oid, ar);
-				ttokens[0].id = oid;
-				ttokens[0].str.Format("%d", oid);
-				ttokens[0].length = ttokens[0].str.GetLength();
+				int oid = ttokens[0].id;
+				if(Ed) 
+				{
+					Ed->RegisterObjectID(oid, ar);
+					ttokens[0].id = oid;
+					ttokens[0].str.Format("%d", oid);
+					ttokens[0].length = ttokens[0].str.GetLength();
+				}
 			}
 		}
-
 	}
 }
 bool CEditorParam::CharPartOfName(char i)

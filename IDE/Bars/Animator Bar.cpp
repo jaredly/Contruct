@@ -474,7 +474,7 @@ void AnimatorBar::OnRClickFilmStrip(NMHDR *pNMHDR, LRESULT *pResult)
 	if(!m_pCurrentAnimation)
 		return;
 
-	if(!m_pCurrentAnimation->IsAngle())
+	if(!m_pCurrentAnimation->supportsFrames())
 		return;
 
 	while(Pos)
@@ -1008,6 +1008,9 @@ void AnimatorBar::OnRClickAnimation(NMHDR *pNMHDR, LRESULT *pResult)
 
 	curHTreeItem = animations.GetSelectedItem();
 
+	if(animations.GetCount() == 0)
+		return; //Theres no animations in this tree, so the object doesn't have animations
+
 	// Check for this
 	if (!animations.HitTest(Pt))
 	{
@@ -1133,6 +1136,7 @@ void AnimatorBar::AddAnimationToTree(CAnimation* pAnimation, HTREEITEM parent)
 
 void AnimatorBar::UpdateAnimations(CApplication* pApp, CLayout* pFrame,  CObjType* pType, int iHandle)
 {
+	m_pCurrentAnimation = NULL;
 	m_LockChange = true;
 
 	m_pObjType = pType; //dont worry what value it is
@@ -1150,6 +1154,7 @@ void AnimatorBar::UpdateAnimations(CApplication* pApp, CLayout* pFrame,  CObjTyp
 		CAnimation* pAnimation = pApp->resources.FindAnimationFromNumber(iHandle);
 		if (pAnimation == m_pAnimation)
 			bDoSave = true;
+		m_pCurrentAnimation = pAnimation;
 	}
 
 	if(animations.GetSelectedItem())
@@ -1209,8 +1214,8 @@ void AnimatorBar::UpdateAnimations(CApplication* pApp, CLayout* pFrame,  CObjTyp
 		else if (iHandle == -1)
 			return;
 
-		if(!m_pAnimation->m_AllowSubanimations)
-			AddAnimationToTree(m_pAnimation, TVI_ROOT);
+		//if(!m_pAnimation->m_AllowSubanimations)
+		//	AddAnimationToTree(m_pAnimation, TVI_ROOT);
 
 		for(list<CAnimation>::iterator i = m_pAnimation->m_SubAnimations.begin(); i!= m_pAnimation->m_SubAnimations.end(); i++)
 		{
@@ -1276,6 +1281,8 @@ void AnimatorBar::UpdateAnimations(CApplication* pApp, CLayout* pFrame,  CObjTyp
 	}
 
 	m_LockChange = false;
+
+	UpdateFilmStrip();
 }
 
 ////////////////////////////////////////////////////////////////////////////
@@ -1401,20 +1408,30 @@ void AnimatorBar::FrameSerialize(CArchive& ar)
 		
 			if(pos)
 			{
-				int nItem = film_strip.GetNextSelectedItem(pos);
-				m_pCurrentAnimation->m_Images.insert( m_pCurrentAnimation->m_Images.begin() + nItem + a, image->m_FixedID);
-				ToSelect.push_back(nItem + a);
+				if(m_pCurrentAnimation->supportsFrames())
+				{
+					int nItem = film_strip.GetNextSelectedItem(pos);
+					m_pCurrentAnimation->m_Images.insert( m_pCurrentAnimation->m_Images.begin() + nItem + a, image->m_FixedID);
+					ToSelect.push_back(nItem + a);
+				}
 			}
 
 			else
 			{
-				m_pCurrentAnimation->m_Images.push_back( image->m_FixedID);
-				ToSelect.push_back(m_pCurrentAnimation->m_Images.size());
+				if(m_pCurrentAnimation->supportsFrames())
+				{
+					m_pCurrentAnimation->m_Images.push_back( image->m_FixedID);
+					ToSelect.push_back(m_pCurrentAnimation->m_Images.size());
+				}
 			}			
 
 			int iFrameTime = 0;
 			ar >> iFrameTime;
-			m_pCurrentAnimation->m_FrameTimes.push_back(iFrameTime);
+			
+			if(m_pCurrentAnimation->supportsFrames())
+			{
+				m_pCurrentAnimation->m_FrameTimes.push_back(iFrameTime);
+			}
 		}
 
 		UpdateFilmStrip();

@@ -92,5 +92,7 @@ public:
 	bool Serialize(CArchive& ar);
 	void GetImagesToSave(map<int, CObj*>& images);
 
+	bool supportsFrames();
+
 	HTREEITEM m_Tree;
 };

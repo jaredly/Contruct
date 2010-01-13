@@ -384,7 +384,7 @@ bool CEditorEvent::Serialize(CArchive &ar, bool Save, EventSheetEditor* Ed)
 			// Davo... groups have subevents...
 			ar << m_EventList.size();
 			for(int e = 0; e < m_EventList.size(); e ++ )
-				m_EventList[e]->Serialize(ar);
+				m_EventList[e]->Serialize(ar,Save, Ed);
 
 			break;
 	

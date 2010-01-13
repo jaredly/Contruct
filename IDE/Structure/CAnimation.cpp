@@ -184,3 +184,18 @@ bool CAnimation::Serialize(CArchive& Archive)
 
 	return true;
 }
+
+bool CAnimation::supportsFrames()
+{
+	// 3 years ago I made a nice system where animations could specify if they were suppost to have 
+	// frames added to them or not, but sadly some code was lost and the information wasn't serialized
+	// and the animation editor that originally supported it was replaced with the animation bar which 
+	// didn't support it...so now I simply determine if an animation supports frames by simply checking
+	// it already has at least one.
+
+	if(m_Images.size() > 0)
+		return true;
+	else
+		return false;
+
+}
