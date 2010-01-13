@@ -226,6 +226,9 @@ inline void Rotate(float& x, float& y, float radians)
 // Note the co-ordinates are automatically adjusted; draw at pInfo->objectX/Y
 void EditExt::Draw()
 {
+	pEditTime->SetTexture(-1);
+	pEditTime->Fill(CRect(-10000,-10000, 10000,100000), 0x77ffffff);	// theres no way to get the size...
+
 	CPoint mouse = pEditTime->GetCursor();
 	editInfo*  pParentInfo = pEditTime->GetObjectBelongingToThisBehavior();
 	float w = pParentInfo->objectWidth * pEditTime->GetZoom();
@@ -619,8 +622,10 @@ bool EditExt::MouseOverPoint(bool deletePoint)
 	if (CONTROL_UP)
 	{
 		// Get the cursor position
-		CPoint mouse = pEditTime->GetCursor();
-
+		CPoint cmouse = pEditTime->GetCursor();
+		POINTF mouse; 
+		mouse.x = cmouse.x; 
+		mouse.y = cmouse.y;
 		// Get edit object information
 		editInfo*  pParentInfo = pEditTime->GetObjectBelongingToThisBehavior();
 		float w = pParentInfo->objectWidth;
