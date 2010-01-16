@@ -4808,27 +4808,21 @@ bool SystemObject::InitPython()
 		pCRuntime->pythonDir = curDir;
 		pCRuntime->pythonZipPath = curFile;
 
-/*		s = "sys.path.append('";
-		s += curFile;
-		s += "')";
+	
+#endif
+
+		s = "sys.path.append('";
+		s += pCRuntime->pythonDir;
+		s += "\\')";
 		s.Replace("\\", "\\\\");
 		AddLine(script, s);
 
-		MessageBox(0,script,0,0);*/
-	
-#endif
-		s = "sys.path.append('";
-		s += pCRuntime->pythonDir;
-		s += "')";
-		s.Replace("\\", "\\\\");
-		AddLine(script, s);
-#ifndef CONSTRUCT_PREVIEW
 		s = "sys.path.append('";
 		s += pCRuntime->pythonZipPath;
 		s += "')";
-		s.Replace("\\", "\\\\");
+		//s.Replace("\\", "\\\\");
 		AddLine(script, s);
-#endif
+
 
 		PyRun_String(script, Py_file_input, pDictionary, pDictionary);
 		HandlePyErrors();
@@ -4843,7 +4837,7 @@ bool SystemObject::InitPython()
 
 		PyRun_String(script, Py_file_input, pDictionary, pDictionary);
 		HandlePyErrors();
-
+	
 		//////////////////////////////////////////////
 		// Unzip the zip file of libs
 

@@ -32,7 +32,7 @@ void ExtObject::Serialize(bin& ar)
 // You never need to check 'Version' while saving.
 void EditExt::Serialize(bin& ar)
 {
-	int Version = 1;
+	int Version = 2;
 	SerializeVersion(ar, Version);
 
 	if (ar.loading) {
@@ -105,6 +105,17 @@ void EditExt::Serialize(bin& ar)
 		ar >> m_EditMode;
 		ar >> m_ViewTiles;
 
+		if(Version >= 2)
+		{
+			ar >> tileWidth;
+			ar >> tileHeight;
+		}
+		else
+		{
+			tileWidth = 32;
+			tileHeight = 32;
+		}
+
 	}
 	else {
 	
@@ -158,6 +169,9 @@ void EditExt::Serialize(bin& ar)
 		pEditTime->SerializeAnimation(m_iAnimationRoot, ar);
 		ar << m_EditMode;
 		ar << m_ViewTiles;
+
+		ar << tileWidth;
+		ar << tileHeight;
 
 	}
 }

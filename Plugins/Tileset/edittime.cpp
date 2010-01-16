@@ -28,12 +28,16 @@ if(!editObject->objectPtr)
 	return;
 if(editObject->objectPtr->m_EditMode)
 {
-	PROPERTY_BUTTON ("Edit", "Edit Mode", "Click to switch edit mode", BtnEditMode());
+	PROPERTY_BUTTON ("Close", "Edit Mode", "Click to switch edit mode", BtnEditMode());
 }
 else
 {
-	PROPERTY_BUTTON ("Close", "Edit Mode", "Click to switch edit mode", BtnEditMode());
+	PROPERTY_BUTTON ("Edit", "Edit Mode", "Click to switch edit mode", BtnEditMode());
 }
+
+PROPERTY_FLOAT (tileWidth, "Tile Width", "The number of pixels between each tile horizontally");
+PROPERTY_FLOAT (tileHeight, "Tile Height", "The number of pixels between each tile vertically");
+
 
 END_PROPERTY_TABLE  ();
 
@@ -49,12 +53,14 @@ void EditExt::BtnEditMode()
 	{
 		pEditTime->ReleaseFrameEditor(pInfo->instanceID);
 		m_EditMode = false;
+		pEditTime->RefreshProperties();
 	}
 	else
 	{
 		ResizeBoardToObjectSize();
 		pEditTime->CaptureFrameEditor(pInfo->instanceID);
 		m_EditMode = true;
+		pEditTime->RefreshProperties();
 	}
 }
 void EditExt::GetAnimationHandle(int& anim)
@@ -119,9 +125,14 @@ void EditExt::OnPut()
 	pEditTime->InsertFrameIntoAnimation(m_iAnimationRoot, 0, tile1);
 	pEditTime->InsertFrameIntoAnimation(m_iAnimationRoot, 0, tile2);
 	
+	tileWidth = 32;
+	tileHeight = 32;
+
 	ResizeBoardToObjectSize(); //call this so we resize the map
 
 	LeftMouse = false;
+
+
 
 
 }

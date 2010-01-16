@@ -9,8 +9,6 @@ EXPORTS
 	ETDestroyObject             @11
 	ETSerialize					@12
 	ETSizeObject                @13
-;	ETShowACEMenu               @15
-;	ETGetMenuIcons              @16
 	ETPutObject					@17
 	ETRemoveObject				@18
 	ETDllLoad					@20

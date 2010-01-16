@@ -1565,38 +1565,19 @@ void CD3DDisplay::DrawText(CD3DDisplayFont& font, const char* text, RECTF& rc, D
 		RECT rect;
 		SetRect(&rect, rc.left, rc.top, rc.right, rc.bottom);
 
-		D3DXMATRIX offset;
-		D3DXMatrixTranslation(&offset, rc.left - (float)rect.left, rc.top - (float)rect.top, 0.0f);
-
-		// Render {{
-		m_pD3DXSprite->Begin(D3DXSPRITE_OBJECTSPACE|D3DXSPRITE_ALPHABLEND);
-		m_pD3DXSprite->SetTransform(&offset);
-		SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-		SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-		SetRenderState(D3DRS_ALPHAREF, (DWORD)1);
-		SetRenderState(D3DRS_ALPHATESTENABLE, TRUE); 
-		SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
-
-		SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_RED | D3DCOLORWRITEENABLE_GREEN | D3DCOLORWRITEENABLE_BLUE);
 		EndBatch();
+
+		m_pD3DXSprite->Begin(D3DXSPRITE_OBJECTSPACE|D3DXSPRITE_ALPHABLEND);
+
+		// For floating point offsets
+		D3DXMATRIX offset, scale;
+		D3DXMatrixTranslation(&offset, rc.left - floor(rc.left), rc.top - floor(rc.top), 0.0);
+		m_pD3DXSprite->SetTransform(&offset);
+
+		
 		font.d3dxfont->DrawText(m_pD3DXSprite, text, -1, &rect, format, MixFilters(globalcolor, color));
 		m_pD3DXSprite->End();	
-		//////////////
-
-		// Render {{
-	/*	m_pD3DXSprite->Begin(D3DXSPRITE_OBJECTSPACE|D3DXSPRITE_ALPHABLEND);
-		m_pD3DXSprite->SetTransform(&offset);
-		SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
-		SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-		SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_ALPHA);
-		EndBatch();
-		font.d3dxfont->DrawText(m_pD3DXSprite, text, -1, &rect, format, MixFilters(globalcolor, color));
-		m_pD3DXSprite->End();	*/
-		
-
-
-		// Set back to normal
-		SetRenderState(D3DRS_COLORWRITEENABLE,  D3DCOLORWRITEENABLE_RED | D3DCOLORWRITEENABLE_GREEN | D3DCOLORWRITEENABLE_BLUE | D3DCOLORWRITEENABLE_ALPHA);
+	
 	}
 
 }

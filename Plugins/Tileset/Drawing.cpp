@@ -9,9 +9,9 @@
 // leave it blank if your plugin doesn't draw anything.  This is not called when OF_NODRAW is set.
 
 
-cr::point GetTileSize()
+cr::point ExtObject::GetTileSize()
 {
-	return cr::point(32,32);
+	return cr::point(tileWidth,tileHeight);
 }
 
 
@@ -73,7 +73,7 @@ void ExtObject::Draw()
 
 cr::point EditExt::GetTileSize()
 {
-	return cr::point(32,32);
+	return cr::point(tileWidth,tileHeight);
 }
 
 int EditExt::GetTile(int x, int y)

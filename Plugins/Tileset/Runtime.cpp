@@ -152,6 +152,9 @@ void ExtObject::OnCreate()
 	ar >> m_EditMode;
 	ar >> m_ViewTiles;
 
+	ar >> tileWidth;
+	ar >> tileHeight;
+
 
 
 	/////////////////////////////////////////

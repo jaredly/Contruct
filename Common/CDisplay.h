@@ -839,6 +839,7 @@ public:
 
 	// Transformations
 	void Update3dCoords(bool translate = true);
+
 	D3DXMATRIX Ortho2D;
 	float trans_PanX;
 	float trans_PanY;

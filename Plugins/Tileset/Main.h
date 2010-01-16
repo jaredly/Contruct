@@ -85,7 +85,7 @@ public:
 	long aMyAction(LPVAL params);
 
 	long eMyExpression(LPVAL params, ExpReturn& ret);
-
+	cr::point GetTileSize();
 
 	vector< vector<CTile> > tiles;
 
@@ -115,7 +115,8 @@ public:
 	map<int, CollisionMask*> collision;
 	map<int, TextureHandle> textures;
 
-
+	float tileWidth;
+	float tileHeight;
 
 	////////////////////////////////////////////////////
 	// Data
