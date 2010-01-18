@@ -4844,7 +4844,7 @@ bool SystemObject::InitPython()
 #define ADDLINE(x) s = x; AddLine(script,s);
 
 		script = "";
-
+/*
 #ifndef CONSTRUCT_PREVIEW
 		ADDLINE("import zipfile, os, os.path")
 		ADDLINE("def _mkdir(newdir):")
@@ -4880,7 +4880,7 @@ bool SystemObject::InitPython()
 
 		PyRun_String(script, Py_file_input, pDictionary, pDictionary);
 		HandlePyErrors();
-#endif
+#endif*/
 
 
 		//////////////////////////////////////////////
