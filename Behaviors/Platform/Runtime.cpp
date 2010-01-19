@@ -160,7 +160,7 @@ bool ExtObject::CanMoveLeft()
 	float oldy = pLink->info.y;
 
 	float ga = RADIANS(grav_dir * 90);
-	int cosga = cos(ga)*1.5f;
+	int cosga = -cos(ga)*1.5f;
 	int singa = sin(ga)*1.5f;
 
 	//Hack - dont check platforms
@@ -212,7 +212,7 @@ bool ExtObject::CanMoveRight()
 	float oldy = pLink->info.y;
 
 	float ga = RADIANS(grav_dir * 90);
-	int cosga = cos(ga)*1.5f;
+	int cosga = -cos(ga)*1.5f;
 	int singa = sin(ga)*1.5f;
 
 	//Hack - dont check platforms
@@ -263,17 +263,17 @@ bool ExtObject::OverlapTest(CRunObject* pObj)
 	
 	int w = 2, h = 2;
 	
-	if(pLink->info.x == floor(pLink->info.x) )
+	/*if(pLink->info.x == floor(pLink->info.x) )
 		w = 1;
 	if(pLink->info.y == floor(pLink->info.y) )
-		h = 1;
+		h = 1;*/
 	for( int x = 0; x < w; x ++)
 	{
-		pLink->info.x = floor(fx) + x;
+		pLink->info.x = floor(fx) + x - 0.5;
 
 		for(int y = 0; y < h; y++)
 		{
-			pLink->info.y = floor(fy) + y;
+			pLink->info.y = floor(fy) + y - 0.5;
 			pRuntime->UpdateBoundingBox(pLink);
 			if(pRuntime->QueryCollision(pLink, pObj))
 			{
@@ -299,19 +299,19 @@ bool ExtObject::IsOverlapping()
 
 	int w = 2, h = 2;
 	
-	if(pLink->info.x == floor(pLink->info.x) )
+	/*if(pLink->info.x == floor(pLink->info.x) )
 		w = 1;
 	if(pLink->info.y == floor(pLink->info.y) )
-		h = 1;
+		h = 1;*/
 
 
 	for( int x = 0; x < w; x ++)
 	{
-		pLink->info.x = floor(fx) + x;
+		pLink->info.x = floor(fx) + x - 0.5;
 
 		for(int y = 0; y < h; y++)
 		{
-			pLink->info.y = floor(fy) + y;
+			pLink->info.y = floor(fy) + y - 0.5;
 			pRuntime->UpdateBoundingBox(pLink);
 			if(pObstacles)
 			{
@@ -478,10 +478,10 @@ BOOL ExtObject::OnFrame()
 
 	if(pStandOnMoving && bMove_with_platform)
 	{
-		pLink->info.x += (pStandOnMoving->info.x) - moving_oldx;
-		pLink->info.y += floor(pStandOnMoving->info.y + 0.5) - moving_oldy;
-		moving_oldx = (pStandOnMoving->info.x);
-		moving_oldy = floor(pStandOnMoving->info.y + 0.5);
+		pLink->info.x += round_x_up(pStandOnMoving->info.x) - moving_oldx;
+		pLink->info.y += round_y_up(pStandOnMoving->info.y) - moving_oldy;
+		moving_oldx = round_x_up(pStandOnMoving->info.x);
+		moving_oldy = round_y_up(pStandOnMoving->info.y);
 		pRuntime->UpdateBoundingBox(pLink);
 	}
 	else
@@ -546,16 +546,16 @@ BOOL ExtObject::OnFrame()
 
 		switch (dir) {
 		case 0:		// up
-			pLink->info.y = startY - count;
+			pLink->info.y = floor(startY - count);
 			break;
 		case 1:		// left
-			pLink->info.x = startX - count;
+			pLink->info.x = floor(startX - count);
 			break;
 		case 2:		// right
-			pLink->info.x = startX + count;
+			pLink->info.x = ceil(startX + count);
 			break;
 		case 3:		// down
-			pLink->info.y = startY + count;
+			pLink->info.y = ceil(startY + count);
 			break;
 
 		}
@@ -913,7 +913,7 @@ BOOL ExtObject::OnFrame()
 	//     WORK OUT HOW WE ARE GOING TO ACCELERATE
 	//-----------------------------------------------------------------------
 	// Okay at this point acc and dec represent acceleration and deceleration
-	speedh = dy * cosga + dx * singa;
+	speedh = - dy * cosga + dx * singa;
 	
 	if (speedh <= 0)
 		if(!CanMoveLeft())
@@ -1042,8 +1042,8 @@ BOOL ExtObject::OnFrame()
 		if(pRuntime->QueryCollision(pLink, pObjectList[i]))
 		{
 			pStandOnMoving = pObjectList[i];
-			moving_oldx = pStandOnMoving->info.x;
-			moving_oldy = floor(pStandOnMoving->info.y + 0.5);
+			moving_oldx = round_x_up(pStandOnMoving->info.x);
+			moving_oldy = round_y_up(pStandOnMoving->info.y);
 			break;
 		}
 	}
@@ -1056,8 +1056,8 @@ BOOL ExtObject::OnFrame()
 			if(pRuntime->QueryCollision(pLink, pObjectList[i]))
 			{
 				pStandOnMoving = pObjectList[i];
-				moving_oldx = (pStandOnMoving->info.x);
-				moving_oldy = floor(pStandOnMoving->info.y + 0.5);
+				moving_oldx = round_x_up(pStandOnMoving->info.x);
+				moving_oldy = round_y_up(pStandOnMoving->info.y);
 				standing_on_platform = true;
 				break;
 			}
@@ -1122,6 +1122,29 @@ void ExtObject::SetAnimation(CRunAnimation* pAnim)
 	}
 }
 
+float ExtObject::round_x_up(float x)
+{
+	switch (grav_dir)
+	{
+	case GRAV_RIGHT:
+		return floor(x);
+	case GRAV_LEFT:
+		return ceil(x);
+	}
+	return x;
+}
+
+float ExtObject::round_y_up(float y)
+{
+	switch (grav_dir)
+	{
+	case GRAV_DOWN:
+		return floor(y);
+	case GRAV_UP:
+		return ceil(y);
+	}
+	return y;
+}
 // Called every frame, after the events and before drawing, for you to update your object if necessary
 // Return 1 (do not call again) or 0 (continue calling)
 // It is not safe to destroy objects in OnFrame2().  If you have to do this, use OnFrame().
@@ -1131,10 +1154,12 @@ BOOL ExtObject::OnFrame2()
 {
 	if(pStandOnMoving && bMove_with_platform)
 	{
-		pLink->info.x += (pStandOnMoving->info.x) - moving_oldx;
-		pLink->info.y += floor(pStandOnMoving->info.y + 0.5) - moving_oldy;
-		moving_oldx = (pStandOnMoving->info.x);
-		moving_oldy = floor(pStandOnMoving->info.y + 0.5);
+		pLink->info.x += round_x_up(pStandOnMoving->info.x) - moving_oldx;
+		pLink->info.y += round_y_up(pStandOnMoving->info.y) - moving_oldy;
+		moving_oldx = round_x_up(pStandOnMoving->info.x);
+		moving_oldy = round_y_up(pStandOnMoving->info.y);
+
+
 		pRuntime->UpdateBoundingBox(pLink);
 	}
 	return !activated;

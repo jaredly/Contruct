@@ -133,6 +133,8 @@ public:
 
 	void CheckForPlatformsVertically();
 	void CheckForPlatformsInside();
+	float round_x_up(float x);
+	float round_y_up(float y);
 	////////////////////////////////////////////////////
 	// Data members
 
