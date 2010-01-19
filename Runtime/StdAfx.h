@@ -57,7 +57,8 @@ using namespace std;
 #include <math.h>
 #include "mtrand.h"
 #include <cfloat>
-#undef CONSTRUCT_RUNTIME_TR1
+// If you disable CONSTRUCT_RUNTIME_TR1 normalrandom will return 0 since it requires it
+//#undef CONSTRUCT_RUNTIME_TR1
 #ifdef CONSTRUCT_RUNTIME_TR1
 #include <random>
 #endif

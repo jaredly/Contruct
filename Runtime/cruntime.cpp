@@ -661,7 +661,7 @@ LRESULT CRuntime::WindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lPa
 			
 		// was Alt pressed?  Bit-29 of lParam is documented as:
 		// "The value is 1 if the ALT key is down while the key is pressed"
-		if (disableAlt && lParam & (1<<29)) {
+		if (disableAlt && (lParam & (1<<29))) {
 			// yep, Alt was pressed so tell Windows to stop all further 
 			// processing of this message.
 			return 0;
