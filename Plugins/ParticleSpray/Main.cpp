@@ -473,7 +473,7 @@ long ExtObject::aSetFadeColorTime(LPVAL params)
 
 long ExtObject::aSetSpeedRandom( LPVAL params )
 {
-	pp.speedRandom = params[0].GetFloat();
+	pp.initialSpeedRandom = params[0].GetFloat();
 	return 0;
 }
 
@@ -605,7 +605,7 @@ long ExtObject::eDisplayAngleRandomiser(LPVAL params, ExpReturn& ret)
 
 long ExtObject::eSpeedRandomiser(LPVAL params, ExpReturn& ret)
 {
-	return ret = pp.speedRandom;
+	return ret = pp.initialSpeedRandom;
 }
 
 long ExtObject::eGrowRandomiser(LPVAL params, ExpReturn& ret)
