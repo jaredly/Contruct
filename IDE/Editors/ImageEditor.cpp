@@ -912,8 +912,8 @@ void CImageEditor::UpdateTool()
 
 	m_PicEd.CurrentTool->Modify();
 
-	m_pPaletteBar->m_wndChild.Palette[m_pPaletteBar->m_wndChild.color1] = *m_pPaletteBar->m_wndChild.pColor1;
-	m_pPaletteBar->m_wndChild.Palette[m_pPaletteBar->m_wndChild.color2] = *m_pPaletteBar->m_wndChild.pColor2;
+	//m_pPaletteBar->m_wndChild.Palette[m_pPaletteBar->m_wndChild.color1] = *m_pPaletteBar->m_wndChild.pColor1;
+	//m_pPaletteBar->m_wndChild.Palette[m_pPaletteBar->m_wndChild.color2] = *m_pPaletteBar->m_wndChild.pColor2;
 	m_pPaletteBar->m_wndChild.Invalidate(false);
 	m_pColor_Mixer->UpdateEditBoxs();
 	m_pColor_Mixer->Invalidate(false);
