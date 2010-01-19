@@ -28,14 +28,6 @@ void CExport::GeneratePython()
 
 		// Force StringIO to be included!
 		application->m_PythonDistrib["StringIO.pyc"] = 0; 
-		application->m_PythonDistrib["zipfile.pyc"] = 0; 
-		application->m_PythonDistrib["struct.pyc"] = 0; 
-		application->m_PythonDistrib["os.pyc"] = 0; 
-		application->m_PythonDistrib["ntpath.pyc"] = 0; 
-		application->m_PythonDistrib["stat.pyc"] = 0; 
-		application->m_PythonDistrib["UserDict.pyc"] = 0; 
-		application->m_PythonDistrib["copy_reg.pyc"] = 0; 
-		application->m_PythonDistrib["types.pyc"] = 0; 
 
 		for(map<CString, int>::iterator i = application->m_PythonDistrib.begin();
 			i != application->m_PythonDistrib.end();
