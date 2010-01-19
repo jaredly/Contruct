@@ -23,9 +23,9 @@
 // COMMONACE_IDS		: Add compare UID, get OID and UID
 // COMMONACE_COUNT_DESTROY : Add a .count expression, and a destroy action
 
-// Next CND ID: 14
-// Next ACT ID: 21
-// NExt EXP ID: 21
+// Next CND ID: 20
+// Next ACT ID: 25
+// Next EXP ID: 23
 
 #define COMPARISON_COMBO_TEXT "Equal to|Not equal to|Less than|Less or equal|Greater than|Greater or equal"
 
@@ -192,4 +192,36 @@
 	ADDACT_AT(21, "Set Z elevation", "Z Order", "Set Z elevation to %0", &ExtObject::cmn_aSetZElevation, "SetZElevation", 0);
 
 	ADDEXP_AT(21, "Get Z elevation", "Z Order", "ZElevation", &ExtObject::cmn_eGetZElevation, RETURN_VALUE);
+#endif
+
+#ifdef COMMONACE_PRIVATE_VARIABLES
+	// PRIVATE VARIABLES
+	ADDPARAM(PARAM_PRIVATEVARIABLE, "Private variable", "Select the private variable to test.");
+	ADDPARAMCOMBO("Comparison", "Select the comparison to make.", "Equal to|Not equal to|Less than|Less or equal|Greater than|Greater or equal");
+	ADDPARAM(PARAM_VALUE, "Value", "Value to compare to");
+	ADDCND_AT(17, "*Compare a private variable", "Private variables", "%o %n:  Value %0 %1 %2", &ExtObject::cValueCmp, "CompareValue", 0);
+
+	ADDPARAM(PARAM_PRIVATEVARIABLE, "Variable name", "Variable to find lowest value in.");
+	ADDCND_AT(18, "Pick object with lowest variable", "Private variables", "%o %n: Pick with lowest '%0'", &ExtObject::cPickLowestVar, "PickLowestVar", CND_STATIC);
+
+	ADDPARAM(PARAM_PRIVATEVARIABLE, "Variable name.", "Variable to find highest value in.");
+	ADDCND_AT(19, "Pick object with highest variable", "Private variables", "%o %n: Pick with highest '%0'", &ExtObject::cPickHighestVar, "PickHighestVar", CND_STATIC);
+
+	ADDPARAM(PARAM_PRIVATEVARIABLE, "Private variable", "Select the private variable to modify.");
+	ADDPARAM(PARAM_VALUE, "Value", "Value to store");
+	ADDACT_AT(22, "*Set value", "Private variables", "Set %0 to %1", &ExtObject::aSetValue, "SetValue", 0);
+
+	ADDPARAM(PARAM_PRIVATEVARIABLE, "Private variable", "Select the private variable to modify.");
+	ADDPARAM(PARAM_VALUE, "Value", "Value to add.");
+	ADDACT_AT(23, "Add to value", "Private variables", "Add %1 to %0", &ExtObject::aAddValue, "AddValue", 0);
+
+	ADDPARAM(PARAM_PRIVATEVARIABLE, "Private variable", "Select the private variable to modify.");
+	ADDPARAM(PARAM_VALUE, "Value", "Value to subtract.");
+	ADDACT_AT(24, "Subtract from value", "Private variables", "Subtract %1 from %0", &ExtObject::aSubValue, "SubValue", 0);
+
+
+	ADDPARAM(PARAM_PRIVATEVARIABLE, "'Variable name'", "Name of value.");
+	ADDEXP_AT(22, "*Get private variable", "Private variables", "Value", &ExtObject::eGetValue, 0);
+
+
 #endif

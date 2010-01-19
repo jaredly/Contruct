@@ -11,6 +11,7 @@
 // COMMONACE_FILTER		: Add compare/set/get filter action, condition and expression, via info.filter
 // COMMONACE_IDS		: Add compare UID, get OID and UID
 // COMMONACE_COUNT_DESTROY : Add a .count expression, and a destroy action
+// COMMONACE_PRIVATE_VARIABLES : Adds set, addto, subtract, compare, get actions for private variables
 
 ///////////////////////////
 // POSITIONING ACES
@@ -105,4 +106,20 @@ long cmn_aSetZElevation(LPVAL params);
 long cmn_eGetZElevation(LPVAL params, ExpReturn& ret);
 
 RECTF cmn_custombox;	// Custom bounding box
+#endif
+
+#ifdef COMMONACE_PRIVATE_VARIABLES
+vector<ExpStore> privateVars;
+
+long cPickLowestVar(LPVAL params);
+long cPickHighestVar(LPVAL params);
+long cValueCmp(LPVAL params);
+
+long eGetValue(LPVAL params, ExpReturn& ret);
+
+long aAddValue(LPVAL params);
+long aSubValue(LPVAL params);
+long aSetValue(LPVAL params);
+
+
 #endif

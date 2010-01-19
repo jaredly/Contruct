@@ -557,3 +557,151 @@ long ExtObject::cmn_eGetZElevation(LPVAL params, ExpReturn& ret)
 	return ret = info.pInfo->z_elevation;
 }
 #endif
+
+#ifdef COMMONACE_PRIVATE_VARIABLES
+
+// Static condition
+long ExtObject::cPickLowestVar(LPVAL params)
+{
+	// Param 0: Private Variable (Variable name)
+	int count;
+	CRunObject** instances;
+	pRuntime->GetTypeSelectedInstances(pType, instances, count);
+
+	int varIndex = params[0].GetVariableIndex(pRuntime, pType);
+
+	// We know these are sprites
+	ExtObject** sprites = (ExtObject**)instances;
+
+	bool anyResults = false;
+	double bestVal;
+	ExtObject* bestObj;
+
+	// Iterate all looking for the lowest numeric value
+	ExtObject** i = sprites;
+	ExtObject** end = sprites + count;
+
+	for ( ; i != end; i++) {
+
+		// This private var is numerical
+		const ExpStore& curVal = (*i)->privateVars[varIndex];
+
+		if (curVal.Type() == EXPTYPE_INTEGER || curVal.Type() == EXPTYPE_FLOAT) {
+
+			// No value yet: use as first
+			if (!anyResults) {
+				anyResults = true;
+				bestVal = curVal.GetDouble();
+				bestObj = *i;
+				continue;				
+			}
+
+			// Else check if this value is better than the best
+			if (curVal.GetDouble() < bestVal) {
+				bestVal = curVal.GetDouble();
+				bestObj = *i;
+			}
+
+		}
+	}
+
+	// No object had a numerical value - fail the event.
+	if (!anyResults)
+		return false;
+
+	// Otherwise, select just the best object we found.
+	pRuntime->SelectAll(pType);
+	pRuntime->SelectF(bestObj, pType);
+	return true;
+}
+
+// Static condition
+long ExtObject::cPickHighestVar(LPVAL params)
+{
+	// Param 0: Private Variable (Variable name)
+	int count;
+	CRunObject** instances;
+	pRuntime->GetTypeSelectedInstances(pType, instances, count);
+
+	int varIndex = params[0].GetVariableIndex(pRuntime, pType);
+
+	// We know these are sprites
+	ExtObject** sprites = (ExtObject**)instances;
+
+	bool anyResults = false;
+	double bestVal;
+	ExtObject* bestObj;
+
+	// Iterate all looking for the lowest numeric value
+	ExtObject** i = sprites;
+	ExtObject** end = sprites + count;
+
+	for ( ; i != end; i++) {
+
+		// This private var is numerical
+		const ExpStore& curVal = (*i)->privateVars[varIndex];
+
+		if (curVal.Type() == EXPTYPE_INTEGER || curVal.Type() == EXPTYPE_FLOAT) {
+
+			// No value yet: use as first
+			if (!anyResults) {
+				anyResults = true;
+				bestVal = curVal.GetDouble();
+				bestObj = *i;
+				continue;				
+			}
+
+			// Else check if this value is better than the best
+			if (curVal.GetDouble() > bestVal) {
+				bestVal = curVal.GetDouble();
+				bestObj = *i;
+			}
+
+		}
+	}
+
+	// No object had a numerical value - fail the event.
+	if (!anyResults)
+		return false;
+
+	// Otherwise, select just the best object we found.
+	pRuntime->SelectAll(pType);
+	pRuntime->SelectF(bestObj, pType);
+	return true;
+}
+
+long ExtObject::cValueCmp(LPVAL params)
+{
+	const ExpStore& l = privateVars[params[0].GetVariableIndex(pRuntime, pType)];
+	const ExpReturn& r = params[2];
+
+	return DoComparison(params[1].GetInt(), (const ExpBase&)l, (const ExpBase&)r);
+}
+
+long ExtObject::eGetValue(LPVAL params, ExpReturn& ret)
+{
+	return ret.ReturnCustom(pRuntime, privateVars[params[0].GetVariableIndex(pRuntime, pType)]);
+}
+
+long ExtObject::aAddValue(LPVAL params)
+{
+	privateVars[params[0].GetVariableIndex(pRuntime, pType)] += params[1];
+
+	return 0;
+}
+
+long ExtObject::aSubValue(LPVAL params)
+{
+	privateVars[params[0].GetVariableIndex(pRuntime, pType)] -= params[1];
+
+	return 0;
+}
+long ExtObject::aSetValue(LPVAL params)
+{
+	privateVars[params[0].GetVariableIndex(pRuntime, pType)] = params[1];
+
+	return 0;
+}
+
+
+#endif
