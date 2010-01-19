@@ -85,6 +85,9 @@ void ExtObject::OnCreate()
 
 	pRuntime->RegisterWindow(edit.GetSafeHwnd(), this);
 
+
+	SetupPrivateVariableVector(pRuntime, this, privateVars);
+
 	pRuntime->UpdateBoundingBox(this);
 }
 
@@ -194,9 +197,14 @@ long ExtObject::CallFunction(int id, void* param)
 // Parameters can be passed, eg. MyArray(3,7).
 long ExtObject::ReturnDefaultValue(LPVAL theParams, ExpReturn& ret)
 {
-	CString text;
-	edit.GetWindowText(text);
-	return ret.ReturnString(pRuntime, text);
+	if (theParams[0].Type() == EXPTYPE_VARIABLENAME) {
+		return ret.ReturnCustom(pRuntime, privateVars[theParams[0].GetVariableIndex(pRuntime, pType)]);
+	}
+	else {
+		CString text;
+		edit.GetWindowText(text);
+		return ret.ReturnString(pRuntime, text);
+	}
 }
 
 // Called for undefined expression names, if your extension allows it.
