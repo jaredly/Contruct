@@ -257,8 +257,12 @@ BOOL ExtObject::OnFrame()
 				float localTimeDelta = -delayNextParticle;
 				float r = normaliseBetween( 0.0f, localTimeDelta, timeDelta );
 
-				float oX = lerp(lastX, info.x, r);
-				float oY = lerp(lastY, info.y, r);
+				//local dt represents how long its been alive. So 1-r represents
+				//how far it is from the start position to the end position...so we
+				//use info.x, lastX, r as a shortcut instead of lastX, info.x, 1-r
+
+				float oX = lerp(info.x, lastX, r);
+				float oY = lerp(info.y, lastY, r);
 		
 				particles.push_back(Particle());
 				Particle& p = particles.back();
