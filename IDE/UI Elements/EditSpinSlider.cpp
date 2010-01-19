@@ -202,7 +202,7 @@ void CEditSpinSlider::OnTimer(UINT nIDEvent)
 			OnNcPaint();
 			GetParent()->SendMessage(1234,100,(long)this->m_hWnd);
 
-			((CToolSettings*)(GetParent()->GetParent()))->m_pImgEd->SetFocus();
+			//((CToolSettings*)(GetParent()->GetParent()))->m_pImgEd->SetFocus();
 
 		}
 	}
