@@ -118,7 +118,6 @@ BEGIN_MESSAGE_MAP(CColorMixer, CDialog)
 	ON_EN_CHANGE(IDC_RED, &CColorMixer::OnTextFieldChange)
 	ON_EN_CHANGE(IDC_GREEN, &CColorMixer::OnTextFieldChange)
 	ON_EN_CHANGE(IDC_BLUE, &CColorMixer::OnTextFieldChange)
-	ON_EN_CHANGE(IDC_ALPHA, &CColorMixer::OnTextFieldChange)
 	//}}AFX_MSG_MAP
 	ON_BN_CLICKED(IDC_SWAP, &CColorMixer::OnBnClickedSwap)
 END_MESSAGE_MAP()
@@ -136,9 +135,9 @@ void CColorMixer::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BLUE, m_BlueBox);
 
 	//}}AFX_DATA_MAP
-m_RedBox.Refresh();
-m_GreenBox.Refresh();
-m_BlueBox.Refresh();
+	m_RedBox.Refresh();
+	m_GreenBox.Refresh();
+	m_BlueBox.Refresh();
 }
 
 
@@ -157,30 +156,33 @@ int CColorMixer::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CDialog::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
-m_rainbow_click = false;
-m_grad_click = false;
+	m_rainbow_click = false;
+	m_grad_click = false;
 
-m_rainbow_x = 0;
-m_rainbow_y = 0;
-m_grad_pos = 0;
+	m_rainbow_x = 0;
+	m_rainbow_y = 0;
+	m_grad_pos = 0;
 
-	Map.Create(64,67,24);
-for(int x = 0; x < 64; x++)
-{
-	for(int y = 0; y < 67; y++)
+	int w = 64;
+	int h = 67;
+
+	Map.Create(w,h,24);
+	for(int x = 0; x < 64; x++)
 	{
-//	RGB2HLS (COLORREF rgb)
-	COLORREF temp = HLS2RGB(HLS((BYTE)(x/63.0*255),128,(BYTE)(y/66.0*255)));
-//	COLORREF temp = RGB(255,0,0);
-	Map.SetPixelColor(x,y,temp);
+		for(int y = 0; y < 67; y++)
+		{
+	//	RGB2HLS (COLORREF rgb)
+		COLORREF temp = HLS2RGB( HLS( (BYTE)(x * 255 / (w-1)),128,(BYTE)(y*255 / (h-1)) ) );
+	//	COLORREF temp = RGB(255,0,0);
+		Map.SetPixelColor(x,y,temp);
+		}
 	}
-}
 
-//COLORREF C = GetColor();
-UseHSL = false;
+	//COLORREF C = GetColor();
+	UseHSL = false;
 
 
-m_leftdown = false;
+	m_leftdown = false;
 
 	// TODO: Add your specialized creation code here
 	//RGB2HLS (COLORREF rgb)
@@ -189,47 +191,23 @@ m_leftdown = false;
 
 void CColorMixer::OnPaint() 
 {
-	{
-CRect rcClient;
-GetClientRect( &rcClient );
-if( rcClient.IsRectEmpty() )
-    return;
+	CRect rcClient;
+	GetClientRect( &rcClient );
+	if( rcClient.IsRectEmpty() )
+		return;
 
-CPaintDC dc( this );
-/*
-CExtMemoryDC dc(
-    &dcPaint,
-    &rcClient
-    );
-*/
-//CRgn rgnClient;
-//if( rgnClient.CreateRectRgnIndirect( &rcClient ) )
-  //  dc.SelectClipRgn( &rgnClient );
-
-
-
-
-
-
-//		this->ShowSizeGrip(false);
-	//CPaintDC dc2(this); // device context for painting
-
+	CPaintDC dc( this );
 
 	rcClient.bottom = rcClient.top + 12;
 
-	
 	g_PaintManager->PaintDockerBkgnd( true, dc, this );
 
 
 
 
-
-
-	//CMemDC dc(&dc2);
 	
 	CRect meh;
 	GetClientRect(meh);
-	//dc.DrawEdge(meh,BDR_RAISEDINNER|BDR_SUNKENOUTER,BF_RECT); 
 
 	// TODO: Add your message handler code here
 	dc.Draw3dRect(CRect(6,6,74,77),DAVOSPECIALCOLOUR,DAVOSPECIALCOLOUR); // round H/S
@@ -349,28 +327,28 @@ CFont MyFont;
 												DEFAULT_QUALITY,
 												FF_MODERN,
 												"Arial"
-										);
-dc.SelectObject(MyFont2);
-dc.SetTextColor(DAVOSPECIALCOLOUR);
-CRect r(11,89,23,100);
+											);
+	dc.SelectObject(MyFont2);
+	dc.SetTextColor(DAVOSPECIALCOLOUR);
+	CRect r(11,89,23,100);
 
-if(!UseHSL)
-{
-	dc.DrawText("R:",r,DT_WORDBREAK);
-	r.OffsetRect(0,26);
-	dc.DrawText("G:",r,DT_WORDBREAK);
-	r.OffsetRect(0,26);
-	dc.DrawText("B:",r,DT_WORDBREAK);
-}
-else
-{
-	dc.DrawText("H:",r,DT_WORDBREAK);
-	r.OffsetRect(0,26);
-	dc.DrawText("S:",r,DT_WORDBREAK);
-	r.OffsetRect(0,26);
-	dc.DrawText("L:",r,DT_WORDBREAK);
+	if(!UseHSL)
+	{
+		dc.DrawText("R:",r,DT_WORDBREAK);
+		r.OffsetRect(0,26);
+		dc.DrawText("G:",r,DT_WORDBREAK);
+		r.OffsetRect(0,26);
+		dc.DrawText("B:",r,DT_WORDBREAK);
+	}
+	else
+	{
+		dc.DrawText("H:",r,DT_WORDBREAK);
+		r.OffsetRect(0,26);
+		dc.DrawText("S:",r,DT_WORDBREAK);
+		r.OffsetRect(0,26);
+		dc.DrawText("L:",r,DT_WORDBREAK);
 
-}
+	}
 //r.OffsetRect(0,30);
 //dc.DrawText("O:",r,DT_WORDBREAK);
 
@@ -390,7 +368,7 @@ else
 	dc.SelectObject(MyPen);
 	int x = 7;
 
-if(UseHSL)  x += 36;
+	if(UseHSL)  x += 36;
 
 	dc.MoveTo(x,193);
 	dc.LineTo(x+ 44 - (UseHSL? 1:0),193);
@@ -470,27 +448,6 @@ if(UseHSL)  x += 36;
 			else   dc.FillSolidRect(CRect(x,y,x+4,y+4),Colorb);
 		}
 	}
-
-//if( rgnClient.GetSafeHandle() != NULL )
-//    dc.SelectClipRgn( &rgnClient );
-
-
-
-}
-
-
-
-
-
-
-
-
-
-	
-
-
-
-
 
 
 }
@@ -701,7 +658,7 @@ void CColorMixer::OnMouseMove(UINT nFlags, CPoint point)
 		BYTE hue = HLS_H(RGB2HLS(Color));
 		BYTE sat = HLS_S(RGB2HLS(Color));
 		int y = m_grad_pos;
-		*pColor = HLS2RGB(HLS(hue,(67-y)/67.0 * 255.0,sat));
+		*pColor = HLS2RGB(HLS(hue,(66-y)/66.0 * 255.0,sat));
 		Invalidate(false);
 		m_pImageView->UpdateTool();
 
@@ -738,6 +695,42 @@ int color_clamp(int a)
 		return 255;
 	return a;
 }
+
+void CColorMixer::UpdateColour()
+{
+	lock_field_change = true;
+
+	COLORREF rgb = *pColor;
+	COLORREF hsl = RGB2HLS(rgb);
+	if(UseHSL)
+	{
+		CString h, s, l;
+		h.Format("%d", HLS_H(hsl));
+		s.Format("%d", HLS_S(hsl));
+		l.Format("%d", HLS_L(hsl));
+
+		m_RedBox.SetWindowText(h);
+		m_GreenBox.SetWindowText(s);
+		m_BlueBox.SetWindowText(l);
+	}
+	else
+	{
+		CString r, g, b;
+		r.Format("%d", GetRValue(rgb));
+		g.Format("%d", GetGValue(rgb));
+		b.Format("%d", GetBValue(rgb));
+
+		m_RedBox.SetWindowText(r);
+		m_GreenBox.SetWindowText(g);
+		m_BlueBox.SetWindowText(b);
+	}
+
+	FindGradPos();
+	FindRainbowPos();
+
+	lock_field_change = false;
+}
+
 
 void CColorMixer::OnTextFieldChange()
 {

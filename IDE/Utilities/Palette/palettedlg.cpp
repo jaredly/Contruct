@@ -58,8 +58,92 @@ int CPaletteDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CDialog::OnCreate(lpCreateStruct) == -1)
 		return -1;
 	
-	for(int x = 0; x < 256; x ++)
-		Palette[x] = RGB(rand()%255,rand()%255,rand()%255);
+	//for(int x = 0; x < 256; x ++)
+	//	Palette[x] = RGB(rand()%255,rand()%255,rand()%255);
+
+	// Hardcoded palette
+
+	Palette[0] = RGB(0,0,0);
+	Palette[1] = RGB(255,255,255);
+
+	Palette[2] = RGB(77,0,0);
+	Palette[3] = RGB(124,0,0);
+	Palette[4] = RGB(179,0,0);
+	Palette[5] = RGB(255,0,0);
+	Palette[6] = RGB(255,148,148);
+
+	Palette[7] = RGB(60,18,0);
+	Palette[8] = RGB(117,35,0);
+	Palette[9] = RGB(195,59,0);
+	Palette[10] = RGB(255,77,0);
+	Palette[11] = RGB(255,153,109);
+
+	Palette[12] = RGB(54,54,0);
+	Palette[13] = RGB(121,121,0);
+	Palette[14] = RGB(193,193,0);
+	Palette[15] = RGB(255,255,0);
+	Palette[16] = RGB(255,255,143);
+
+	Palette[17] = RGB(47,71,0);
+	Palette[18] = RGB(74,113,0);
+	Palette[19] = RGB(126,192,0);
+	Palette[20] = RGB(168,255,0);
+	Palette[21] = RGB(221,255,155);
+
+	Palette[22] = RGB(0,47,0);
+	Palette[23] = RGB(0,101,0);
+	Palette[24] = RGB(0,164,0);
+	Palette[25] = RGB(0,255,0);
+	Palette[26] = RGB(119,255,119);
+
+	Palette[27] = RGB(0,43,43);
+	Palette[28] = RGB(0,92,92);
+	Palette[29] = RGB(0,167,167);
+	Palette[30] = RGB(0,255,255);
+	Palette[31] = RGB(132,255,255);
+
+	Palette[32] = RGB(0,0,0);
+	Palette[33] = RGB(255,255,255);
+
+	Palette[34] = RGB(0,24,44);
+	Palette[35] = RGB(0,50,92);
+	Palette[36] = RGB(0,82,152);
+	Palette[37] = RGB(0,138,255);
+	Palette[38] = RGB(131,198,255);
+
+	Palette[39] = RGB(0,0,46);
+	Palette[40] = RGB(0,0,97);
+	Palette[41] = RGB(0,0,255);
+	Palette[42] = RGB(82,82,255);
+	Palette[43] = RGB(141,141,255);
+
+	Palette[44] = RGB(23,0,23);
+	Palette[45] = RGB(64,0,92);
+	Palette[46] = RGB(110,0,158);
+	Palette[47] = RGB(178,0,255);
+	Palette[48] = RGB(219,133,255);
+
+	Palette[49] = RGB(39,0,39);
+	Palette[50] = RGB(96,0,96);
+	Palette[51] = RGB(198,0,198);
+	Palette[52] = RGB(255,0,255);
+	Palette[53] = RGB(255,125,255);
+
+	Palette[54] = RGB(0,0,0);
+	Palette[55] = RGB(36,36,36);
+	Palette[56] = RGB(64,64,64);
+	Palette[57] = RGB(104,104,104);
+	Palette[58] = RGB(128,128,128);
+	Palette[59] = RGB(153,153,153);
+	Palette[60] = RGB(187,187,187);
+	Palette[61] = RGB(216,216,216);
+	Palette[62] = RGB(236,236,236);
+	Palette[63] = RGB(255,255,255);
+
+
+
+
+
 	// TODO: Add your specialized creation code here
 	color1 = 0;
 	color2 = 1;
@@ -189,6 +273,7 @@ void CPaletteDlg::OnMouseMove(UINT nFlags, CPoint point)
 					if(m_shiftheld) color1 = Position;
 					*pColor1= Palette[Position];
 					m_pImageView->UpdateTool();
+					m_pImageView->m_pColor_Mixer->UpdateColour();
 
 				}
 				if(m_right)
@@ -196,11 +281,8 @@ void CPaletteDlg::OnMouseMove(UINT nFlags, CPoint point)
 					if(m_shiftheld) color2 = Position;
 					*pColor2= Palette[Position];
 					m_pImageView->UpdateTool();
-
+					m_pImageView->m_pColor_Mixer->UpdateColour();
 				}
-			
-	
-
 
 				Invalidate(false);
 			}
