@@ -15,6 +15,12 @@
 
 ///////////////////////////
 // POSITIONING ACES
+
+#ifdef COMMONACE_PRIVATE_VARIABLES
+vector<ExpStore> privateVars;
+// function declarations come later...
+#endif
+
 #ifdef COMMONACE_POSITION
 long cmn_cXCmp(LPVAL params);
 long cmn_cYCmp(LPVAL params);
@@ -109,7 +115,6 @@ RECTF cmn_custombox;	// Custom bounding box
 #endif
 
 #ifdef COMMONACE_PRIVATE_VARIABLES
-vector<ExpStore> privateVars;
 
 long cPickLowestVar(LPVAL params);
 long cPickHighestVar(LPVAL params);
