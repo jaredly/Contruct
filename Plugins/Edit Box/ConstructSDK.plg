@@ -1,0 +1,63 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: ConstructSDK - Win32 Runtime--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating command line "rc.exe /l 0x809 /fo"..\..\..\Construct Compile\Edit\Runtime/ConstructSDK.res" /d "NDEBUG" "C:\Construct\Objects (non-CVS)\Edit Box (aced)\ConstructSDK.rc"" 
+Creating temporary file "C:\DOCUME~1\Ashley\LOCALS~1\Temp\RSP14D.tmp" with contents
+[
+/nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "RUN_ONLY" /D "_WINDLL" /FR"..\..\..\Construct Compile\Edit\Runtime/" /Fp"Debug/ConstructSDK.pch" /Yu"stdafx.h" /Fo"..\..\..\Construct Compile\Edit\Runtime/" /Fd"..\..\..\Construct Compile\Edit\Runtime/" /FD /c 
+"C:\Construct\Objects (non-CVS)\Edit Box (aced)\ConstructSDK.cpp"
+"C:\Construct\Objects (non-CVS)\Edit Box (aced)\Main.cpp"
+"C:\Construct\Objects (non-CVS)\Edit Box (aced)\Runtime.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\Ashley\LOCALS~1\Temp\RSP14D.tmp" 
+Creating temporary file "C:\DOCUME~1\Ashley\LOCALS~1\Temp\RSP14E.tmp" with contents
+[
+/nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "RUN_ONLY" /D "_WINDLL" /FR"..\..\..\Construct Compile\Edit\Runtime/" /Fp"Debug/ConstructSDK.pch" /Yc"stdafx.h" /Fo"..\..\..\Construct Compile\Edit\Runtime/" /Fd"..\..\..\Construct Compile\Edit\Runtime/" /FD /c 
+"C:\Construct\Objects (non-CVS)\Edit Box (aced)\StdAfx.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\Ashley\LOCALS~1\Temp\RSP14E.tmp" 
+Creating temporary file "C:\DOCUME~1\Ashley\LOCALS~1\Temp\RSP14F.tmp" with contents
+[
+/nologo /subsystem:windows /dll /incremental:no /pdb:"..\..\..\Construct Compile\Edit\Runtime/Edit.pdb" /debug /machine:IX86 /def:".\ConstructSDKRun.def" /out:"..\..\IDE\Plugins\Runtime\Edit.csx" /implib:"..\..\..\Construct Compile\Edit\Runtime/Edit.lib" /pdbtype:sept 
+"\Construct Compile\Edit\Runtime\ConstructSDK.obj"
+"\Construct Compile\Edit\Runtime\Main.obj"
+"\Construct Compile\Edit\Runtime\Runtime.obj"
+"\Construct Compile\Edit\Runtime\StdAfx.obj"
+"\Construct Compile\Edit\Runtime\ConstructSDK.res"
+]
+Creating command line "link.exe @C:\DOCUME~1\Ashley\LOCALS~1\Temp\RSP14F.tmp"
+<h3>Output Window</h3>
+Compiling resources...
+Compiling...
+StdAfx.cpp
+Warning: compiler or settings not compatible with Construct Runtime ABI. Enabling workaround functions. See SDK docs on 'Runtime ABI'.
+Compiling...
+ConstructSDK.cpp
+Main.cpp
+Runtime.cpp
+Generating Code...
+Linking...
+   Creating library ..\..\..\Construct Compile\Edit\Runtime/Edit.lib and object ..\..\..\Construct Compile\Edit\Runtime/Edit.exp
+Creating temporary file "C:\DOCUME~1\Ashley\LOCALS~1\Temp\RSP153.tmp" with contents
+[
+/nologo /o"..\..\..\Construct Compile\Edit\Runtime/ConstructSDK.bsc" 
+"\Construct Compile\Edit\Runtime\StdAfx.sbr"
+"\Construct Compile\Edit\Runtime\ConstructSDK.sbr"
+"\Construct Compile\Edit\Runtime\Main.sbr"
+"\Construct Compile\Edit\Runtime\Runtime.sbr"]
+Creating command line "bscmake.exe @C:\DOCUME~1\Ashley\LOCALS~1\Temp\RSP153.tmp"
+Creating browse info file...
+<h3>Output Window</h3>
+
+
+
+<h3>Results</h3>
+Edit.csx - 0 error(s), 1 warning(s)
+</pre>
+</body>
+</html>
