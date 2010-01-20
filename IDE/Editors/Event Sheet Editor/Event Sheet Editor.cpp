@@ -2445,7 +2445,7 @@ void EventSheetEditor::ObjectIDTranslator::translate_id_load(int &oid)
 	if(found == omg_end)
 	{
 		// Somethings gone wrong in the process because the id should be in the table.
-		oid = 9999999999; // this is a hack...basically its an oid that is highly unlikely to exist, and therefore
+		oid = 1999999999; // this is a hack...basically its an oid that is highly unlikely to exist, and therefore
 						// the validator will detect it doesn't exist. 
 		
 	}

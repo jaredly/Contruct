@@ -116,7 +116,7 @@ BOOL ExtObject::OnFrame()
 		KeyAnimation* pAnim = &ipAnim->second;
 		while(delaytillnextframe < 0)
 		{
-			Clamp<keyframe, 0, pAnim->frames.size()-1>;
+			Clamp<int>(keyframe, 0, pAnim->frames.size()-1);
 			KeyFrame* pFrame = pAnim->frames[keyframe];
 			limb.Tick(pFrame, 0);
 
@@ -159,7 +159,7 @@ BOOL ExtObject::OnFrame()
 			delaytillnextframe    += timeshift;
 
 		}
-		Clamp<keyframe, 0, pAnim->frames.size()-1>;
+		Clamp<int>(keyframe, 0, pAnim->frames.size()-1);
 		KeyFrame* pFrame = pAnim->frames[keyframe];
 		double ratio;
 		if(olddelaytillnextframe != 0)
