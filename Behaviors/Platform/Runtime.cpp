@@ -126,6 +126,9 @@ bool ExtObject::IsOnFloor()
 	pLink->info.y -= singa;
 	pRuntime->UpdateBoundingBox(pLink);
 
+	if(pStandOnMoving && bMove_with_platform)
+		return true; // we are standing on the platform, therefore we are on the floor
+
 	return onFloor;
 }
 
@@ -263,17 +266,17 @@ bool ExtObject::OverlapTest(CRunObject* pObj)
 	
 	int w = 2, h = 2;
 	
-	/*if(pLink->info.x == floor(pLink->info.x) )
+	if(pLink->info.x == floor(pLink->info.x) )
 		w = 1;
 	if(pLink->info.y == floor(pLink->info.y) )
-		h = 1;*/
+		h = 1;
 	for( int x = 0; x < w; x ++)
 	{
-		pLink->info.x = floor(fx) + x - 0.5;
+		pLink->info.x = floor(fx) + (x - 0.499)* (w-1);
 
 		for(int y = 0; y < h; y++)
 		{
-			pLink->info.y = floor(fy) + y - 0.5;
+			pLink->info.y = floor(fy) + (y - 0.499)* (h-1);
 			pRuntime->UpdateBoundingBox(pLink);
 			if(pRuntime->QueryCollision(pLink, pObj))
 			{
@@ -299,19 +302,19 @@ bool ExtObject::IsOverlapping()
 
 	int w = 2, h = 2;
 	
-	/*if(pLink->info.x == floor(pLink->info.x) )
+	if(pLink->info.x == floor(pLink->info.x) )
 		w = 1;
 	if(pLink->info.y == floor(pLink->info.y) )
-		h = 1;*/
+		h = 1;
 
 
 	for( int x = 0; x < w; x ++)
 	{
-		pLink->info.x = floor(fx) + x - 0.5;
+		pLink->info.x = floor(fx) + (x - 0.499)* (w-1);
 
 		for(int y = 0; y < h; y++)
 		{
-			pLink->info.y = floor(fy) + y - 0.5;
+			pLink->info.y = floor(fy) + (y - 0.499)* (h-1);
 			pRuntime->UpdateBoundingBox(pLink);
 			if(pObstacles)
 			{
@@ -405,7 +408,7 @@ void ExtObject::CheckForPlatformsInside()
 	}
 }
 
-void ExtObject::CheckForPlatformsVertically()
+void ExtObject::RegisterPlatformsToPushOutOf()
 {
 	platforms_getoutof.clear();
 	map<CRunObject*, CRunObject*> newPlatformsInside;
@@ -413,20 +416,20 @@ void ExtObject::CheckForPlatformsVertically()
 	float oldx = pLink->info.x;
 	float oldy = pLink->info.y;
 
-	switch (grav_dir) {
+/*	switch (grav_dir) {
 	case GRAV_UP:
-		pLink->info.y -= 0.01f;
+		pLink->info.y -= 0.501f;
 		break;
 	case GRAV_DOWN:
-		pLink->info.y += 0.01f;
+		pLink->info.y += 0.501f;
 		break;
 	case GRAV_LEFT:
-		pLink->info.x -= 0.01f;
+		pLink->info.x -= 0.501f;
 		break;
 	case GRAV_RIGHT:
-		pLink->info.x += 0.01f;
+		pLink->info.x += 0.501f;
 		break;
-	}
+	}*/
 
 	// If we aren't going upwards, we loop any platforms that we are in and see if they are inside the map
 	// of objects we overlapped last frame. This is a safe way of removing platforms we are no longer inside
@@ -465,6 +468,91 @@ int signOf(float a)
 	return 1;
 }
 
+void ExtObject::PushOutOfSolids()
+{
+	//////////////////////////////////
+	// Push out of collisions
+
+	int count = 1;
+	int dir = 0;
+	float startX = pLink->info.x;
+	float startY = pLink->info.y;
+
+	//Hack - dont check platforms
+	CRunObjType* mem = pPlatforms;
+	pPlatforms = NULL;
+
+	while (IsOverlapping()){
+		pLink->info.x = startX;
+		pLink->info.y = startY;
+
+		switch (dir) {
+		case 0:		// up
+			pLink->info.y = floor(startY - count);
+			break;
+		case 1:		// left
+			pLink->info.x = floor(startX - count);
+			break;
+		case 2:		// right
+			pLink->info.x = ceil(startX + count);
+			break;
+		case 3:		// down
+			pLink->info.y = ceil(startY + count);
+			break;
+
+		}
+
+		pLink->UpdateBoundingBox();
+
+		dir++;
+
+		if (dir == 4) {
+			dir = 0;
+			count++;
+		}
+	}
+
+	pPlatforms = mem;
+}
+
+void ExtObject::PushOutOfPlatformsUpwards()
+{
+	bool push_out_success = false;
+	float startX = pLink->info.x;
+	float startY = pLink->info.y;
+	for(int r = 0; r < 6; r++)
+	{
+		if (IsOverlapping())
+		{
+			switch (grav_dir)
+			{
+			case GRAV_LEFT:
+				pLink->info.x = ceil(pLink->info.x) + 1;
+				break;
+			case GRAV_RIGHT:
+				pLink->info.x = floor(pLink->info.x) - 1;
+				break;
+			case GRAV_UP:
+				pLink->info.y = ceil(pLink->info.y) + 1;
+				break;
+			case GRAV_DOWN:
+				pLink->info.y = floor(pLink->info.y) - 1;
+				break;
+			}
+		}
+		else
+		{
+			r = 6;
+			push_out_success = true;
+		}
+	}
+
+	if(!push_out_success)
+	{
+		pLink->info.x = startX;
+		pLink->info.y = startY;
+	}
+}
 // Called every frame, before the events and after drawing, for you to update your object if necessary
 // Return 1 (do not call again) or 0 (continue calling)
 BOOL ExtObject::OnFrame()
@@ -476,6 +564,7 @@ BOOL ExtObject::OnFrame()
 	vk_jump = pRuntime->GetControlState("Jump", player);
 	vk_down = pRuntime->GetControlState("Move Down", player);
 
+	testallexceptinsideplatforms = true;
 	if(pStandOnMoving && bMove_with_platform)
 	{
 		pLink->info.x += round_x_up(pStandOnMoving->info.x) - moving_oldx;
@@ -484,16 +573,8 @@ BOOL ExtObject::OnFrame()
 		moving_oldy = round_y_up(pStandOnMoving->info.y);
 		pRuntime->UpdateBoundingBox(pLink);
 	}
-	else
-	{
-		//MessageBox(0,0,0,0);
-	}
 
 	bool please_dont_jump = false;
-
-	CheckForPlatformsInside();
-	testallexceptinsideplatforms = false;
-	CheckForPlatformsVertically();
 
 	float ga = RADIANS(grav_dir * 90);
 
@@ -532,46 +613,19 @@ BOOL ExtObject::OnFrame()
 
 	speedv *= timedelta;
 
-	//////////////////////////////////
-	// Push out of collisions
 
-	int count = 1;
-	int dir = 0;
-	float startX = pLink->info.x;
-	float startY = pLink->info.y;
 
-	while (IsOverlapping()){
-		pLink->info.x = startX;
-		pLink->info.y = startY;
 
-		switch (dir) {
-		case 0:		// up
-			pLink->info.y = floor(startY - count);
-			break;
-		case 1:		// left
-			pLink->info.x = floor(startX - count);
-			break;
-		case 2:		// right
-			pLink->info.x = ceil(startX + count);
-			break;
-		case 3:		// down
-			pLink->info.y = ceil(startY + count);
-			break;
+	//
+	PushOutOfSolids();
+	PushOutOfPlatformsUpwards();
 
-		}
 
-		pLink->UpdateBoundingBox();
+	CheckForPlatformsInside();
+	testallexceptinsideplatforms = false;
+	RegisterPlatformsToPushOutOf();
 
-		dir++;
 
-		if (dir == 4) {
-			dir = 0;
-			count++;
-		}
-	}
-
-	// Platform code - remember anything we are inside
-	//if(ignoreallplatforms)
 
 	//////////////////////////////////
 	// Move vertically
@@ -597,7 +651,7 @@ BOOL ExtObject::OnFrame()
 
 		if(speedv >= 0)
 		{
-			CheckForPlatformsVertically();
+			RegisterPlatformsToPushOutOf();
 		}
 		// check we are on top of a platform (hack...should be made into a new function)
 		CRunObjType* pHack = pObstacles;
@@ -606,8 +660,13 @@ BOOL ExtObject::OnFrame()
 		{
 			if(!ignoringInput && vk_down && vk_jump && CanPressDown || action_gothroughplatform)
 			{
-				platforms_inside.clear();
-				platforms_getoutof.clear();
+				//platforms_inside.clear();
+				//platforms_getoutof.clear();
+				//testallexceptinsideplatforms = false;
+				pLink->info.x += cosga;
+				pLink->info.y += singa;
+
+				CheckForPlatformsInside();
 				please_dont_jump = true;
 			}
 		}
@@ -659,6 +718,7 @@ BOOL ExtObject::OnFrame()
 	bool onFloor = IsOnFloor();
 
 	CheckForPlatformsInside();
+	RegisterPlatformsToPushOutOf();
 	//testallexceptinsideplatforms = true;
 
 	//platforms_getoutof.clear();
@@ -729,12 +789,12 @@ BOOL ExtObject::OnFrame()
 						// in a ceiling...lets try sliding down instead
 						pLink->info.y += 3 * singa;
 						pLink->info.x += 3 * cosga;
-						CheckForPlatformsVertically();
+						RegisterPlatformsToPushOutOf();
 						if( IsOverlapping())
 						{
 							pLink->info.y += singa;
 							pLink->info.x += cosga;
-							CheckForPlatformsVertically();
+							RegisterPlatformsToPushOutOf();
 							if( IsOverlapping())
 							{	
 								
@@ -803,7 +863,7 @@ BOOL ExtObject::OnFrame()
 					CheckForPlatformsInside();
 					pLink->info.y += singa;
 					pLink->info.x += cosga;
-					CheckForPlatformsVertically();
+					RegisterPlatformsToPushOutOf();
 					if( IsOverlapping())
 					{
 						//ah overlapping nm!
@@ -819,7 +879,7 @@ BOOL ExtObject::OnFrame()
 					{
 						pLink->info.y += singa;
 						pLink->info.x += cosga;
-						CheckForPlatformsVertically();
+						RegisterPlatformsToPushOutOf();
 						if(IsOverlapping())
 						{
 							//ah overlapping nm!
@@ -846,6 +906,12 @@ BOOL ExtObject::OnFrame()
 
 		}// end while loop
 	}
+
+	//Added below to fix the bug:
+	//https://sourceforge.net/tracker/?func=detail&aid=2804484&group_id=207820&atid=1003219
+	CheckForPlatformsInside();
+	testallexceptinsideplatforms = true;
+
 
 	///////////////////
 	// Control
@@ -990,7 +1056,6 @@ BOOL ExtObject::OnFrame()
 	dx += acc * singa;
 	dy -= acc * cosga;
 
-			
 					
 	//---------------------------------------------------------------------------------
 
@@ -1006,19 +1071,9 @@ BOOL ExtObject::OnFrame()
 		lastjump = pRuntime->GetLayoutClock(pLayout);
 
 	}
-	// Code removed below, jump sustain is now done by affecting gravity
-	/*if (curjump && jump_sustain > 0 && pRuntime->GetLayoutClock(pLayout) - lastjump <= jump_sustain) {
-		if(singa)
-			dy = -jump_strength * singa;
-		if(cosga)
-			dx = -jump_strength * cosga;
 
-
-	}*/
 	if (!curjump)
 		lastjump = -9999;
-
-	testallexceptinsideplatforms = true;
 
 	// Moving platform code for detecting if we are standing on one
 	ga = RADIANS(grav_dir * 90);
@@ -1030,7 +1085,7 @@ BOOL ExtObject::OnFrame()
 	pRuntime->UpdateBoundingBox(pLink);
 
 
-
+	int count;
 	CRunObject** pObjectList;
 	pRuntime->GetTypeInstances(pObstacles, pObjectList, count);
 
@@ -1070,10 +1125,7 @@ BOOL ExtObject::OnFrame()
 	pLink->info.y -= singa;
 	pRuntime->UpdateBoundingBox(pLink);
 
-	//Added below to fix the bug:
-	//https://sourceforge.net/tracker/?func=detail&aid=2804484&group_id=207820&atid=1003219
-	CheckForPlatformsInside();
-	testallexceptinsideplatforms = true;
+
 
 	
 
@@ -1124,26 +1176,26 @@ void ExtObject::SetAnimation(CRunAnimation* pAnim)
 
 float ExtObject::round_x_up(float x)
 {
-	switch (grav_dir)
+/*	switch (grav_dir)
 	{
 	case GRAV_RIGHT:
 		return floor(x);
 	case GRAV_LEFT:
 		return ceil(x);
-	}
-	return x;
+	}*/
+	return floor(x + 0.499);
 }
 
 float ExtObject::round_y_up(float y)
 {
-	switch (grav_dir)
+/*	switch (grav_dir)
 	{
 	case GRAV_DOWN:
 		return floor(y);
 	case GRAV_UP:
 		return ceil(y);
-	}
-	return y;
+	}*/
+	return floor(y + 0.499);
 }
 // Called every frame, after the events and before drawing, for you to update your object if necessary
 // Return 1 (do not call again) or 0 (continue calling)

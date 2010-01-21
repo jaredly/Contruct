@@ -131,10 +131,12 @@ public:
 
 	void SetAnimation(CRunAnimation* pAnim);
 
-	void CheckForPlatformsVertically();
-	void CheckForPlatformsInside();
+	void RegisterPlatformsToPushOutOf(); // finds all the platforms to push us out of, excluding ones that were marked as us being 'inside'
+	void CheckForPlatformsInside(); // Finds all the platforms that are overlapping our player (and therefore we are inside)
 	float round_x_up(float x);
 	float round_y_up(float y);
+	void PushOutOfPlatformsUpwards();
+	void PushOutOfSolids();
 	////////////////////////////////////////////////////
 	// Data members
 
@@ -188,7 +190,7 @@ public:
 
 	map<CRunObject*, CRunObject*> platforms_inside;
 	map<CRunObject*, CRunObject*> platforms_getoutof;
-	bool testallexceptinsideplatforms;
+	bool testallexceptinsideplatforms; //if true, all platforms except those in 'inside' are checked. Otherwise, 'getoutof' is used
 
 	int player;
 
