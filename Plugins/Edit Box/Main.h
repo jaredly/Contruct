@@ -6,19 +6,11 @@
 #define MAIN_H
 
 #define MINIMUM_VERSION 1
-#define IDE_FLAGS OF_PRIVATEVARIABLES | OF_DEFAULTVALUE_PRIVATEVAR
+#define IDE_FLAGS 0 //OF_NOSIZE
 #include "..\..\Common\ExpReturn.hpp"
 #include "..\..\Common\bin.h"
 
 #define OBJECTRECT CRect(editObject->objectX, editObject->objectY, editObject->objectX + editObject->objectWidth, editObject->objectY + editObject->objectHeight)
-
-#define COMMONACE_POSITION
-#define COMMONACE_DIMENSION
-#define COMMONACE_VISIBILITY
-#define COMMONACE_IDS
-#define COMMONACE_COUNT_DESTROY
-#define COMMONACE_PRIVATE_VARIABLES
-
 
 //////////// RUNTIME OBJECT ////////////
 // Add any member functions or data you want to this class.
@@ -57,7 +49,6 @@ public:
 
 	////////////////////////////////////////////////////
 	// ACTIONS, CONDITIONS AND EXPRESSIONS DEFINITIONS
-	#include "..\..\Common\CommonAceDecl.hpp"
 
 	// Conditions
 	long cOnChanged(LPVAL theParams);
@@ -95,9 +86,9 @@ public:
 	long eGetSelectionEnd	(LPVAL theParams, ExpReturn& ret);
 	long eGetSelection		(LPVAL theParams, ExpReturn& ret);
 
-	//ExpStore cmn_xyRet[2];	// For .xy returns
+	ExpStore cmn_xyRet[2];	// For .xy returns
 
-	//long ExtObject::cmn_eGetXY(LPVAL params, ExpReturn &ret);
+	long ExtObject::cmn_eGetXY(LPVAL params, ExpReturn &ret);
 
 	///////////////////////////
 	// You can add any data or classes your object will need

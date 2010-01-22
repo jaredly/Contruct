@@ -74,11 +74,6 @@ void ExtObject::OnCreate()
 
 	pStandOnMoving = NULL;
 
-	// Defaults in case user deleted keys
-	if (vk_left == -1) vk_left = VK_LEFT;
-	if (vk_right == -1) vk_right = VK_RIGHT;
-	if (vk_jump == -1) vk_jump = VK_SHIFT;
-
 	// Get the Solid trait for the player to land on
 	pObstacles = pRuntime->GetTraitFromName("Solid");
 	pPlatforms = pRuntime->GetTraitFromName("Platform");
@@ -639,6 +634,12 @@ BOOL ExtObject::OnFrame()
 	vk_right = pRuntime->GetControlState("Move Right", player);
 	vk_jump = pRuntime->GetControlState("Jump", player);
 	vk_down = pRuntime->GetControlState("Move Down", player);
+
+	// Defaults in case user deleted keys
+	if (vk_left == -1) vk_left = VK_LEFT;
+	if (vk_right == -1) vk_right = VK_RIGHT;
+	if (vk_jump == -1) vk_jump = VK_SHIFT;
+	if (vk_down == -1) vk_down = VK_DOWN;
 
 	
 	testallexceptinsideplatforms = true;

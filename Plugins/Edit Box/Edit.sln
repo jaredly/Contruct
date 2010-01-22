@@ -11,8 +11,8 @@ Global
 		Runtime|Win32 = Runtime|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2EDF6848-48FA-45EE-A25A-91553441543B}.Debug Runtime|Win32.ActiveCfg = Runtime|Win32
-		{2EDF6848-48FA-45EE-A25A-91553441543B}.Debug Runtime|Win32.Build.0 = Runtime|Win32
+		{2EDF6848-48FA-45EE-A25A-91553441543B}.Debug Runtime|Win32.ActiveCfg = Release|Win32
+		{2EDF6848-48FA-45EE-A25A-91553441543B}.Debug Runtime|Win32.Build.0 = Release|Win32
 		{2EDF6848-48FA-45EE-A25A-91553441543B}.Debug|Win32.ActiveCfg = Debug|Win32
 		{2EDF6848-48FA-45EE-A25A-91553441543B}.Debug|Win32.Build.0 = Debug|Win32
 		{2EDF6848-48FA-45EE-A25A-91553441543B}.Release|Win32.ActiveCfg = Release|Win32

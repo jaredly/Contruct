@@ -538,7 +538,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    ID_BACKGROUNDCOLOR          "Toggle the background from white and back\n Background toggle"
+    ID_BACKGROUNDCOLOR      "Toggle the background from white and back\n Background toggle"
     ID_MENU_EVENTSHEETEDITOR "Switch to the event sheet editor"
     ID_MENU_LAYOUTEDITOR    "Switch to the layout editor"
 END
@@ -1369,7 +1369,7 @@ CAPTION "Construct : Family Manager"
 FONT 8, "Arial", 400, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "Close",IDOK,395,254,50,14
-    CONTROL         "",IDC_OBJECTS,"SysListView32",LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | WS_BORDER | WS_TABSTOP,106,31,331,78
+    CONTROL         "",IDC_OBJECTS,"SysListView32",LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | WS_BORDER | WS_TABSTOP,106,31,331,78
     LTEXT           "Objects in family:",IDC_STATIC2,106,19,56,8
     PUSHBUTTON      "Add",IDC_ADD,322,113,56,14,WS_DISABLED
     PUSHBUTTON      "Remove",IDC_REMOVE,382,113,56,14,WS_DISABLED

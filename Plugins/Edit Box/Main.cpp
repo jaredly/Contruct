@@ -7,8 +7,6 @@
 // If run only
 #ifdef RUN_ONLY
 
-#include "..\..\Common\CommonAceDef.hpp"
-
 //////////////////////////////////////////////////////////////////////////////////
 // Conditions
 //////////////////////////////////////////////////////////////////////////////////
@@ -97,7 +95,7 @@ long ExtObject::aFocusOn(LPVAL theParams)
 
 long ExtObject::aFocusOff(LPVAL theParams)
 {
-	SetFocus(NULL);
+	SetFocus(pRuntime->GetAppHwnd());
 
 	return 0;
 }
@@ -176,12 +174,13 @@ long ExtObject::aLoadFile(LPVAL theParams)
 {
 	CString text;
 
-	FILE* pFile = fopen(GetStringParam(theParams, 0), "r");
+	FILE* pFile = fopen(GetStringParam(theParams, 0), "rb");
 	fseek(pFile, 0, SEEK_END);
 	int Length = ftell(pFile);
 	fseek(pFile, 0, SEEK_SET);
 	char* Read = new char[Length + 1];
 	fread(Read, 1, Length, pFile);
+	Read[Length] = '\0';	// null terminate
 
 	text = Read;
 	delete[] Read;
@@ -364,8 +363,4 @@ void DefineACES(MicroAceTime* at)
 	ADDEXP("Get selection start", "Text", "SelectionStart", &ExtObject::eGetSelectionStart, RETURN_VALUE);
 	ADDEXP("Get selection end", "Text", "SelectionEnd", &ExtObject::eGetSelectionEnd, RETURN_VALUE);
 	ADDEXP("Get selection length", "Text", "SelectionLength", &ExtObject::eGetSelection, RETURN_VALUE);
-
-
-	#include "..\..\Common\CommonAceTable.hpp"
-
 }
