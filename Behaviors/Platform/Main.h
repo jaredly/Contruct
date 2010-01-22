@@ -126,7 +126,7 @@ public:
 	bool CanMoveLeft();
 	bool CanMoveRight();
 
-	bool IsOverlapping();
+	bool IsOverlapping(bool solids_only);
 	bool OverlapTest(CRunObject* pObj);
 
 	void SetAnimation(CRunAnimation* pAnim);
@@ -137,6 +137,9 @@ public:
 	float round_y_up(float y);
 	void PushOutOfPlatformsUpwards();
 	void PushOutOfSolids();
+	void MovePlayerVertically();
+	bool IsJumpingDown();
+	bool IsOnPlatformFloor();
 	////////////////////////////////////////////////////
 	// Data members
 
@@ -195,6 +198,9 @@ public:
 	int player;
 
 	bool autochangeangle;
+
+	float vertical_pixels_moved; // this stores how many pixels we have moved downwards due to slopes or moving platforms to prevent the 'hop' bug
+
 
 };
 
