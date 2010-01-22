@@ -142,6 +142,8 @@ long ExtObject::aPasteObject(LPVAL params)
 
 		pObj->info = restore;
 		pObj->UpdateBoundingBox();
+
+		renderer->RestoreRenderTarget();
 	}
 
 	textureChanged = true;
