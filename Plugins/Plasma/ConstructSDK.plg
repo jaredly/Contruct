@@ -1,0 +1,63 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: ConstructSDK - Win32 Runtime--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating command line "rc.exe /l 0x809 /fo"..\..\..\Construct Compile\Sprite Object\Runtime/ConstructSDK.res" /d "NDEBUG" "C:\Construct\Objects (non-CVS)\Flame\ConstructSDK.rc"" 
+Creating temporary file "C:\DOCUME~1\Ashley\LOCALS~1\Temp\RSPAD.tmp" with contents
+[
+/nologo /MT /W3 /GX /Zi /Od /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_WINDLL" /D "_MBCS" /D "_USRDLL" /D "RUN_ONLY" /FR"..\..\..\Construct Compile\Sprite Object\Runtime/" /Fp"..\..\..\Construct Compile\Sprite Object\Runtime/ConstructSDK.pch" /Yu"stdafx.h" /Fo"..\..\..\Construct Compile\Sprite Object\Runtime/" /Fd"..\..\..\Construct Compile\Sprite Object\Runtime/" /FD /c 
+"C:\Construct\Objects (non-CVS)\Flame\ConstructSDK.cpp"
+"C:\Construct\Objects (non-CVS)\Flame\Main.cpp"
+"C:\Construct\Objects (non-CVS)\Flame\Runtime.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\Ashley\LOCALS~1\Temp\RSPAD.tmp" 
+Creating temporary file "C:\DOCUME~1\Ashley\LOCALS~1\Temp\RSPAE.tmp" with contents
+[
+/nologo /MT /W3 /GX /Zi /Od /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_WINDLL" /D "_MBCS" /D "_USRDLL" /D "RUN_ONLY" /FR"..\..\..\Construct Compile\Sprite Object\Runtime/" /Fp"..\..\..\Construct Compile\Sprite Object\Runtime/ConstructSDK.pch" /Yc"stdafx.h" /Fo"..\..\..\Construct Compile\Sprite Object\Runtime/" /Fd"..\..\..\Construct Compile\Sprite Object\Runtime/" /FD /c 
+"C:\Construct\Objects (non-CVS)\Flame\StdAfx.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\Ashley\LOCALS~1\Temp\RSPAE.tmp" 
+Creating temporary file "C:\DOCUME~1\Ashley\LOCALS~1\Temp\RSPAF.tmp" with contents
+[
+/nologo /subsystem:windows /dll /incremental:no /pdb:"..\..\..\Construct Compile\Sprite Object\Runtime/Flame.pdb" /debug /machine:IX86 /def:".\ConstructSDKRun.def" /out:"..\..\IDE\Plugins\Runtime\Flame.csx" /implib:"..\..\..\Construct Compile\Sprite Object\Runtime/Flame.lib" /pdbtype:sept 
+"\Construct Compile\Sprite Object\Runtime\ConstructSDK.obj"
+"\Construct Compile\Sprite Object\Runtime\Main.obj"
+"\Construct Compile\Sprite Object\Runtime\Runtime.obj"
+"\Construct Compile\Sprite Object\Runtime\StdAfx.obj"
+"\Construct Compile\Sprite Object\Runtime\ConstructSDK.res"
+]
+Creating command line "link.exe @C:\DOCUME~1\Ashley\LOCALS~1\Temp\RSPAF.tmp"
+<h3>Output Window</h3>
+Compiling resources...
+Compiling...
+StdAfx.cpp
+Warning: compiler or settings not compatible with Construct Runtime ABI. Enabling workaround functions. See SDK docs on 'Runtime ABI'.
+Compiling...
+ConstructSDK.cpp
+Main.cpp
+Runtime.cpp
+Generating Code...
+Linking...
+   Creating library ..\..\..\Construct Compile\Sprite Object\Runtime/Flame.lib and object ..\..\..\Construct Compile\Sprite Object\Runtime/Flame.exp
+Creating temporary file "C:\DOCUME~1\Ashley\LOCALS~1\Temp\RSPB3.tmp" with contents
+[
+/nologo /o"..\..\..\Construct Compile\Sprite Object\Runtime/ConstructSDK.bsc" 
+"\Construct Compile\Sprite Object\Runtime\StdAfx.sbr"
+"\Construct Compile\Sprite Object\Runtime\ConstructSDK.sbr"
+"\Construct Compile\Sprite Object\Runtime\Main.sbr"
+"\Construct Compile\Sprite Object\Runtime\Runtime.sbr"]
+Creating command line "bscmake.exe @C:\DOCUME~1\Ashley\LOCALS~1\Temp\RSPB3.tmp"
+Creating browse info file...
+<h3>Output Window</h3>
+
+
+
+<h3>Results</h3>
+Flame.csx - 0 error(s), 1 warning(s)
+</pre>
+</body>
+</html>
