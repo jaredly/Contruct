@@ -785,7 +785,8 @@ void CRuntime::Close()
 	ImageIterator end = imagehandle_to_address.end();
 
 	for ( ; imh != end; ++imh) {
-		imh->second->ReleaseVRAM(renderer);
+		if (imh->second->IsInVRAM(renderer))
+			imh->second->ReleaseVRAM(renderer);
 	}
 
 	// Free up allocated collision masks

@@ -98,7 +98,9 @@ void ImageHandleInfo::ReleaseVRAM(Renderer& renderer)
 {
 	// Is in VRAM
 	if (th != unallocated_texture) {
-		if (renderer.ReleaseTexture(th))		// Release from VRAM
+		if (!renderer.TextureExists(th))
+			th = unallocated_texture;
+		else if (renderer.ReleaseTexture(th))		// Release from VRAM
 			th = unallocated_texture;			// Got deallocated
 	}
 }
@@ -106,7 +108,17 @@ void ImageHandleInfo::ReleaseVRAM(Renderer& renderer)
 bool ImageHandleInfo::IsInVRAM(Renderer& renderer)
 {
 	// Not yet an allocated texture
-	return th != unallocated_texture;
+	if (th == unallocated_texture)
+		return false;
+
+	// Horrible hack: sometimes textures (eg. canvas) can be released without the imagehandleinfo knowing about it
+	// (its th is not set to unallocated_texture).  So we have to query the renderer itself if the texture exists...
+	if (renderer.TextureExists(th))
+		return true;
+	else {
+		th = unallocated_texture;	// uuurggh.  turns out it wasn't in VRAM after all, so mark th as unallocated...
+		return false;
+	}
 }
 
 void CRunLayout::LoadLayoutTextures()
