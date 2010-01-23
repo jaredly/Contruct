@@ -48,13 +48,26 @@ xyzuv cube_vertices[] = {
 	{{-0.5f, 0.5f, -0.5f},{1.0f,1.0f}},{{-0.5f,-0.5f, -0.5f},{0.0f,1.0f}},
 };
 
+
+
+xyz cube_vertices_xyz[] = {
+	{ 0.5f,-0.5f, 0.5f},
+	{0.5f, 0.5f, 0.5f},
+	{-0.5f, 0.5f, 0.5f},
+	{-0.5f,-0.5f, 0.5f}, //3
+	{-0.5f,-0.5f, -0.5f},
+	{-0.5f, 0.5f, -0.5f},
+	{ 0.5f, 0.5f, -0.5f},
+	{ 0.5f,-0.5f, -0.5f} // 7
+};
+
 int cube_indexes[] = {
-	1,2,3,  3,4,1,
-	5,6,7,  7,8,5,
-	9,10,11,  11,12,9,
-	13,14,15,  15,16,13,
-	17,18,19,  19,20,17,
-	21,22,23,  23,24,21
+	0, 1, 2, 3,
+	4, 5, 6, 7,
+	5, 2, 1, 6,
+	7, 0, 3, 4,
+	7, 6, 1, 0,
+	3, 2, 5, 4
 };
 
 
@@ -259,20 +272,16 @@ BOOL ExtObject::OnFrame2()
 		cr::point3d objpos(info.x - scrollX, info.y - scrollY, z);
 		cr::point sizefactor(info.w, info.h);
 
-		cr::point3d vertices[8];
 		cr::point3d unprojected[8];
 
 		// Calculate the screen position of each of the cube's eight vertices
-		vertices[0] = objpos + (sizefactor * cr::point(-0.5f, -0.5f)).make_rotated(cr::to_radians(info.angle)).make_3d(0.0);
-		vertices[1] = objpos + (sizefactor * cr::point(-0.5f,  0.5f)).make_rotated(cr::to_radians(info.angle)).make_3d(0.0);
-		vertices[2] = objpos + (sizefactor * cr::point( 0.5f, -0.5f)).make_rotated(cr::to_radians(info.angle)).make_3d(0.0);
-		vertices[3] = objpos + (sizefactor * cr::point( 0.5f,  0.5f)).make_rotated(cr::to_radians(info.angle)).make_3d(0.0);
-		vertices[4] = objpos + (sizefactor * cr::point(-0.5f, -0.5f)).make_rotated(cr::to_radians(info.angle)).make_3d(depth);
-		vertices[5] = objpos + (sizefactor * cr::point(-0.5f,  0.5f)).make_rotated(cr::to_radians(info.angle)).make_3d(depth);
-		vertices[6] = objpos + (sizefactor * cr::point( 0.5f, -0.5f)).make_rotated(cr::to_radians(info.angle)).make_3d(depth);
-		vertices[7] = objpos + (sizefactor * cr::point( 0.5f,  0.5f)).make_rotated(cr::to_radians(info.angle)).make_3d(depth);
+		vector<cr::point3d> verts;
+		for( int i = 0; i < 8; i++)
+			verts.push_back( makepoint3d(cube_vertices[i]._xyz) );
 
-		renderer->Project(vertices, unprojected, 8);
+		transform_vertices(verts);
+
+		renderer->Project(&verts[0], unprojected, 8);
 
 		/*
 		pts[0] = ProjectWorldToScreen(-0.5f, -0.5f, 0);

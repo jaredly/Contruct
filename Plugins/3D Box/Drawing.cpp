@@ -32,6 +32,52 @@ void ExtObject::UpdateAngle()
 	D3DXMatrixRotationYawPitchRoll(&rotMatrix, yaw, pitch, RADIANS(info.angle));
 }
 
+
+void ExtObject::transform_vertices( vector<cr::point3d>& verts)
+{
+	cr::point3d objpos(info.x, info.y, z + (depth / 2.0));
+
+	cr_float sin_a, sin_b, sin_c;
+	cr_float cos_a, cos_b, cos_c;
+
+	cr_float temp;
+	cr_float zz;
+
+	cr::sincosf(-yaw, &sin_a, &cos_a);
+	cr::sincosf(-pitch, &sin_b, &cos_b);
+	cr::sincosf(cr::to_radians(info.angle), &sin_c, &cos_c);
+
+	vector<cr::point3d>::iterator v = verts.begin();
+	for( ; v != verts.end(); v++)
+	{
+		cr::point vertexpos(v->x * info.w, v->y * info.h);
+		zz = v->z * depth * riseScale;
+
+		temp = (vertexpos.x * cos_a) - (zz * sin_a);
+		zz = (zz * cos_a) + (vertexpos.x * sin_a);
+		vertexpos.x = temp;
+
+		temp = (zz * cos_b) - (vertexpos.y * sin_b);
+		vertexpos.y = (vertexpos.y * cos_b) + (zz * sin_b);
+		zz = temp;
+
+		vertexpos.rotate(cr::to_radians(info.angle));
+		cr::point3d vertexpos3d(-vertexpos.x, -vertexpos.y, zz);
+
+		cr::point3d vertex = objpos + vertexpos3d;
+		vertex.z /= riseScale;
+
+		*v = vertex;
+	}
+}
+
+
+cr::point3d makepoint3d( xyz pos)
+{
+	return cr::point3d(pos.x, pos.y, pos.z);
+}
+
+
 void ExtObject::Draw()
 {
 	// Enable the Z stencil
@@ -39,6 +85,17 @@ void ExtObject::Draw()
 	renderer->SetRenderState(cr::rs_zbuffer_enabled, (zbuffer ? cr::rsv_enabled : cr::rsv_disabled));
 
 	cr::point3d objpos(info.x, info.y, z + (depth / 2.0));
+
+	vector<cr::point3d> verts;
+	for( int i = 0; i < 8; i++)
+	{
+		verts.push_back( makepoint3d(cube_vertices_xyz[i]) );
+	}
+	transform_vertices(verts);
+
+
+
+
 
 	// Draw each face separately
 	for (int i = 0; i < 6; i++) {
@@ -58,35 +115,10 @@ void ExtObject::Draw()
 		renderer->AddIndex(3);
 		renderer->AddIndex(0);
 
-		cr_float sin_a, sin_b, sin_c;
-		cr_float cos_a, cos_b, cos_c;
-
-		cr_float temp;
-		cr_float zz;
-
-		cr::sincosf(-yaw, &sin_a, &cos_a);
-		cr::sincosf(-pitch, &sin_b, &cos_b);
-		cr::sincosf(cr::to_radians(info.angle), &sin_c, &cos_c);
 
 		for(int b = i*4; b < i*4 + 4; b++){
-			cr::point vertexpos(cube_vertices[b]._xyz.x * info.w, cube_vertices[b]._xyz.y * info.h);
-			zz = cube_vertices[b]._xyz.z * depth * riseScale;
 
-			temp = (vertexpos.x * cos_a) - (zz * sin_a);
-			zz = (zz * cos_a) + (vertexpos.x * sin_a);
-			vertexpos.x = temp;
-			
-			temp = (zz * cos_b) - (vertexpos.y * sin_b);
-			vertexpos.y = (vertexpos.y * cos_b) + (zz * sin_b);
-			zz = temp;
-
-			vertexpos.rotate(cr::to_radians(info.angle));
-			cr::point3d vertexpos3d(-vertexpos.x, -vertexpos.y, zz);
-
-			cr::point3d vertex = objpos + vertexpos3d;
-			vertex.z /= riseScale;
-
-			renderer->AddVertex(vertex, 
+			renderer->AddVertex(verts[cube_indexes[b]], 
 				cr::point(cube_vertices[b]._uv.u * u, cube_vertices[b]._uv.v * v),
 				cr::opaque_white);
 		}

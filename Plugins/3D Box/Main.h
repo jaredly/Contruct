@@ -38,10 +38,6 @@ struct TLVERTEX
 };
 
 extern TLVERTEX g_cube_vertices[];
-/*
-extern TLVERTEX cube_vertices[];
-extern int cube_indexes[];
-*/
 
 struct xyz {
 	float x, y, z;
@@ -55,6 +51,10 @@ struct xyzuv {
 	uv _uv;
 };
 extern xyzuv cube_vertices[];
+extern xyz cube_vertices_xyz[];
+extern int cube_indexes[];
+
+cr::point3d makepoint3d( xyz pos);
 
 #define NUMCUBEVERTICES 36
 
@@ -149,7 +149,7 @@ public:
 	long eGetValue(LPVAL params, ExpReturn& ret);
 
 	void UpdateAngle();
-
+	void transform_vertices( vector<cr::point3d>& verts);
 	////////////////////////////////////////////////////
 	// Data members
 	RECTF displayBox;		// Custom display bounding box
