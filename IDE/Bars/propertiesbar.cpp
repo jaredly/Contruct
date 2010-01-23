@@ -578,7 +578,7 @@ void PropertiesBar::AddResourceProperties(ApplicationResource* resource, CApplic
 	CExtPropertyItem* pRoot;
 	CExtPropertyItem* pItem;
 	CExtGridCellString* pString;
-	CExtGridCellCheckBox* pCheck;
+	//CExtGridCellCheckBox* pCheck;
 	CExtGridCellHyperLinkEx* pLink;
 
 	m_pCurrentStore = m_pStore;
