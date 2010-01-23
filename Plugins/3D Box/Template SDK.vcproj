@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="Template SDK"
 	ProjectGUID="{E4FC0DEC-403B-44D0-8B45-6AC365B15CE2}"
 	RootNamespace="Sprite"
 	Keyword="MFCProj"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -90,6 +91,8 @@
 				ProgramDatabaseFile=".\..\..\..\Construct Compile\Sprite Object\Release/Sprite.pdb"
 				SubSystem="2"
 				OptimizeForWindows98="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\..\..\..\Construct Compile\Sprite Object\Release/Sprite.lib"
 			/>
 			<Tool
@@ -111,9 +114,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -201,6 +201,8 @@
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				OptimizeForWindows98="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\..\..\..\Construct Compile\Sprite Object\Runtime/Sprite.lib"
 			/>
 			<Tool
@@ -222,9 +224,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -301,6 +300,8 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\..\..\..\Construct Compile\Sprite Object\Debug/Sprite.pdb"
 				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\..\..\..\Construct Compile\Sprite Object\Debug/Sprite.lib"
 				TargetMachine="1"
 			/>
@@ -323,9 +324,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -402,6 +400,8 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\..\..\..\Construct Compile\Sprite Object\Debug_Runtime/Sprite.pdb"
 				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\..\..\..\Construct Compile\Sprite Object\Debug_Runtime/Sprite.lib"
 				TargetMachine="1"
 			/>
@@ -424,9 +424,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -824,7 +821,7 @@
 				>
 			</File>
 			<File
-				RelativePath="ICON.BMP"
+				RelativePath="res\ICON.BMP"
 				>
 				<FileConfiguration
 					Name="Runtime|Win32"
@@ -836,7 +833,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="res\ICON.BMP"
+				RelativePath="ICON.BMP"
 				>
 				<FileConfiguration
 					Name="Runtime|Win32"
