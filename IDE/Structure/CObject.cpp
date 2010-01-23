@@ -171,16 +171,11 @@ CObjectRectangle CObj::GetObjectRect(CLayoutEditor* ed, bool useoinfo)
 {
 	if(useoinfo)
 	{
-/*
-		long x = floor(GetX()*ed->m_Zoom + 0.5);
-		long y = floor(GetY()*ed->m_Zoom + 0.5);
-		long w = floor((GetW()+GetX())*ed->m_Zoom+0.5);
-		long h = floor((GetH()+GetY())*ed->m_Zoom+0.5);*/
 
-		long x = (GetX()*ed->m_Zoom );
-		long y = (GetY()*ed->m_Zoom );
-		long w = ((GetW()+GetX())*ed->m_Zoom);
-		long h = ((GetH()+GetY())*ed->m_Zoom);
+		float x = (GetX()*ed->m_Zoom );
+		float y = (GetY()*ed->m_Zoom );
+		float w = ((GetW()+GetX())*ed->m_Zoom);
+		float h = ((GetH()+GetY())*ed->m_Zoom);
 
 		w-= x;
 		h-= y;
@@ -508,6 +503,11 @@ CObjectRectangle::CObjectRectangle(double _x, double _y, double _w, double _h,do
 	ox = _ox;
 	oy = _oy;
 }
+
+float round(float x)
+{
+	return floor(x + 0.5);
+}
 CRect CObjectRectangle::GetBoundingRect()
 {
 //#define Rad(a) float((a) / 57.29577951308f)
@@ -560,7 +560,7 @@ CRect CObjectRectangle::GetBoundingRect()
 	}
 
 	//TODO: angles
-	return CRect(l+x,t+y,r+x,b+y); 
+	return CRect(round(l+x), round(t+y), round(r+x), round(b+y)); 
 }
 bool CObjectRectangle::PtInRect(POINT point)
 {
@@ -658,7 +658,8 @@ CPoint CObjectRectangle::GetPoint(double xratio, double yratio, double distance)
 	float pointy = y;
 
 	// horizontal
-	double hor = ((-(w) * ox) + (w)*xratio + (distance*(-0.5+xratio))*2)+0.5-xratio;
+	int wn = w < 0 ? -1 : 1;
+	double hor = ((-(w) * ox) + (w)*xratio + (distance*wn*(-0.5+xratio))*2)+0.5-xratio;
 
 	float sin_a, cos_a;
 	cr::sincosf(Rad(-a), &sin_a, &cos_a);
@@ -667,14 +668,36 @@ CPoint CObjectRectangle::GetPoint(double xratio, double yratio, double distance)
 	pointy += -sin_a * hor;
 
 	// vertical
+	int hn = h < 0 ? -1 : 1;
+	double vert = ((-(h) * oy) + (h)*yratio + (distance*hn*(-0.5+yratio))*2)+0.5-yratio;
+	pointx += sin_a * vert;
+	pointy += cos_a * vert;
 
-	double vert = ((-(h) * oy) + (h)*yratio + (distance*(-0.5+yratio))*2)+0.5-yratio;
+	return CPoint(round(pointx - 0.001), round(pointy - 0.001));
+}
+
+cr::point CObjectRectangle::GetPointf(double xratio, double yratio, double distance)
+{
+	float pointx = x;
+	float pointy = y;
+
+	// horizontal
+	int wn = w < 0 ? -1 : 1;
+	double hor = ((-(w) * ox) + (w)*xratio + (distance * wn *(-0.5+xratio))*2)+0.5-xratio;
+
+	float sin_a, cos_a;
+	cr::sincosf(Rad(-a), &sin_a, &cos_a);
+
+	pointx +=  cos_a * hor;
+	pointy += -sin_a * hor;
+
+	// vertical
+	int hn = h < 0 ? -1 : 1;
+	double vert = ((-(h) * oy) + (h)*yratio + (distance * hn *(-0.5+yratio))*2)+0.5-yratio;
 	pointx += sin_a * vert;
 	pointy += cos_a * vert;
 
 
 
-
-
-	return CPoint(floor(pointx-0.01), floor(pointy-0.01));
+	return cr::point(pointx, pointy);
 }

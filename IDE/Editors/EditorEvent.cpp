@@ -358,7 +358,7 @@ bool CEditorEvent::Serialize(CArchive &ar, bool Save, EventSheetEditor* Ed)
 			// Serialize child events
 			ar << m_EventList.size();
 			for(int e = 0; e < m_EventList.size(); e ++ )
-				m_EventList[e]->Serialize(ar, Ed);
+				m_EventList[e]->Serialize(ar, Save, Ed);
 			}
 			break;
 			

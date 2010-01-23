@@ -140,6 +140,7 @@ public:
 	bool PtInRect(POINT point);
 	void CalculateBlitValues(double& _x, double& _y, double& _w, double& _h, double& _a);
 	CPoint GetPoint(double xratio, double yratio, double distance = 0);
+	cr::point GetPointf(double xratio, double yratio, double distance = 0);
 	
 };
 

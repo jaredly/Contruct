@@ -168,7 +168,7 @@ class CEditorEvent
 
 		void Remove(bool Animate, EventSheetEditor* pEd);
 		bool PtInOnOffButton(CPoint pt, EventSheetEditor* pEd);
-		bool Serialize( CArchive& ar,bool Save=false, EventSheetEditor* Ed = NULL);
+		bool Serialize( CArchive& ar,bool Save, EventSheetEditor* Ed);
 
 		// Retrieve event at point
 		CEditorEvent* EventAt(CPoint pt, EventSheetEditor* pEd, CEditorEvent** pRecieveParent = NULL);

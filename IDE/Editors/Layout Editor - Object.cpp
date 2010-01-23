@@ -44,21 +44,22 @@ long CLayoutEditor::GetUnusedID()
 
 float CLayoutEditor::RoundGridX(float value, bool isResizing)
 {
+	if(inPrecisionMode())
+		return value;
 	if((layout->m_SnapResize && isResizing) || (layout->m_SnapMovements && !isResizing))
 		return floor(value / GridWidth()+0.5)*GridWidth();
-	else if(isResizing || !inPrecisionMode())
-		return floor(value+0.5);
-	return value;
+	return floor(value+0.5);	
 	// note : we can return a float value and everything looks fine, however the ide uses pixels, and 
 	// maybe in later versions we'll use decimal place pixels. 
 }
 float CLayoutEditor::RoundGridY(float value, bool isResizing)
 {
+	if(inPrecisionMode())
+		return value;
 	if((layout->m_SnapResize && isResizing) || (layout->m_SnapMovements && !isResizing))
 		return floor(value / GridHeight()+0.5)*GridHeight();
-	else if(isResizing || !inPrecisionMode())
-		return floor(value+0.5);
-	return value;
+	return floor(value+0.5);
+	
 }
 
 long CLayoutEditor::GetUnusedOID() 
@@ -770,59 +771,7 @@ void CLayoutEditor::ResizeObject()
 
 		
 		CObjectRectangle rc = GetTempChangedRect(o);
-		/*		CPoint tl = rc2.TopLeft();
-		CPoint br = rc2.BottomRight();
-		CPoint pt;
-		CPoint pt2;
-		switch (m_sizeType) {
-		case 1: // top left
-			pt = tl + (m_curPt - m_oldPt);
-			pt.x = min(pt.x, br.x - 2);
-			pt.y = min(pt.y, br.y - 2);
-			rc2 = CRect(pt, br);
-			break;
-		case 2: // top
-			pt = tl + (m_curPt - m_oldPt);
-			pt.y = min(pt.y, br.y - 2);
-			rc2 = CRect(tl.x, pt.y, br.x, br.y);
-			break;
-		case 3: // top right
-			pt = tl + (m_curPt - m_oldPt);
-			pt2 = br + (m_curPt - m_oldPt);
-			pt.y = min(pt.y, br.y - 2);
-			pt2.x = max(pt2.x, tl.x + 2);
-			rc2 = CRect(tl.x, pt.y, pt2.x, br.y);
-			break;
-		case 4: // left
-			pt = tl + (m_curPt - m_oldPt);
-			pt.x = min(pt.x, br.x - 2);
-			rc2 = CRect(pt.x, tl.y, br.x, br.y);
-			break;
-		case 6: // right
-			pt2 = br + (m_curPt - m_oldPt);
-			pt2.x = max(pt2.x, tl.x + 2);
-			rc2 = CRect(tl.x, tl.y, pt2.x, br.y);
-			break;
-		case 7: // bottom left
-			pt = tl + (m_curPt - m_oldPt);
-			pt2 = br + (m_curPt - m_oldPt);
-			pt.x = min(pt.x, br.x - 2);
-			pt2.y = max(pt2.y, tl.y + 2);
-			rc2 = CRect(pt.x, tl.y, br.x, pt2.y);
-			break;
-		case 8: // bottom
-			pt2 = br + (m_curPt - m_oldPt);
-			pt2.y = max(pt2.y, tl.y + 2);
-			rc2 = CRect(tl.x, tl.y, br.x, pt2.y);
-			break;
-		case 9: // bottom right
-			pt2 = br + (m_curPt - m_oldPt);
-			pt2.x = max(pt2.x, tl.x + 2);
-			pt2.y = max(pt2.y, tl.y + 2);
-			rc2 = CRect(tl, pt2);
-			break;
-		}
-*/
+
 		// START UNDO INFO //
 		CAction *action = new CAction();
 		action->m_type = ACTION_MOVESIZE;

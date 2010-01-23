@@ -215,13 +215,9 @@ void CLayoutEditor::DrawObject(CObj *o, CPoint pOffset, bool unmoved, bool bOutl
 
 	o->editObject->objectX = oX 				* m_Zoom;
 	o->editObject->objectY = oY 				* m_Zoom;
-	//o->editObject->objectX = floor(o->editObject->objectX+0.5);
-	//o->editObject->objectY = floor(o->editObject->objectY+0.5);
 
 	o->editObject->objectWidth = (oX+oWidth) * m_Zoom;
 	o->editObject->objectHeight = (oY+oHeight) * m_Zoom;
-	//o->editObject->objectWidth = floor(o->editObject->objectWidth+0.5);
-	//o->editObject->objectHeight = floor(o->editObject->objectHeight+0.5);
 
 	o->editObject->objectWidth -= o->editObject->objectX;
 	o->editObject->objectHeight -= o->editObject->objectY;
@@ -247,30 +243,6 @@ void CLayoutEditor::DrawObject(CObj *o, CPoint pOffset, bool unmoved, bool bOutl
 	{
 		m_de |= DROPEFFECT_COPY;
 		m_bMovingObject = true;
-	}
-
-	if (!o->m_bIsGroup) 
-	{
-		/*if (m_bMovingObject && (m_de | DROPEFFECT_COPY) == m_de) {
-			
-				// Little code to work out if object is changing
-				bool IsChanging = true;
-			
-				long objInstance = o->GetInstanceID();
-				if(!m_sel.Find(objInstance))
-					IsChanging = false;
-
-				if (IsChanging) {
-						
-					// Blending for RGBA -> RGBA for surface tex
-					(*m_display)->SetRenderState(D3DRS_SRCBLEND , D3DBLEND_ONE);
-					(*m_display)->SetRenderState(D3DRS_DESTBLEND , D3DBLEND_INVSRCALPHA);
-
-					oInfo->ETDrawObject(o->editObject);
-				}
-
-		}*/
-
 	}
 
 	// if object is being sized or moved, change rect temporarily
@@ -347,12 +319,7 @@ void CLayoutEditor::DrawObject(CObj *o, CPoint pOffset, bool unmoved, bool bOutl
 			// Blending for RGBA -> RGBA for surface tex
 			(*m_display)->SetRenderState(D3DRS_SRCBLEND , D3DBLEND_ONE);
 			(*m_display)->SetRenderState(D3DRS_DESTBLEND , D3DBLEND_INVSRCALPHA);
-		//	(*m_display)->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_RED | D3DCOLORWRITEENABLE_GREEN | D3DCOLORWRITEENABLE_BLUE);
 
-			// Blit again, for alpha
-		//	(*m_display)->SetRenderState(D3DRS_SRCBLEND , D3DBLEND_ONE);
-		//	(*m_display)->SetRenderState(D3DRS_DESTBLEND , D3DBLEND_INVSRCALPHA);
-		//	(*m_display)->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_ALPHA);
 			if(oInfo)
 			{
 				// Create a list of the actual effects to run based on the disablemode setting
@@ -480,8 +447,6 @@ void CLayoutEditor::DrawObject(CObj *o, CPoint pOffset, bool unmoved, bool bOutl
 					(*m_display)->SetRenderState(D3DRS_SRCBLEND , D3DBLEND_ONE);
 					(*m_display)->SetRenderState(D3DRS_DESTBLEND , D3DBLEND_INVSRCALPHA);
 					(*m_display)->SetRenderTarget(sourceTextureTarget);
-					//(*m_display)->EndBatch();
-					//(*m_display)->GetD3DDevice()->Clear(1, &clearZone, D3DCLEAR_TARGET, 0x00000000, 0.0f, 0);
 					(*m_display)->ClearRT(0x00000000, clearZone);
 					oInfo->ETDrawObject(o->editObject);
 				
@@ -1599,7 +1564,10 @@ public:
 		x = p.x;
 		y = p.y;
 	}
-
+	pointf(cr::point p){
+		x = p.x;
+		y = p.y;
+	}
 	float x;
 	float y;
 };
@@ -1617,6 +1585,11 @@ void round_double(double& x)
 bool CLayoutEditor::inPrecisionMode()
 {
 	return (GetKeyState(VK_MENU) >> 4) ? true : false;
+}
+
+cr::point point_round(cr::point pt)
+{
+	return cr::point( floor(pt.x + 0.5), floor(pt.y + 0.5) );
 }
 
 
@@ -1666,6 +1639,11 @@ CObjectRectangle CLayoutEditor::GetTempChangedRect(CObj *o)
 		}
 	}
 
+	if(!inPrecisionMode())
+	{
+		round_double(diffX);
+		round_double(diffY);
+	}
 
 	if(m_bSizingObject || m_bMovingObject)
 	{
@@ -1675,22 +1653,24 @@ CObjectRectangle CLayoutEditor::GetTempChangedRect(CObj *o)
 		case 4:
 		case 7:	// left
 			{
-				if(diffX >= w)	// prevent negative width :(
-					diffX = w-1;
+				//if(diffX >= w)	// prevent negative width :(
+				//	diffX = w-1;
 
 				CObjectRectangle oldrect = o->GetObjectRect(this, true); //oldrect.a = 0;
 				info.objectWidth = w - diffX;
 				CObjectRectangle newrect = o->GetObjectRect(this, true); //newrect.a = 0;
-				pointf offset = oldrect.GetPoint(1,1) - newrect.GetPoint(1,1);
-				info.objectX += offset.x / m_Zoom;
-				info.objectY += offset.y / m_Zoom;
+				pointf offset;
 
-				if(!inPrecisionMode())
-				{
-					round_float(info.objectX);
-					round_float(info.objectY);
+				if( inPrecisionMode() )
+					offset = oldrect.GetPointf(1,1) / m_Zoom - newrect.GetPointf(1,1) / m_Zoom;
+				else{
+					offset.x = oldrect.GetPoint(1,1).x / m_Zoom - newrect.GetPoint(1,1).x / m_Zoom;
+					offset.y = oldrect.GetPoint(1,1).y / m_Zoom - newrect.GetPoint(1,1).y / m_Zoom;
 					round_float(info.objectWidth);
 				}
+
+				info.objectX += offset.x;
+				info.objectY += offset.y;
 
 				break;
 			}
@@ -1711,22 +1691,22 @@ CObjectRectangle CLayoutEditor::GetTempChangedRect(CObj *o)
 		case 6:
 		case 9:	// right
 			{
-				if(diffX <= -w)	// prevent negative width :(
-					diffX = -w+1;
-				CObjectRectangle oldrect = o->GetObjectRect(this, true); //oldrect.a = 0;
+				//if(diffX <= -w)	// prevent negative width :(
+				//	diffX = -w+1;
+				CObjectRectangle oldrect = o->GetObjectRect(this, true);
 				info.objectWidth = w + diffX;
-				CObjectRectangle newrect = o->GetObjectRect(this, true); //newrect.a = 0;
-				pointf offset = oldrect.GetPoint(0,0) - newrect.GetPoint(0,0);
-				info.objectX += offset.x / m_Zoom;
-				info.objectY += offset.y / m_Zoom;
-
-
-				if(!inPrecisionMode())
-				{
-					round_float(info.objectX);
-					round_float(info.objectY);
+				CObjectRectangle newrect = o->GetObjectRect(this, true);
+				pointf offset;
+				if( inPrecisionMode() )
+					offset = oldrect.GetPointf(0,0) / m_Zoom - newrect.GetPointf(0,0) / m_Zoom;
+				else{
+					offset.x = oldrect.GetPoint(0,0).x / m_Zoom - newrect.GetPoint(0,0).x / m_Zoom;
+					offset.y = oldrect.GetPoint(0,0).y / m_Zoom - newrect.GetPoint(0,0).y / m_Zoom;
 					round_float(info.objectWidth);
 				}
+
+				info.objectX += offset.x;
+				info.objectY += offset.y;
 
 				break;
 			}
@@ -1740,23 +1720,24 @@ CObjectRectangle CLayoutEditor::GetTempChangedRect(CObj *o)
 		case 2:
 		case 3:	// top
 			{
-			if(diffY >= h)	// prevent negative width :(
-					diffY = h-1;
+				//if(diffY >= h)	// prevent negative width :(
+				//	diffY = h-1;
 
 				CObjectRectangle oldrect = o->GetObjectRect(this, true); //oldrect.a = 0;
 				info.objectHeight = (h - diffY);
 				CObjectRectangle newrect = o->GetObjectRect(this, true); //newrect.a = 0;
-				pointf offset = oldrect.GetPoint(1,1) - newrect.GetPoint(1,1);
-				info.objectX += offset.x / m_Zoom;
-				info.objectY += offset.y / m_Zoom;
-
-				if(!inPrecisionMode())
-				{
-					round_float(info.objectX);
-					round_float(info.objectY);
+				pointf offset;
+		
+				if( inPrecisionMode() )
+					offset = oldrect.GetPointf(1,1) / m_Zoom - newrect.GetPointf(1,1) / m_Zoom;
+				else{
+					offset.x = oldrect.GetPoint(1,1).x / m_Zoom - newrect.GetPoint(1,1).x / m_Zoom;
+					offset.y = oldrect.GetPoint(1,1).y / m_Zoom - newrect.GetPoint(1,1).y / m_Zoom;
 					round_float(info.objectHeight);
 				}
-
+				
+				info.objectX += offset.x;
+				info.objectY += offset.y;
 
 				break;
 			}
@@ -1778,21 +1759,24 @@ CObjectRectangle CLayoutEditor::GetTempChangedRect(CObj *o)
 		case 8:
 		case 9:	// bottom
 			{
-				if(diffY <= -h)	// prevent negative width :(
-					diffY = -h+1;
-				CObjectRectangle oldrect = o->GetObjectRect(this, true); //oldrect.a = 0;
+				//if(diffY <= -h)	// prevent negative width :(
+				//	diffY = -h+1;
+				CObjectRectangle oldrect = o->GetObjectRect(this, true); 
 				info.objectHeight = h + diffY;
-				CObjectRectangle newrect = o->GetObjectRect(this, true); //newrect.a = 0;
-				pointf offset = oldrect.GetPoint(0,0) - newrect.GetPoint(0,0);
-				info.objectX += offset.x / m_Zoom;
-				info.objectY += offset.y / m_Zoom;
+				CObjectRectangle newrect = o->GetObjectRect(this, true);
+				pointf offset = oldrect.GetPointf(0,0) - newrect.GetPointf(0,0);
 
-				if( inPrecisionMode())
-				{
-					round_float(info.objectX);
-					round_float(info.objectY);
+				if( inPrecisionMode() )
+					offset = oldrect.GetPointf(0,0) / m_Zoom - newrect.GetPointf(0,0) / m_Zoom;
+				else{
+					offset.x = oldrect.GetPoint(0,0).x / m_Zoom - newrect.GetPoint(0,0).x / m_Zoom;
+					offset.y = oldrect.GetPoint(0,0).y / m_Zoom - newrect.GetPoint(0,0).y / m_Zoom;
 					round_float(info.objectHeight);
 				}
+
+				info.objectX += offset.x;
+				info.objectY += offset.y;
+
 				break;
 			}
 			break;
@@ -1809,9 +1793,6 @@ CObjectRectangle CLayoutEditor::GetTempChangedRect(CObj *o)
 		}
 	}
 
-	// now round it
-	//info.objectX = floor(info.objectX+0.51);
-	//info.objectY = floor(info.objectY+0.51);
 
 	// moving
 
@@ -1831,80 +1812,6 @@ CObjectRectangle CLayoutEditor::GetTempChangedRect(CObj *o)
 	info = old;
 
 	return rect;
-	
-/*	CPoint tl = rc2.TopLeft();
-	CPoint br = rc2.BottomRight();
-
-	if ((m_bSizingObject) && (o->m_AllowSize)) {
-		CPoint pt;
-		CPoint pt2;
-		switch (m_sizeType) 
-		{
-		case 1: // top left
-			pt = tl + (m_curPt - m_oldPt);
-			pt.x = min(pt.x, br.x - 2);
-			pt.y = min(pt.y, br.y - 2);
-			rc2 = CRect(pt, br);
-			break;
-
-		case 2: // top
-			pt = tl + (m_curPt - m_oldPt);
-			pt.y = min(pt.y, br.y - 2);
-			rc2 = CRect(tl.x, pt.y, br.x, br.y);
-			break;
-
-		case 3: // top right
-			pt = tl + (m_curPt - m_oldPt);
-			pt2 = br + (m_curPt - m_oldPt);
-			pt.y = min(pt.y, br.y - 2);
-			pt2.x = max(pt2.x, tl.x + 2);
-			rc2 = CRect(tl.x, pt.y, pt2.x, br.y);
-			break;
-
-		case 4: // left
-			pt = tl + (m_curPt - m_oldPt);
-			pt.x = min(pt.x, br.x - 2);
-			rc2 = CRect(pt.x, tl.y, br.x, br.y);
-			break;
-
-		case 6: // right
-			pt2 = br + (m_curPt - m_oldPt);
-			pt2.x = max(pt2.x, tl.x + 2);
-			rc2 = CRect(tl.x, tl.y, pt2.x, br.y);
-			break;
-
-		case 7: // bottom left
-			pt = tl + (m_curPt - m_oldPt);
-			pt2 = br + (m_curPt - m_oldPt);
-			pt.x = min(pt.x, br.x - 2);
-			pt2.y = max(pt2.y, tl.y + 2);
-			rc2 = CRect(pt.x, tl.y, br.x, pt2.y);
-			break;
-
-		case 8: // bottom
-			pt2 = br + (m_curPt - m_oldPt);
-			pt2.y = max(pt2.y, tl.y + 2);
-			rc2 = CRect(tl.x, tl.y, br.x, pt2.y);
-			break;
-
-		case 9: // bottom right
-			pt2 = br + (m_curPt - m_oldPt);
-			pt2.x = max(pt2.x, tl.x + 2);
-			pt2.y = max(pt2.y, tl.y + 2);
-			rc2 = CRect(tl, pt2);
-			break;
-		}
-	}
-
-	if (m_bMovingObject) {
-		CPoint pt;
-		GetCursorPos(&pt);
-		ScreenToClient(&pt);
-		pt = pt - g_ptOffset;
-		rc2.OffsetRect(pt - m_oldPt - CPoint(FRAME_MARGIN_W*m_Zoom,FRAME_MARGIN_H*m_Zoom) + GetScrollPosition());
-	}
-
-	return rc2;*/
 }
 
 BOOL CLayoutEditor::OnEraseBkgnd(CDC* pDC) 

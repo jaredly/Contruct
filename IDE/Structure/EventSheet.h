@@ -51,7 +51,7 @@ public:
 			{
 				CEditorEvent* Evt = new CEditorEvent;
 				Evt->Init();				
-				if (!Evt->Serialize(ar, true))
+				if (!Evt->Serialize(ar, true, NULL))
 					return false;
 
 				m_EventList.push_back(Evt);
@@ -67,7 +67,7 @@ public:
 	
 			ar << m_EventList.size();
 			for(int e = 0; e < m_EventList.size(); e ++ )
-				m_EventList[e]->Serialize(ar,true);
+				m_EventList[e]->Serialize(ar,true, NULL);
 
 			m_Header.Serialize(ar);
 
