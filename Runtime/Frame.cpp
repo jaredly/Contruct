@@ -679,22 +679,10 @@ void CRunLayout::CalculateZElevatedBoundingBox(CRunObject* obj) const
 	point3d projected[2];
 	pRuntime->renderer.Project(world3d, projected, 2);
 
-	// Calculate Z buffer value at Z=0 plane (eye distance=100)
-	const float a = 1100.0f / 1099.0f;
-	const float b = 1100.0f / (1.0f - 1100.0f);
-	const float z = a + (b / 100.0f);
-
-	point3d onscreen[2];
-	onscreen[0] = point3d(projected[0].x, projected[0].y, z);		// TL
-	onscreen[1] = point3d(projected[1].x, projected[1].y, z);		// BR
-
-	point3d unprojected[2];
-	pRuntime->renderer.Unproject(onscreen, unprojected, 2);
-
-	pDisplayBox->left = unprojected[0].x + scrollX;
-	pDisplayBox->top = unprojected[0].y + scrollY;
-	pDisplayBox->right = unprojected[1].x + scrollX;
-	pDisplayBox->bottom = unprojected[1].y + scrollY;
+	pDisplayBox->left = projected[0].x + scrollX;
+	pDisplayBox->top = projected[0].y + scrollY;
+	pDisplayBox->right = projected[1].x + scrollX;
+	pDisplayBox->bottom = projected[1].y + scrollY;
 #endif
 }
 
@@ -1308,6 +1296,8 @@ void CRunLayout::Draw(bool incrementFrameCounter)
 
 		// If not drawn to backbuffer, blit layer to frame target
 		if (layerUsingEffects) {
+
+			renderer.SetZBufferEnabled(false);
 
 			// Copy the multisample target to the layer texture if we've been drawing to the multisampled surface
 			if (multisamples > 0)
