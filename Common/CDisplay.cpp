@@ -345,10 +345,6 @@ void CD3DDisplay::Setup2DMode()
 	for(int i = 0; i < CD3D_NUM_TRANSFORMS; i++)
 		d3dDevice->GetTransform((D3DTRANSFORMSTATETYPE)i, &transforms[i]);
 		
-
-	renderTex = -1;
-	curTexture = -1;
-
 	Update3dCoords();
 
 }
