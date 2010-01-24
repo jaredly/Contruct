@@ -482,6 +482,12 @@ void CEditorParam::Serialize( CArchive& ar, CChronoEventEditor* Ed)
 			ar << ttokens[a].str;
 			ar << ttokens[a].id;
 			ar << (int)ttokens[a].tsub;
+
+			if(Ed) 
+			{
+				int oid = ttokens[a].oidOwner;
+				Ed->RegisterObjectID(oid, ar);
+			}
 		}
 
 		if(m_type == EDITORPARAM_OBJECT && ttokens.size() == 1)
