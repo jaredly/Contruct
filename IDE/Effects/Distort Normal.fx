@@ -39,13 +39,17 @@ float pixelHeight;
 float4 EffectProcess( float2 Tex : TEXCOORD0 ) : COLOR0
 {
 	float4 col = tex2D(foreground, Tex.xy);
-	float diffx = 0.5 - col.r;
-	float diffy = 0.5 - col.g;
+	if(col.a != 0)
+	{
+		float diffx = 0.5 - col.r;
+		float diffy = 0.5 - col.g;
 
-    Tex.x += diffx * magnification * pixelWidth * 64 * col.a;
-    Tex.y += diffy * magnification * pixelHeight * 64 * col.a;
+		Tex.x += diffx * magnification * pixelWidth * 64 * col.a;
+		Tex.y += diffy * magnification * pixelHeight * 64 * col.a;
 
-    return tex2D(background, Tex.xy);
+		col = tex2D(background, Tex.xy);
+	}
+	return col;
 }
 
 // ConstructEffect

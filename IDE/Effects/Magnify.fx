@@ -36,12 +36,15 @@ float hotspotY;
 float4 EffectProcess( float2 Tex : TEXCOORD0 ) : COLOR0
 {
     float4 p = tex2D(foreground, Tex.xy);
-    float zoomFactor = (0.0f - (p.r + p.g + p.b) / 3) * magnification;
+	 if( p.a != 0)
+	 {
+		float zoomFactor = (0.0f - (p.r + p.g + p.b) / 3) * magnification;
 
-    Tex.x += (Tex.x - hotspotX) * zoomFactor;
-    Tex.y += (Tex.y - hotspotY) * zoomFactor;
-
-    return tex2D(background, Tex.xy);
+		Tex.x += (Tex.x - hotspotX) * zoomFactor;
+		Tex.y += (Tex.y - hotspotY) * zoomFactor;
+		p = tex2D(background, Tex.xy);
+	 } 
+    return p;
 }
 
 // ConstructEffect
