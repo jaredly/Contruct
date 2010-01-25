@@ -18,6 +18,7 @@
 #define COMMONACE_OPACITY
 #define COMMONACE_ZORDER
 #define COMMONACE_COUNT_DESTROY
+#define COMMONACE_Z_ELEVATION
 
 //////////// RUNTIME OBJECT ////////////
 // Add any member functions or data you want to this class.

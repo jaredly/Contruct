@@ -44,6 +44,7 @@ void ExtObject::OnCreate()
 
 	info.x = info.editObject->eX;
 	info.y = info.editObject->eY;
+	info.pInfo->z_elevation = 0;
 
 	info.pInfo->filter = info.editObject->eColor;
 	info.angle = info.editObject->eAngle;
@@ -166,10 +167,10 @@ void ExtObject::Draw()
 		renderer->AddIndex(1);
 		renderer->AddIndex(3);
 
-		renderer->AddVertex(cr::point3d(info.x,				info.y,				0.0), uv[0], info.pInfo->filter);
-		renderer->AddVertex(cr::point3d(info.x + info.w,	info.y,				0.0), uv[1], info.pInfo->filter);
-		renderer->AddVertex(cr::point3d(info.x,				info.y + info.h,	0.0), uv[2], info.pInfo->filter);
-		renderer->AddVertex(cr::point3d(info.x + info.w,	info.y + info.h,	0.0), uv[3], info.pInfo->filter);
+		renderer->AddVertex(cr::point3d(info.x,				info.y,				info.pInfo->z_elevation), uv[0], info.pInfo->filter);
+		renderer->AddVertex(cr::point3d(info.x + info.w,	info.y,				info.pInfo->z_elevation), uv[1], info.pInfo->filter);
+		renderer->AddVertex(cr::point3d(info.x,				info.y + info.h,	info.pInfo->z_elevation), uv[2], info.pInfo->filter);
+		renderer->AddVertex(cr::point3d(info.x + info.w,	info.y + info.h,	info.pInfo->z_elevation), uv[3], info.pInfo->filter);
 
 		// Restore sampler states
 		renderer->SetSamplerState(cr::ss_addressu, oldU);
@@ -247,7 +248,7 @@ void ExtObject::Draw()
 			for (y = firstVisRow; y < rows; y++)
 				renderer->Quad_xywh(info.x + x * sizexf, info.y + y * sizeyf,
 									sizexf, sizeyf,
-									0.0, cr::origin, info.pInfo->filter, &uv);
+									0.0, cr::origin, info.pInfo->filter, &uv, 0, 0, 0, info.pInfo->z_elevation);
 		}
 
 		// Draw the vertical gutter
@@ -255,7 +256,7 @@ void ExtObject::Draw()
 			for (y = firstVisRow; y < rows; y++)
 				renderer->Quad_xywh(gutterx, info.y + y * sizeyf,
 									gutterw, sizeyf,
-									0.0, cr::origin, info.pInfo->filter, &horizuv);
+									0.0, cr::origin, info.pInfo->filter, &horizuv, 0, 0, 0, info.pInfo->z_elevation);
 		}
 
 		// Draw the horizontal gutter
@@ -263,7 +264,7 @@ void ExtObject::Draw()
 			for (x = firstVisCol; x < cols; x++)
 				renderer->Quad_xywh(info.x + x * sizexf, guttery,
 									sizexf, gutterh,
-									0.0, cr::origin, info.pInfo->filter, &vertuv);
+									0.0, cr::origin, info.pInfo->filter, &vertuv, 0, 0, 0, info.pInfo->z_elevation);
 		}
 
 		// Draw the bottom right tile
@@ -272,7 +273,7 @@ void ExtObject::Draw()
 
 			renderer->Quad_xywh(gutterx, guttery,
 								gutterw, gutterh,
-								0.0, cr::origin, info.pInfo->filter, &horizuv);
+								0.0, cr::origin, info.pInfo->filter, &horizuv, 0, 0, 0, info.pInfo->z_elevation);
 		}
 	}
 
