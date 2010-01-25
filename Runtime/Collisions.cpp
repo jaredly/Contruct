@@ -934,6 +934,16 @@ bool CRuntime::IsOverlapPointInMask(int x, int y, CRunObject *obj)
 	return (m->bits[0][y * m->pitch + x] & b)!=0;
 }
 
+int Roundh(float f)
+{
+	return floor(f + 0.5);
+}
+
+int Roundl(float f)
+{
+	return ceil(f - 0.5);
+}
+
 //DAVODAVODAVO {//
 int CRuntime::IsOverlapBoxInMask64MMX(CRunObject* a, CollisionMask& collA, RECTF rect)
 {
@@ -942,17 +952,20 @@ int CRuntime::IsOverlapBoxInMask64MMX(CRunObject* a, CollisionMask& collA, RECTF
 	// As we are comparing the box to the map, the rect is in respect to the map
 	RECTF& boxA = a->info.box;
 	RECT overlapA;
-	float overlapA_bottomf, overlapA_topf;
-	overlapA.left = rect.left - boxA.left;
-	overlapA.top = overlapA_topf = rect.top - boxA.top;
-	overlapA.right = rect.right - boxA.left;
-	overlapA.bottom = overlapA_bottomf = rect.bottom - boxA.top;
+
+	overlapA.left = Roundl(rect.left - boxA.left);
+	overlapA.top = Roundl(rect.top - boxA.top);
+	overlapA.right = Roundh(rect.right - boxA.left);
+	overlapA.bottom = Roundh(rect.bottom - boxA.top);
 
 	// Check for A contained within 'rect'
 	if (overlapA.left < 0) overlapA.left = 0;
-	if (overlapA.top < 0) overlapA.top = overlapA_topf = 0;
-	if (overlapA.bottom > collA.height) overlapA.bottom = overlapA_bottomf = collA.height;
+	if (overlapA.top < 0) overlapA.top = 0;
+	if (overlapA.bottom > collA.height) overlapA.bottom = collA.height;
 	if (overlapA.right > collA.width) overlapA.right = collA.width;
+
+	if(overlapA.right <= overlapA.left || overlapA.bottom <= overlapA.top)
+		return false;
 
 	BYTE* bitsA = collA.bits[overlapA.left % 8];
 	__m64* xStart = (__m64*)(bitsA + (overlapA.top * collA.pitch) + (overlapA.left / 8));
@@ -967,7 +980,7 @@ int CRuntime::IsOverlapBoxInMask64MMX(CRunObject* a, CollisionMask& collA, RECTF
 	__m64* yEnd;
 
 	int yastep = collA.pitch / (algorithm_integral_bits / 8);
-	int yaEndDiff = yastep * (int)(overlapA_bottomf - overlapA_topf); // correct rounding error
+	int yaEndDiff = yastep * (int)(overlapA.bottom - overlapA.top); // correct rounding error
 
 	// For each horizontal step in the bitmask
 	for ( ; xa != xEnd; xa++) 
@@ -1039,12 +1052,6 @@ int CRuntime::IsOverlapBoxInMask64MMX(CRunObject* a, CollisionMask& collA, RECTF
 	return false;
 }
 
-int Round(float f)
-{
-	return floor(f + 0.5);
-	//return (int)f;
-}
-
 // 64-pixel overlap tester using MMX instructions (32-bit native)
 int CRuntime::IsOverlapMaskInMask64MMX(CRunObject *a, CRunObject *b, CollisionMask& coll1, CollisionMask& coll2)
 {
@@ -1074,35 +1081,35 @@ int CRuntime::IsOverlapMaskInMask64MMX(CRunObject *a, CRunObject *b, CollisionMa
 	RECT overlapA, overlapB;
 
 	// Determine the relative overlap rectanges for A and B, knowing A is to the left of B
-	overlapA.left = Round(boxB.left - boxA.left);
+	overlapA.left = Roundl(boxB.left - boxA.left);
 	overlapB.left = 0;
 	
 	if (AaboveB) {
-		overlapA.top = Round(boxB.top - boxA.top); 
+		overlapA.top = Roundl(boxB.top - boxA.top); 
 		overlapB.top = 0;
 	}
 	// B above A
 	else {
 		overlapA.top = 0;
-		overlapB.top = Round(boxA.top - boxB.top);
+		overlapB.top = Roundl(boxA.top - boxB.top);
 	}
 
 	if (boxB.left + collB.width > boxA.left + collA.width) {
-		overlapA.right = Round(collA.width); 
-		overlapB.right = Round(boxA.left + collA.width - boxB.left); 
+		overlapA.right = Roundh(collA.width); 
+		overlapB.right = Roundh(boxA.left + collA.width - boxB.left); 
 	}
 	else {
-		overlapA.right = Round(boxB.left + collB.width - boxA.left); 
-		overlapB.right = Round(boxB.left + collB.width - boxB.left);
+		overlapA.right = Roundh(boxB.left + collB.width - boxA.left); 
+		overlapB.right = Roundh(boxB.left + collB.width - boxB.left);
 	}
 
 	if (boxB.top + collB.height > boxA.top + collA.height) {
-		overlapA.bottom = Round(collA.height); 
-		overlapB.bottom = Round(boxA.top + collA.height - boxB.top); 
+		overlapA.bottom = Roundh(collA.height); 
+		overlapB.bottom = Roundh(boxA.top + collA.height - boxB.top); 
 	}
 	else {
-		overlapA.bottom = Round(boxB.top + collB.height - boxA.top); 
-		overlapB.bottom = Round(boxB.top + collB.height - boxB.top);
+		overlapA.bottom = Roundh(boxB.top + collB.height - boxA.top); 
+		overlapB.bottom = Roundh(boxB.top + collB.height - boxB.top);
 	}
 
 	if(overlapA.bottom <= overlapA.top || overlapB.bottom <= overlapB.top)
