@@ -43,15 +43,15 @@ sampler2D background = sampler_state {
 float4 EffectProcess( float2 Tex : TEXCOORD0 ) : COLOR0
 {
     float4 normalmap = tex2D(foreground, Tex.xy);
-    float4 back = tex2D(background, Tex.xy);
-
-    float3 normal = 2.0f * normalmap.rgb - 1.0f;
-
-    float3 light = normalize(float3(lightx - Tex.x, lighty - Tex.y, lightz));
-
-    float diffuse = saturate(dot(normal, light));
-    
-    return intensity * back * diffuse;
+	 if( normalmap.a != 0 )
+	 {
+		 float4 back = tex2D(background, Tex.xy);
+		 float3 normal = 2.0f * normalmap.rgb - 1.0f;
+		 float3 light = normalize(float3(lightx - Tex.x, lighty - Tex.y, lightz));
+		 float diffuse = saturate(dot(normal, light)); 
+		 normalmap = intensity * back * diffuse;
+	 }
+	 return normalmap;
 }
 
 // ConstructEffect

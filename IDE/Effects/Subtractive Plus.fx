@@ -35,6 +35,8 @@ float4 EffectProcess( float2 Tex : TEXCOORD0 ) : COLOR0
     float4 front = tex2D(foreground, Tex.xy);
     float4 back = tex2D(background, Tex.xy);
     back.rgb = back.rgb - (front.rgb * intensity);	// Subtract colours
+	 if(front.a == 0)
+		back = front;
     return back;
 }
 

@@ -33,9 +33,12 @@ float4 EffectProcess( float2 Tex : TEXCOORD0 ) : COLOR0
 {
     // Add the front and back pixels
     float4 front = tex2D(foreground, Tex.xy);
-    float4 back = tex2D(background, Tex.xy);
-    front.rgb = lerp(back.rgb, front.rgb, intensity);
-    front.rgb *= front.a;
+	 if(front.a != 0)
+	 {
+		 float4 back = tex2D(background, Tex.xy);
+		 front.rgb = lerp(back.rgb, front.rgb, intensity);
+		 front.rgb *= front.a;
+	 }
     return front;
 }
 

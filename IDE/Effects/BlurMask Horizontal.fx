@@ -72,11 +72,14 @@ float4 EffectProcess( float2 Tex : TEXCOORD0 ) : COLOR0
     float2 samp = Tex;
     samp.y = Tex.y;
     float weight = tex2D(source, Tex.xy).r;
-
-    for (int i = 0; i < 13; i++) {
-        samp.x = Tex.x + PixelKernel[i] * pixelWidth * weight;
-        color += tex2D(background, samp.xy) * BlurWeights[i];
-    }
+	 
+	 if(weight != 0)
+	 {
+		 for (int i = 0; i < 13; i++) {
+			  samp.x = Tex.x + PixelKernel[i] * pixelWidth * weight;
+			  color += tex2D(background, samp.xy) * BlurWeights[i];
+		 }
+	 }
 
     return color;
 }

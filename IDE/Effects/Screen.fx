@@ -31,8 +31,11 @@ float4 EffectProcess( float2 Tex : TEXCOORD0 ) : COLOR0
 {
     // Screen formula
     float4 front = tex2D(foreground, Tex.xy);
-    float4 back = tex2D(background, Tex.xy);
-    front.rgb = 1.0 - ((1.0 - front.rgb) * (1.0 - back.rgb * front.a));
+	 if(front.a != 0)
+	 {
+		 float4 back = tex2D(background, Tex.xy);
+		 front.rgb = 1.0 - ((1.0 - front.rgb) * (1.0 - back.rgb * front.a));
+	 }
     return front;
 }
 

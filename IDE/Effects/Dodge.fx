@@ -29,8 +29,11 @@ sampler2D background = sampler_state {
 float4 EffectProcess( float2 Tex : TEXCOORD0 ) : COLOR0
 {
     float4 front = tex2D(foreground, Tex.xy);
-    float4 back = tex2D(background, Tex.xy);
-    front.rgb = (back.rgb * front.a) / (1.0f - front.rgb);
+	 if(front.a != 0 )
+	 {
+		float4 back = tex2D(background, Tex.xy);
+		front.rgb = (back.rgb * front.a) / (1.0f - front.rgb);
+	 }
     return front;
 }
 

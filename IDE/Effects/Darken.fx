@@ -30,8 +30,11 @@ float4 EffectProcess( float2 Tex : TEXCOORD0 ) : COLOR0
 {
     // Use minimum of foreground/background
     float4 front = tex2D(foreground, Tex.xy);
-    float4 back = tex2D(background, Tex.xy);
-    front.rgb = min(front.rgb, back.rgb);
+	 if(front.a != 0)
+	 {
+		 float4 back = tex2D(background, Tex.xy);
+		 front.rgb = min(front.rgb, back.rgb);
+	 }
     return front;
 }
 
