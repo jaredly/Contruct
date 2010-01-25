@@ -49,7 +49,8 @@ float4 EffectProcess( float2 Tex : TEXCOORD0 ) : COLOR0
 	 {
 		Tex.y += (sin((Tex.x - boxLeft) * yFreq + (frameCounter * ySpeed)) * yAmplitude * pixelHeight);
 		Tex.x += (cos((Tex.y - boxTop) * xFreq + (frameCounter * xSpeed)) * xAmplitude * pixelWidth);
-		ret = tex2D(foreground, Tex.xy);
+		float4 ret2 = tex2D(foreground, Tex.xy);
+		ret = ret * (1- ret2.a) + ret2;		
 	 }
     return ret;
 }
