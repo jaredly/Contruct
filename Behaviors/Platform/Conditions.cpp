@@ -54,7 +54,7 @@ long ExtObject::cIsJumping (LPVAL theParams)
 
 long ExtObject::cIsFalling (LPVAL theParams)
 {
-	if (IsOnFloor()) return false;
+	if (IsOnFloor(true)) return false;
 
 	switch (grav_dir) {
 	case GRAV_UP:
@@ -71,7 +71,7 @@ long ExtObject::cIsFalling (LPVAL theParams)
 
 long ExtObject::cIsOnGround (LPVAL theParams)
 {
-	return IsOnFloor();
+	return IsOnFloor(true);
 }
 
 long ExtObject::cCeilingAbove (LPVAL theParams)

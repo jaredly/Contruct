@@ -121,7 +121,7 @@ public:
 	long eJumpStrength(LPVAL theParams, ExpReturn& ret);
 	long eJumpSustain(LPVAL theParams, ExpReturn& ret);
 
-	bool IsOnFloor();
+	bool IsOnFloor( bool use_p_stand_on_moving_too);
 	bool IsOnCeiling();
 	bool CanMoveLeft();
 	bool CanMoveRight();
@@ -131,7 +131,6 @@ public:
 
 	void SetAnimation(CRunAnimation* pAnim);
 
-	void RegisterPlatformsToPushOutOf(); // finds all the platforms to push us out of, excluding ones that were marked as us being 'inside'
 	void CheckForPlatformsInside(); // Finds all the platforms that are overlapping our player (and therefore we are inside)
 	float round_x_up(float x);
 	float round_y_up(float y);
@@ -140,6 +139,11 @@ public:
 	void MovePlayerVertically();
 	bool IsJumpingDown();
 	bool IsOnPlatformFloor();
+	void MoveWithMovingPlatform();
+	void LookForMovingPlatformBelow();
+	void MovePlayerHorizontally();
+	void LimitFallSpeed();
+	void ApplyMovingPlatformSpeed();
 	////////////////////////////////////////////////////
 	// Data members
 
@@ -192,8 +196,6 @@ public:
 	float dy;
 
 	map<CRunObject*, CRunObject*> platforms_inside;
-	map<CRunObject*, CRunObject*> platforms_getoutof;
-	bool testallexceptinsideplatforms; //if true, all platforms except those in 'inside' are checked. Otherwise, 'getoutof' is used
 
 	int player;
 
