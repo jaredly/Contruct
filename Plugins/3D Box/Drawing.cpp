@@ -33,9 +33,15 @@ void ExtObject::UpdateAngle()
 }
 
 
-void ExtObject::transform_vertices( vector<cr::point3d>& verts)
+void ExtObject::transform_vertices( vector<cr::point3d>& verts, bool screen)
 {
 	cr::point3d objpos(info.x, info.y, z + (depth / 2.0));
+
+	if(screen)
+	{
+		objpos.x -= pLayout->scrollX;
+		objpos.y -= pLayout->scrollY;
+	}
 
 	cr_float sin_a, sin_b, sin_c;
 	cr_float cos_a, cos_b, cos_c;
@@ -91,7 +97,7 @@ void ExtObject::Draw()
 	{
 		verts.push_back( makepoint3d(cube_vertices_xyz[i]) );
 	}
-	transform_vertices(verts);
+	transform_vertices(verts, false);
 
 
 

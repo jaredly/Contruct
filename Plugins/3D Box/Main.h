@@ -149,7 +149,7 @@ public:
 	long eGetValue(LPVAL params, ExpReturn& ret);
 
 	void UpdateAngle();
-	void transform_vertices( vector<cr::point3d>& verts);
+	void transform_vertices( vector<cr::point3d>& verts, bool screen);
 	////////////////////////////////////////////////////
 	// Data members
 	RECTF displayBox;		// Custom display bounding box

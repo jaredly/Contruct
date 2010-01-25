@@ -254,24 +254,6 @@ BOOL ExtObject::OnFrame2()
 
 		oldDetails = currentDetails;
 
-		/*
-		D3DXMatrixIdentity(&worldMatrix);
-
-		// Calculate the X and Y world coords
-		ProjectScreenToWorld(&objectSpace, (info.x - scrollX) * pLayout->zoomX, (info.y - scrollY) * pLayout->zoomY, 0.0f);
-
-		// Multiply the translation, rotation and scaling matrices together to the world matrix
-		D3DXMatrixTranslation(&transMatrix, objectSpace.x, objectSpace.y, z);
-		D3DXMatrixMultiply(&worldMatrix, &rotMatrix, &transMatrix);
-		D3DXMatrixMultiply(&worldMatrix, &scaleMatrix, &worldMatrix);
-
-		// Update the display bounding box
-		float x = objectSpace.x;
-		float y = objectSpace.y;
-		*/
-		cr::point3d objpos(info.x - scrollX, info.y - scrollY, z);
-		cr::point sizefactor(info.w, info.h);
-
 		cr::point3d unprojected[8];
 
 		// Calculate the screen position of each of the cube's eight vertices
@@ -279,20 +261,9 @@ BOOL ExtObject::OnFrame2()
 		for( int i = 0; i < 8; i++)
 			verts.push_back( makepoint3d(cube_vertices[i]._xyz) );
 
-		transform_vertices(verts);
+		transform_vertices(verts, true);
 
 		renderer->Project(&verts[0], unprojected, 8);
-
-		/*
-		pts[0] = ProjectWorldToScreen(-0.5f, -0.5f, 0);
-		pts[1] = ProjectWorldToScreen(0.5f, -0.5f, 0);
-		pts[2] = ProjectWorldToScreen(-0.5f, 0.5f, 0);
-		pts[3] = ProjectWorldToScreen(0.5f, 0.5f, 0);
-		pts[4] = ProjectWorldToScreen(-0.5f, -0.5f, 1);
-		pts[5] = ProjectWorldToScreen(0.5f, -0.5f, 1);
-		pts[6] = ProjectWorldToScreen(-0.5f, 0.5f, 1);
-		pts[7] = ProjectWorldToScreen(0.5f, 0.5f, 1);
-		*/
 
 		float maxX = unprojected[0].x;
 		float minX = unprojected[0].x;
