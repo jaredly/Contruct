@@ -75,7 +75,7 @@ void ExtObject::OnCreate()
 		   >> render_strength[i]
 		   >> render_cutoff[i];
 
-		render_filter[i] = COLORREF_CONVERTD3D(render_filter[i]) + 0xff000000;
+		render_filter[i] = render_filter[i];
 	}
 
 	ar.detach();
@@ -282,9 +282,8 @@ void ExtObject::Draw()
 		if(render_cutoff[i] != 0){
 			renderer->SetRenderTarget(iSurface2);
 			renderer->SetRenderState(cr::rs_srcblend , cr::rsv_blend_one);
-			renderer->SetRenderState(cr::rs_destblend ,cr::rsv_blend_one);
+			renderer->SetRenderState(cr::rs_destblend ,cr::rsv_blend_zero);
 
-			renderer->ClearRenderTarget();
 			renderer->Quad_xy(0,0);
 
 			// Render the subtract
@@ -292,7 +291,7 @@ void ExtObject::Draw()
 			renderer->SetRenderState(cr::rs_destblend ,cr::rsv_blend_invsrcalpha);
 			renderer->SetRenderState(cr::rs_blendop, cr::rsv_blendop_revsubtract);
 
-			cr::color subtract(render_cutoff[i], 1.0, 1.0, 1.0);
+			cr::color subtract(render_cutoff[i] * 0.5, 1, 1 , 1 );
 
 			renderer->SetTexture(NULL);
 			renderer->Quad_xywh(0, 0, info.w, info.h, 0.0, cr::origin, subtract);
@@ -301,14 +300,15 @@ void ExtObject::Draw()
 			renderer->SetRenderState(cr::rs_srcblend , cr::rsv_blend_one);
 			renderer->SetRenderState(cr::rs_destblend , cr::rsv_blend_invsrcalpha);
 
-			renderer->SetTexture(iSurface2);
 			renderer->RestoreRenderTarget();
+			renderer->SetTexture(iSurface2);
+
 		}
 
 		for(int j = 0; j < ceil(render_strength[i]); j++)
 		{
 			cr::color mix(cr::color(render_filter[i]) * info.pInfo->filter);
-			mix.a = render_strength[i] - j;
+			mix.a *= render_strength[i] - j;
 
 			renderer->Quad_xywh(info.x, info.y, info.w, info.h, info.angle, point(info.HotSpotX, info.HotSpotY), mix);
 		}
