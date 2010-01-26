@@ -37,8 +37,8 @@
 // Construct Version Information
 // Current version:
 
-#define CONSTRUCT_VERSION_ID		9980
-#define CONSTRUCT_VERSION_STRING	"0.99.8"
+#define CONSTRUCT_VERSION_ID		9982
+#define CONSTRUCT_VERSION_STRING	"0.99.82"
 
 #define VC_EXTRALEAN				// Exclude rarely-used stuff from Windows headers
 #ifndef _CRT_SECURE_NO_DEPRECATE
