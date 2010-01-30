@@ -617,11 +617,11 @@ void DefineACES(MicroAceTime* at)
 	ADDPARAMDEF(PARAM_VALUE, "Distance", "Spring distance, in pixels", "64");
 	ADDACT("Apply Spring Force", "Spring", "Apply spring force (%0, %1, %2, %3)", &ExtObject::aSpringToBody, "ApplySpring", 0);
 
-	ADDPARAMCOMBO("Immovable", "Choose whether the object is immovable or not", "Yes|No");
+	ADDPARAMCOMBO("Immovable", "Choose whether the object is immovable or not", "No|Yes");
 	ADDACT("Set immovable", "Settings", "Set immovable: %0", &ExtObject::aSetImmovable, "SetImmovable", 0);
 
-	ADDPARAMCOMBO("No rotation", "Choose whether the object rotates or not", "Yes|No");
-	ADDACT("Set rotations disabled", "Settings", "Set rotations disabled: %0", &ExtObject::aSetNoRotations, "SetRotationsDisabled", 0);
+	ADDPARAMCOMBO("No rotation", "Choose if the object can rotate", "Enabled|Disabled");
+	ADDACT("Set rotations disabled", "Settings", "Set rotations: %0", &ExtObject::aSetNoRotations, "SetRotationsDisabled", 0);
 
 	/////////////////////////////
 	// Expressions
