@@ -1028,14 +1028,15 @@ void ExpDot::Evaluate(ExpReturn* er)
 	D_ENTER(DCS_EXPRESSION, objToCall);
 
 	// Override the object type in case a family expression
-	CRunObjType* oldType = objToCall->pType;
-	objToCall->pType = this->pType;
+	// (causes bugs... best leave out)
+	//CRunObjType* oldType = objToCall->pType;
+	//objToCall->pType = this->pType;
 
 	// Do call
 	(objToCall->*expRoutine)(expParamList, *er);
 
 	// Restore type
-	objToCall->pType = oldType;
+	//objToCall->pType = oldType;
 
 	D_RUNTIME();
 

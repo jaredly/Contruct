@@ -921,7 +921,7 @@ CRunObject* CRuntime::CreateRunObject(initialObject* et, int layer, CRunLayout* 
 
 	for ( ; t != teams_end; t++)
 		(*t)->instances.push_back(pRunObject);
-		*/
+	*/
 
 	// Add instance to target layer and make iterator point to itself
 	// Not valid for movement exts or non-drawing exts.

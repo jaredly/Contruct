@@ -387,7 +387,7 @@ void GetSystemCondition(int ID, ACESEntry2*& Out)
 			param3.name = "Point Y";
 			param3.type = 1; //value
 
-			Out->aceDisplayText = "<img>0</img> %0 at (%0,%1)";
+			Out->aceDisplayText = "<img>0</img> %0 at (%1,%2)";
 			Out->aceListName = "Object overlaps point";
 			Out->aceCategory = "Collisions";
 			Out->params.push_back(param);
@@ -413,7 +413,7 @@ void GetSystemCondition(int ID, ACESEntry2*& Out)
 			param3.name = "Point Y";
 			param3.type = 1; //value
 
-			Out->aceDisplayText = "<img>0</img> %0 collides with (%0,%1)";
+			Out->aceDisplayText = "<img>0</img> %0 collides with (%1,%2)";
 			Out->aceListName = "Object collides with point";
 			Out->aceCategory = "Collisions";
 			Out->params.push_back(param);
