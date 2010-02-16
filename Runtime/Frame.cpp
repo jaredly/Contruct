@@ -577,7 +577,7 @@ void CRunLayout::RenderEffectChain(EffectList& effects, TextureHandle sourceText
 		if (e->fx->vHotspotY)			params.hotspotY = tbox.top + (float)(hsY) / zoomedWindowHeight;
 
 		if (e->fx->vPixelWidth)			params.pixelWidth = (zoomX) / (float)winWidth;
-		if (e->fx->vPixelHeight)		params.pixelHeight = (zoomY) / (float)winWidth;
+		if (e->fx->vPixelHeight)		params.pixelHeight = (zoomY) / (float)winHeight;
 	
 
 		if (e->fx->vBgStart) {
