@@ -290,8 +290,8 @@ void ObjectBarDialog::OnClickObject(NMHDR *pNMHDR, LRESULT *pResult)
 		// Now we have to wangle in the selected object
 		int ObjectIdentifier = objects.GetItemData(Item);
 
-		CObj*			pObject;
-		CObjType*		pObjectType;
+		CObj*			pObject = 0;
+		CObjType*		pObjectType = 0;
 
 		POSITION LayerPos = layout->layers.GetHeadPosition();
 
@@ -335,6 +335,9 @@ void ObjectBarDialog::OnClickObject(NMHDR *pNMHDR, LRESULT *pResult)
 
 		// While we're here, show animations for object
 		// Future note: .. to be continued
+
+		if(!pObjectType)
+			return;
 
 		int iRoot = -1;
 		OINFO* oInfo = GetOINFO(pObjectType->DLLIndex);

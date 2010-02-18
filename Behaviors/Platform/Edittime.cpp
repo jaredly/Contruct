@@ -71,7 +71,7 @@ EditExt::EditExt(VEditTime* pVEditTime, editInfo* pEInfo)
 	jump_strength = 800;
 	jump_sustain = 0; 
 	grav_jump_sustain = 0;
-	grav_dir = DIR_DOWN;
+	grav_dir = GRAV_DOWN;
 	grav_fall = grav_jump = 1500;
 	bunnyhop = true;
 	inv = false;

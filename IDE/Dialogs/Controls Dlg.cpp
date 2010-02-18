@@ -247,12 +247,12 @@ void CControlsDlg::OnLvnEndlabeledit(NMHDR *pNMHDR, LRESULT *pResult)
 		}
 	}
 	
-	if (exists_element(application->m_Controls.begin(), application->m_Controls.end(), temp) || temp.name == "")
+	/*if (exists_element(application->m_Controls.begin(), application->m_Controls.end(), temp) || temp.name == "")
 		*pResult = 0;	// Don't allow rename
 	else {
-		*pResult = 1;	// Allow rename
+		*pResult = 1;	// Allow rename*/
 		application->m_Controls[pDispInfo->item.iItem].name = temp.name;
-	}
+	//}
 }
 
 void CControlsDlg::OnBnClickedRename()

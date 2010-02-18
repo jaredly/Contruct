@@ -39,8 +39,7 @@ void EditExt::Serialize(bin& ar)
 		if(Version == 1)
 		{
 			for(int i = 0; i < CONTROLLERS; i++)
-
-				for(int j = 0; j < 26; j++) //26 was the old number
+				for(int j = 0; j < BUTTONS; j++) //26 was the old number
 				{
 					if(j == 14)
 					{
@@ -48,6 +47,7 @@ void EditExt::Serialize(bin& ar)
 						ar >> blah;
 						ar >> blah;
 					}
+					ar >> controls[i][j];
 				}
 		}
 		else

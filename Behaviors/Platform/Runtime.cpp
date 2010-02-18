@@ -292,10 +292,10 @@ bool ExtObject::IsOverlapping( bool solids_only )
 
 	int w = 2, h = 2;
 	
-	float offx1 = -0.5f + 512 * FLT_EPSILON;
-	float offx2 = 0.5f -  512 * FLT_EPSILON;
-	float offy1 = -0.5f + 512 * FLT_EPSILON;
-	float offy2 = 0.5f - 512 * FLT_EPSILON;
+	float offx1 = -0.2f + 2048 * FLT_EPSILON;
+	float offx2 = 0.2f -  2048 * FLT_EPSILON;
+	float offy1 = -0.2f + 2048 * FLT_EPSILON;
+	float offy2 = 0.2f - 2048 * FLT_EPSILON;
 
 	if(pLink->info.x == floor(pLink->info.x) )
 	{
@@ -586,16 +586,16 @@ void ExtObject::MoveWithMovingPlatform()
 
 		switch (grav_dir)
 		{
-		case DIR_DOWN:
+		case GRAV_DOWN:
 			vertical_pixels_moved += movey;
 			break;
-		case DIR_UP:
+		case GRAV_UP:
 			vertical_pixels_moved -= movey;
 			break;
-		case DIR_RIGHT:
+		case GRAV_RIGHT:
 			vertical_pixels_moved += movex;
 			break;
-		case DIR_LEFT:
+		case GRAV_LEFT:
 			vertical_pixels_moved -= movex;
 			break;
 		}
@@ -679,14 +679,13 @@ void ExtObject::MovePlayerHorizontally()
 								// okay quite clearly we have wacked into a wall or platform then...
 								// make u
 								pLink->info.y -= 2 * singa;
-
+								pLink->info.x -= 2 * cosga;
 
 								CheckForPlatformsInside();
 
 								// okay its a wall...now we need to determine if the wall is solid or platform
 								if( IsOverlapping(true))
 								{			
-									pLink->info.x -= 2 * cosga;
 									if(cosga)
 									{
 										pLink->info.y = DirRound(ystepdirection, pLink->info.y - ystepdirection);
@@ -706,6 +705,7 @@ void ExtObject::MovePlayerHorizontally()
 								}
 								else
 								{
+									//MessageBox(0,0,0,0);
 									//it was a platform
 								}
 							}
@@ -815,7 +815,6 @@ BOOL ExtObject::OnFrame()
 	MoveWithMovingPlatform();
 	PushOutOfSolids();
 	PushOutOfPlatformsUpwards();
-	ApplyMovingPlatformSpeed();
 
 
 	bool please_dont_jump = false;
@@ -832,14 +831,6 @@ BOOL ExtObject::OnFrame()
 
 	CheckForPlatformsInside();
 
-	MovePlayerHorizontally();
-	MovePlayerVertically();
-
-	//Added below to fix the bug:
-	//https://sourceforge.net/tracker/?func=detail&aid=2804484&group_id=207820&atid=1003219
-	CheckForPlatformsInside();
-
-
 	// check we are on top of a platform
 	if(IsOnPlatformFloor())
 	{
@@ -853,6 +844,18 @@ BOOL ExtObject::OnFrame()
 
 		}
 	}
+
+	MovePlayerHorizontally();
+	ApplyMovingPlatformSpeed();
+	MovePlayerVertically();
+	
+
+	//Added below to fix the bug:
+	//https://sourceforge.net/tracker/?func=detail&aid=2804484&group_id=207820&atid=1003219
+	CheckForPlatformsInside();
+
+
+
 
 	///////////////////
 	// Control
