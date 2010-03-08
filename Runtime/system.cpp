@@ -161,7 +161,7 @@ int SysActScriptParamCount[] = {
 	0, //"Break",				// 10
 	4, //"MessageBox",
 	4, //"Create",
-	5, //"Create2",				// uses same routine
+	4, //"Create2",	//param count was wrong		// uses same routine
 	2, //"NextFrame",
 	2, //"PrevFrame",			// 15
 	3, //"GotoFrame",
@@ -180,7 +180,7 @@ int SysActScriptParamCount[] = {
 	2, //"SetLayerScrollXRatio",
 	2, //"SetLayerScrollYRatio",	// 30
 	3, //"SetLayerZoomRatio",
-	0, //"",
+	3, //"SetLayerZoomOffset", //"",
 	0, //"",
 	0, //"",
 	2, //"SetLayerVisible",		// 35
@@ -208,38 +208,38 @@ int SysActScriptParamCount[] = {
 
 CString SysActScript[] = {
 	"FlushClipboard",
-	"SetClipboard",
+	"SetClipboardText",	//"SetClipboard",
 	"WriteINI",
 	"PlaySound",
-	"SetScrollX",
-	"SetScrollY",			// 5
-	"SetAngle",
-	"SetFilter",
+	"ScrollX",
+	"ScrollY",			// 5
+	"SetDisplayAngle",	//"SetAngle",
+	"SetFilter", //no longer implimented
 	"StartLoop",
 	"StopLoop",
 	"Break",				// 10
 	"MessageBox",
 	"Create",
-	"CreateAt",				// uses same routine
-	"NextFrame",
-	"PrevFrame",			// 15
-	"GotoFrame",
-	"Quit",
+	"CreateByName",	//"CreateAt",				// uses same routine
+	"NextLayout",	//"NextFrame",
+	"PrevLayout",	//"PrevFrame",			// 15
+	"GoToLayout",	//"GotoFrame",
+	"Close",	//"Quit",
 	"CancelClose",
-	"aSetFPS",
+	"SetFPS",	//"aSetFPS",
 	"SetGlobalVar",			// 20
 	"AddGlobalVar",
 	"SubGlobalVar",
 	"EnableGroup",
-	"ScrollObj",
+	"ScrollToObj", //"ScrollObj",
 	"Serialize",			// 25
-	"EndModalFrame",
-	"CreateRelativePP",
-	"CreateRelativeIP",
+	"EndModalLayout", //"EndModalFrame",
+	"CreateRelObjPP",	//"CreateRelativePP",
+	"CreateRelObjIP",	//"CreateRelativeIP",
 	"SetLayerScrollXRatio",
 	"SetLayerScrollYRatio",	// 30
 	"SetLayerZoomRatio",
-	"",
+	"SetLayerZoomOffset", //"",
 	"",
 	"",
 	"SetLayerVisible",		// 35
@@ -510,6 +510,21 @@ const ExpRoutineEntry ExpRoutineTable[] =	{
 	{"multisamples", &SystemObject::eGetMultisamples},
 	{"", NULL}
 };
+
+int SystemObject::getGlobalVarIndex(const ExpReturn& param)
+{
+	switch(param.eType)
+	{
+	case EXPTYPE_VARIABLENAME:
+		return param.eData.vni.varIndex;
+	case EXPTYPE_INTEGER:
+		return param.GetInt();
+	case EXPTYPE_STRING:
+		return find_index(pCRuntime->globalNames.begin(), pCRuntime->globalNames.end(), *param.GetStringPtr());
+	default:
+		return -1;
+	}
+}
 
 void SystemObject::GetExpRoutine(const CString& ident, ExpIdent* part)
 {
@@ -2380,19 +2395,28 @@ long SystemObject::aSetFPS(LPVAL theParams)
 
 long SystemObject::aSetGlobal(LPVAL theParams)
 {
-	pCRuntime->globalVars[theParams[0].GetInt()] = theParams[1];
+	int index=getGlobalVarIndex(theParams[0]);
+	if(index >=0 && index < pCRuntime->globalVars.size()) //bound checking
+		pCRuntime->globalVars[index] = theParams[1];
+	//pCRuntime->globalVars[theParams[0].GetInt()] = theParams[1];
 	return 0;
 }
 
 long SystemObject::aAddGlobal(LPVAL theParams)
 {
-	pCRuntime->globalVars[theParams[0].GetInt()] += theParams[1];
+	int index=getGlobalVarIndex(theParams[0]);
+	if(index >=0 && index < pCRuntime->globalVars.size()) //bound checking
+		pCRuntime->globalVars[index] += theParams[1];
+	//pCRuntime->globalVars[theParams[0].GetInt()] += theParams[1];
 	return 0;
 }
 
 long SystemObject::aSubGlobal(LPVAL theParams)
 {
-	pCRuntime->globalVars[theParams[0].GetInt()] -= theParams[1];
+	int index=getGlobalVarIndex(theParams[0]);
+	if(index >=0 && index < pCRuntime->globalVars.size()) //bound checking
+		pCRuntime->globalVars[index] -= theParams[1];
+	//pCRuntime->globalVars[theParams[0].GetInt()] -= theParams[1];
 	return 0;
 }
 
@@ -3207,7 +3231,11 @@ long SystemObject::eTotalObjects(LPVAL theParams, ExpReturn& ret)
 
 long SystemObject::eGlobalValue(LPVAL theParams, ExpReturn& ret)
 {
-	return ret.ReturnCustom(pCRuntime, pCRuntime->globalVars[theParams[0].eData.vni.varIndex]);
+	int index=getGlobalVarIndex(theParams[0]);
+	if(index >=0 && index < pCRuntime->globalVars.size()) //bound checking
+		return ret.ReturnCustom(pCRuntime, pCRuntime->globalVars[index]);
+	else return 0;
+	//return ret.ReturnCustom(pCRuntime, pCRuntime->globalVars[theParams[0].eData.vni.varIndex]);
 }
 
 long SystemObject::eFormatDecimal(LPVAL theParams, ExpReturn& ret)
@@ -4967,7 +4995,7 @@ bool SystemObject::InitPython()
 			name.Format("%s", ExpRoutineTable[index].name);
 
 			if(name == "global")
-				name = "globalVar";
+				name = "globalvar";  //lowercase to keep consistency
 			int paramCount = SysExpScriptParamCount[index];
 
 			if(name == "")

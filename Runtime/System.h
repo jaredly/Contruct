@@ -158,6 +158,8 @@ public:
 	void Serialize(class bin& ar) { }
 	long ReturnDefaultValue(const ExpReturn* theParams, ExpReturn& ret) { return 0; }
 	long ReturnUndefinedExpression(CString& expName, const ExpReturn* theParams, ExpReturn& ret) { return 0; }
+	
+	int getGlobalVarIndex(const ExpReturn& param);
 
 	// System object debugging
 	void DebuggerUpdateDisplay(ExpStore*& privateVars);

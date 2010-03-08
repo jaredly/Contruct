@@ -468,6 +468,9 @@ public:
 	virtual float GetControlState(const char* controlName, int player) = 0;
 	virtual bool SetControlState(const char* controlName, int player, float val) = 0;
 
+	// private variable by name
+	virtual int		GetPVIndexFromName(const CString& name, CRunObjType* pType)= 0;
+
 	//////////////////////////////
 	// PLUGIN ACCESSIBLE DATA - for internal use only!
 

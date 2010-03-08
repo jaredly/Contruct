@@ -1481,3 +1481,8 @@
 	{
 		suppress_else_event = true;
 	}
+
+	int	GetPVIndexFromName(const CString& name, CRunObjType* pType)
+	{
+		return find_index(pType->privateVars.begin(), pType->privateVars.end(), name);
+	}

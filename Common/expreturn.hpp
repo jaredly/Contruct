@@ -293,6 +293,27 @@ public:
 
 	inline int GetVariableIndex(VRuntime* pRuntime, CRunObjType* pType) const
 	{
+		switch (eType) {
+		case EXPTYPE_VARIABLENAME:
+			// Indices match: OK, same object
+			if (pType == eData.vni.pOwnerType) {
+				return eData.vni.varIndex;
+			}
+			else {			
+ 				return pRuntime->TranslatePrivateVariableIndex(pType, eData.vni.pOwnerType, eData.vni.varIndex);
+			}
+		case EXPTYPE_STRING:
+			return pRuntime->GetPVIndexFromName(*GetStringPtr(), pType);
+			//return find_index(pType->privateVars.begin(), pType->privateVars.end(), *GetStringPtr());
+		case EXPTYPE_INTEGER:
+			return GetInt();
+		default:
+			return -1;  //It will cause a crash if this index is accessed.
+		}
+	}
+	
+/*	inline int GetVariableIndex(VRuntime* pRuntime, CRunObjType* pType) const
+	{
 		if (eType == EXPTYPE_VARIABLENAME) {
 
 			// Indices match: OK, same object
@@ -306,7 +327,7 @@ public:
 		else
 			return -1;
 	}
-
+*/
 #endif
 
 	bool operator <(const ExpBase& e) const

@@ -1035,7 +1035,7 @@ void SO_CreateObject(ACESEntry2& Out)
 	param.type = 6;
 
 	Out.aceDisplayText = "Create object %0 on layer %1 at (%2, %3)";
-	Out.scriptName = "CreateObject";
+	Out.scriptName = "Create";	//"CreateObject";
 	Out.aceListName = "*Create object";
 	Out.aceCategory = "Create";
 	Out.params.push_back(param);
@@ -1068,7 +1068,7 @@ void SO_CreateRelativePP(ACESEntry2& Out)
 	param.type = 6;
 
 	Out.aceDisplayText = "Create object %0 on layer %1 at (%2, %3) from %4's pivot point";
-	Out.scriptName = "CreateObjectAtObject";
+	Out.scriptName = "CreateRelObjPP"; //"CreateObjectAtObject";
 	Out.aceListName = "Create object relative to object";
 	Out.aceCategory = "Create";
 	Out.params.push_back(param);
@@ -1106,7 +1106,7 @@ void SO_CreateRelativeIP(ACESEntry2& Out)
 	param.type = 6;
 
 	Out.aceDisplayText = "Create object %0 on layer %1 at (%2, %3) from %4's image point %5";
-	Out.scriptName = "CreateObjectIP";
+	Out.scriptName = "CreateRelObjIP";	//"CreateObjectIP";
 	Out.aceListName = "Create object at image point";
 	Out.aceCategory = "Create";
 	Out.params.push_back(param);
@@ -1150,7 +1150,7 @@ void SO_CreateObjectByName(ACESEntry2& Out)
 	param.type = 2;
 
 	Out.aceDisplayText = "Create object %0 on layer %1 at (%2, %3)";
-	Out.scriptName = "CreateObjectByName";
+	Out.scriptName = "CreateByName";	//"CreateObjectByName";
 	Out.aceListName = "Create object by name";
 	Out.aceCategory = "Create";
 	Out.params.push_back(param);
@@ -1208,7 +1208,7 @@ void SO_PreviousFrame(ACESEntry2& Out)
 	param2.type = 1; // value
 
 	Out.aceDisplayText = "Return to previous layout with transition <i>%0</i> lasting %1 MS";
-	Out.scriptName = "PreviousLayout";
+	Out.scriptName = "PrevLayout";	//"PreviousLayout";
 	Out.aceListName = "Previous layout";
 	Out.aceCategory = "Application";
 	Out.params.push_back(param);
@@ -1286,7 +1286,7 @@ void SO_SetGlobal(ACESEntry2& Out)
 	param2.type = EDITORPARAM_INTEGER;
 
 	Out.aceDisplayText = "Set global variable %0 to <i>%1</i>";
-	Out.scriptName = "SetGlobalVariable";
+	Out.scriptName = "SetGlobalVar";	//"SetGlobalVariable";
 	Out.aceListName = "*Set value";
 	Out.aceCategory = "Global variables";
 	Out.params.push_back(param);
@@ -1307,7 +1307,7 @@ void SO_AddGlobal(ACESEntry2& Out)
 	param2.type = EDITORPARAM_INTEGER;
 
 	Out.aceDisplayText = "Add <i>%1</i> to global variable %0";
-	Out.scriptName = "AddToGlobalVariable";
+	Out.scriptName = "AddGlobalVar";	//"AddToGlobalVariable";
 	Out.aceListName = "Add to value";
 	Out.aceCategory = "Global variables";
 	Out.params.push_back(param);
@@ -1328,7 +1328,7 @@ void SO_SubGlobal(ACESEntry2& Out)
 	param2.type = EDITORPARAM_INTEGER;
 
 	Out.aceDisplayText = "Subtract <i>%1</i> from global variable %0";
-	Out.scriptName = "SubtractFromGlobalVariable";
+	Out.scriptName = "SubGlobalVar";	//"SubtractFromGlobalVariable";
 	Out.aceListName = "Subtract from value";
 	Out.aceCategory = "Global variables";
 	Out.params.push_back(param);
@@ -1367,7 +1367,7 @@ void SO_ScrollToObject(ACESEntry2& Out)
 	param.type = 6;
 
 	Out.aceDisplayText = "Scroll to object %0";
-	Out.scriptName = "ScrollToObject";
+	Out.scriptName = "ScrollToObj";	//"ScrollToObject";
 	Out.aceListName = "Scroll to object";
 	Out.aceCategory = "Display";
 	Out.params.push_back(param);
@@ -1548,7 +1548,7 @@ void SO_SetLayerOpacity(ACESEntry2& Out)
 void SO_SetLayerFilter(ACESEntry2& Out)
 {
 	Out.aceDisplayText = "Set layer %0 filter to %1";
-	Out.scriptName = "Set filter";
+	Out.scriptName = "SetLayerFilter";	//"Set filter";
 	Out.aceListName = "Set colour filter";
 	Out.aceCategory = "Layers";
 	Out.retrn = 0;

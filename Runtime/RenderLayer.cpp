@@ -210,7 +210,7 @@ void CRenderLayer::Quad_xywh(cr_float x, cr_float y, cr_float width, cr_float he
 			renderer->Quad(q, vs, _uv);
 		}
 		else {
-			quad q((r - hotspot).rotate_to_quad(angle, r.topleft()));
+			quad q((r - hotspot).rotate_to_quad(cr::to_radians(angle), r.topleft()));
 			renderer->Quad(q, vs, _uv);
 		}
 	}
