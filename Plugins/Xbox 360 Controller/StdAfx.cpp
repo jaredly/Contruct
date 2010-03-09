@@ -1,6 +1,8 @@
 // Include StdAfx.h
 #include "StdAfx.h"
 
+#ifdef RUN_ONLY
+
 CXBOXController* ExtObject::GetPlayer(LPVAL params)
 {
 	switch (params[0].GetInt())
@@ -17,7 +19,7 @@ CXBOXController* ExtObject::GetPlayer(LPVAL params)
 			return NULL;
 	}
 }
-
+#endif
 
 void EndProperties(int iMode, CVirtualPropItem* item, MicroEdittime* pm)
 {

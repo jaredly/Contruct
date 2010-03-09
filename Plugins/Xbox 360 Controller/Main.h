@@ -50,6 +50,8 @@ public:
 	int c; // combo value;
 };
 
+#ifdef RUN_ONLY
+
 class RunControl{
 public:
 	RunControl()
@@ -145,6 +147,8 @@ public:
 	// Use when private variables (OF_PRIVATEVARIABLES) are enabled.
 	//vector<ExpStore> privateVars;
 };
+
+#endif // RUN_ONLY
 
 #define CONTROLLERS 4
 #define BUTTONS 24

@@ -79,7 +79,7 @@ void CMainFrame::OnFileOpen()
 	"Construct Application Files (*.cap)|*.cap|All Files (*.*)|*.*||";
 
 	// Load selector
-	CFileDialog pdlg (TRUE, "Construct Application Files (*.cap)", "*.cap", OFN_FILEMUSTEXIST, openFilters);
+	CFileDialog pdlg (TRUE, "Construct Application Files (*.cap)", "*.cap", OFN_FILEMUSTEXIST | OFN_ENABLESIZING, openFilters);
 	if (pdlg.DoModal() == IDOK)
 	{
 		DoLoad(pdlg.GetPathName());
@@ -176,7 +176,7 @@ bool CMainFrame::OnFileSaveAs(CApplication* pApplication)
     "Construct Application Files (*.cap)|*.cap|All Files (*.*)|*.*||";
 
 	// Load selector
-	CFileDialog dlg(FALSE, "Construct Application Files (*.cap)", "*.cap", OFN_OVERWRITEPROMPT, openFilters);
+	CFileDialog dlg(FALSE, "Construct Application Files (*.cap)", "*.cap", OFN_OVERWRITEPROMPT | OFN_ENABLESIZING, openFilters);
 	if (dlg.DoModal() == IDOK)
 	{
 		// Save file selected

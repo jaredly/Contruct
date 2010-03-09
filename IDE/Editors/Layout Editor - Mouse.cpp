@@ -1005,7 +1005,7 @@ void CLayoutEditor::OnMouseMove(UINT nFlags, CPoint point)
 									CString tooltip_text;
 									tooltip_text.Format("Name: %s\r\nPosition: %.2f, %.2f\r\nSize: %.2f, %.2f\r\nAngle: %.2f\r\nLayer: %s", 
 														pObjType->GetName(), o->editObject->objectX, o->editObject->objectY, o->editObject->objectWidth, o->editObject->objectHeight,
-														o->editObject->objectAngle, lyr->m_name);
+														o->editObject->objectAngle, lyr->m_name + " ");
 									
 									if(tooltip_text != old)
 									{	

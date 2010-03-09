@@ -66,7 +66,9 @@ typedef void* FontHandle;
 //extern vector<EXTROUTINE> ActRoutines;
 //extern vector<EXTROUTINE> ExpRoutines;
 //extern vector<CString> ExpNames;
+#ifdef RUN_ONLY
 #include "CXBOXController.h"
+#endif
 
 #include "Main.h"
 #include "..\..\Common\bin.h"

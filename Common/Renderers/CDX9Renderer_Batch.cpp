@@ -571,19 +571,9 @@ namespace cr {
 			else
 				uv = (*_uv) * point(current_texture->xf, current_texture->yf);
 	
-	/*
-			// ??????? What's going on with UV coordinates?  Why does this work?  lol
-			if (_uv == NULL)
-				uv = unit_rect;
-			else
-				uv = *_uv;
-	*/
-	
 		}
 
 		D3DCOLOR c = filter.getD3DCOLOR();
-		//D3DCOLOR c = 0xFFFFFFFF;
-		//D3DCOLOR c = cr::sse2_D3DCOLOR_from_color(filter);
 
 		AddVertex(c, q.tl + point(state.x_skew, 0.0),			uv.topleft());
 		AddVertex(c, q.tr + point(state.x_skew, state.y_skew),	uv.topright());

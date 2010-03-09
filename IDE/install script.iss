@@ -1,6 +1,6 @@
 [Setup]
 AppName=Construct
-AppVerName=Construct 0.99.82
+AppVerName=Construct 0.99.84
 AppPublisher=Scirra
 AppPublisherURL=http://www.scirra.com
 AppSupportURL=http://www.scirra.com
@@ -77,8 +77,11 @@ Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\Construct"; Filena
 
 [Run]
 Filename: "{app}\Construct.exe"; Description: "{cm:LaunchProgram,Construct}"; Flags: nowait postinstall skipifsilent
-Filename: "{app}\vcredist_x86.exe"; StatusMsg: "Installing Visual Studio 2005 redistributable files..."; Flags: hidewizard
-Filename: "{app}\dxwebsetup.exe"; StatusMsg: "Installing DirectX additional components..."; Flags: hidewizard
+Filename: "{app}\vcredist_x86.exe"; StatusMsg: "Installing Visual Studio 2005 redistributable files..."; Flags: hidewizard skipifsilent
+Filename: "{app}\dxwebsetup.exe"; StatusMsg: "Installing DirectX additional components..."; Flags: hidewizard skipifsilent
+
+
+
 
 
 

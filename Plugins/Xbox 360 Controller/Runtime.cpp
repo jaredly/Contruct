@@ -146,7 +146,7 @@ CRunObject* WINAPI RTCreateObject(bin& ar, VRuntime* pRuntime)
 	return NULL;
 }
 
-void WINAPI RTDestroyObject(ExtObject* object)
+void WINAPI RTDestroyObject(class ExtObject* object)
 {
 }
 

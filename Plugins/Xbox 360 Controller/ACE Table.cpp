@@ -6,6 +6,7 @@
 #include "..\..\Common\CommonAceDef.hpp"
 #endif
 
+#define XboxControlString "Dpad Up|Dpad Down|Dpad Left|Dpad Right|Start|Back|Left Thumb Click|Right Thumb Click|Left Shoulder|Right shoulder|Left Trigger|Right Trigger|Button A|Button B|Button X|Button Y|Left Thumb -  Up|Left Thumb - Down|Left Thumb - Left|Left Thumb - Right|Right Thumb -  Up|Right Thumb - Down|Right Thumb - Left|Right Thumb - Right"
 
 //////////////////////////////////////////////////////////////////////////////////
 // ACE table

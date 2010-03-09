@@ -146,6 +146,36 @@ void EditExt::OnPropertiesUpdate()
 {
 }
 
+// Copied in from CXBOXController.h which is excluded in edittime builds
+namespace XBoxControl {
+	enum Control{
+		DPadUp,
+		DPadDown,
+		DPadLeft,
+		DPadRight,
+		Start,
+		Back,
+		LeftThumb,
+		RightThumb,
+		LeftShoulder,
+		RightShoulder,
+		LeftTrigger,
+		RightTrigger,
+		A,
+		B,
+		X,
+		Y,
+		LeftThumbUp,
+		LeftThumbDown,
+		LeftThumbLeft,
+		LeftThumbRight,
+		RightThumbUp,
+		RightThumbDown,
+		RightThumbLeft,
+		RightThumbRight,
+	};
+};
+
 // When the object is inserted to the layout editor by the user.
 void EditExt::OnPut()
 {

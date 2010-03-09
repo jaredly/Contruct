@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="SpringMov"
 	ProjectGUID="{E70C326C-09EA-478B-9BD7-EB4BB4B4A60D}"
 	RootNamespace="ConstructSDK"
 	Keyword="MFCProj"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -87,6 +88,8 @@
 				ModuleDefinitionFile=".\ConstructSDK.def"
 				ProgramDatabaseFile=".\..\..\Construct Compile\8DirMov\Release/8DirMov.pdb"
 				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\..\..\Construct Compile\8DirMov\Release/8DirMov.lib"
 			/>
 			<Tool
@@ -108,9 +111,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -190,6 +190,8 @@
 				ModuleDefinitionFile=".\ConstructSDKRun.def"
 				ProgramDatabaseFile=".\..\..\Construct Compile\8DirMov\Runtime/8DirMov.pdb"
 				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\..\..\Construct Compile\8DirMov\Runtime/8DirMov.lib"
 			/>
 			<Tool
@@ -211,9 +213,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -289,6 +288,8 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\..\..\Construct Compile\8DirMov\Debug/8DirMov.pdb"
 				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\..\..\Construct Compile\8DirMov\Debug/8DirMov.lib"
 				TargetMachine="1"
 			/>
@@ -311,9 +312,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -389,6 +387,8 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\..\..\Construct Compile\8DirMov\Debug Runtime/8DirMov.pdb"
 				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\..\..\Construct Compile\8DirMov\Debug Runtime/8DirMov.lib"
 				TargetMachine="1"
 			/>
@@ -411,9 +411,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -743,7 +740,7 @@
 				>
 			</File>
 			<File
-				RelativePath="res\ICON.BMP"
+				RelativePath="ICON.BMP"
 				>
 				<FileConfiguration
 					Name="Runtime|Win32"
@@ -755,7 +752,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ICON.BMP"
+				RelativePath="res\ICON.BMP"
 				>
 				<FileConfiguration
 					Name="Runtime|Win32"

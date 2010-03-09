@@ -724,7 +724,7 @@ void CRuntime::PostFrame(bool present)
 
 		// Don't call OnFrame for objects on a blocked system frame
 		if (systemFrameBlocked && (*i)->pLayout->systemDrawn) {
-			i++;
+			++i;
 			continue;
 		}
 
@@ -732,22 +732,15 @@ void CRuntime::PostFrame(bool present)
 
 		solIndex = (*i)->info.iid;
 
-		// If nonzero return, fast erase from the OnFrame callees list
+		// If nonzero return, erase from the OnFrame callees list
 		if ((*i)->OnFrame()) {
 
 			_D_RUNTIME();
 
-			int index = i - onFrameCallees.begin();
-			*i = onFrameCallees.back();
-			onFrameCallees.pop_back();
-			i = onFrameCallees.begin() + index;
-
-			// If last, stop loop
-			if (onFrameCallees.empty())
-				break;
+			i = onFrameCallees.erase(i);
 		}
 		else
-			i++;
+			++i;
 
 		_D_RUNTIME();
 	}
@@ -782,7 +775,7 @@ void CRuntime::PostFrame(bool present)
 
 		// Don't call OnFrame for objects on a blocked system frame
 		if (systemFrameBlocked && (*i)->pLayout->systemDrawn) {
-			i++;
+			++i;
 			continue;
 		}
 
@@ -790,22 +783,15 @@ void CRuntime::PostFrame(bool present)
 
 		solIndex = (*i)->info.iid;
 
-		// If nonzero return, fast erase from the OnFrame callees list
+		// If nonzero return, erase from the OnFrame callees list
 		if ((*i)->OnFrame2()) {
 
 			_D_RUNTIME();
 
-			int index = i - onFrame2Callees.begin();
-			*i = onFrame2Callees.back();
-			onFrame2Callees.pop_back();
-			i = onFrame2Callees.begin() + index;
-
-			// If last, stop loop
-			if (onFrame2Callees.empty())
-				break;
+			i = onFrame2Callees.erase(i);
 		}
 		else
-			i++;
+			++i;
 
 		_D_RUNTIME();
 	}
