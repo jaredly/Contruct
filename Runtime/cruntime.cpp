@@ -2006,7 +2006,15 @@ void CRuntime::UpdateKnownAnimationFrame(CRunAnimation* pAnim, CRunObject* obj)
 		obj->info.pInfo->collisionMaskHandle = &ih->cm;
 
 	float oldHotSpotX = obj->info.HotSpotX;
-	float oldHotSpotY = obj->info.HotSpotY;
+  	float oldHotSpotY = obj->info.HotSpotY;
+
+	ObjCollisionMask& dynMask = obj->info.dynMask;
+	if (dynMask.curMask)				//fix for: https://sourceforge.net/tracker/?func=detail&aid=2974232&group_id=207820&atid=1003219
+	{									//basicly forces recalc of collision mask per frame.
+		FreeMask(dynMask.curMask);
+		delete dynMask.curMask;
+		dynMask.curMask = NULL;
+	}
 
 	obj->info.HotSpotX = (pFrame->pivotX * obj->info.w) / pFrame->width;
 	obj->info.HotSpotY = (pFrame->pivotY * obj->info.h) / pFrame->height;
