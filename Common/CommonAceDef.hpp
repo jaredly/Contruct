@@ -265,7 +265,8 @@ long ExtObject::cmn_cPickTopmost(LPVAL params)
 
 	// Otherwise, select just the best object we found.
 	pRuntime->SelectAll(pType);
-	pRuntime->Select(bestObj);
+	pRuntime->SelectF(bestObj, pType);
+	//pRuntime->Select(bestObj);
 	return true;
 }
 
@@ -304,7 +305,8 @@ long ExtObject::cmn_cPickBottommost(LPVAL params)
 
 	// Otherwise, select just the best object we found.
 	pRuntime->SelectAll(pType);
-	pRuntime->Select(bestObj);
+	pRuntime->SelectF(bestObj, pType);
+	//pRuntime->Select(bestObj);
 	return true;
 }
 
