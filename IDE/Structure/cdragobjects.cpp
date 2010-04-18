@@ -290,7 +290,8 @@ void CDragObjects::Serialize(CArchive& ar)
 
 		
 			//now create the objects
-			for(int a = init_later.size()-1; a >=0 ; a --)
+			for( int a = 0; a < init_later.size(); a++)
+			//for(int a = init_later.size()-1; a >=0 ; a --)
 			{
 				o = init_later[a];
 				long oldID = o->GetInstanceID();

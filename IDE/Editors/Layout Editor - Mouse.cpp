@@ -1351,6 +1351,8 @@ void CLayoutEditor::InitializeMove(CPoint point)
 		// Set up the timer for scrolling
 		m_nTimerID = SetTimer(75, 25, NULL);
 
+		OrderSelectionListByZOrder();
+
 		ddm.PrepareDrop(FALSE, DRAGDROP_OBJECTS, dragInfo, &drop, "CF_HDROP", (CObject*)pDrop);
 		
 		layout->SetChanged(true);

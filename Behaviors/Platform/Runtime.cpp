@@ -864,6 +864,8 @@ BOOL ExtObject::OnFrame()
 	bool jump = false, curjump = false;
 	float leftright = 0;
 
+	curjump = vk_jump > 0.5;
+
 	if (!ignoringInput) {
 		leftright = vk_right - vk_left;
 
@@ -871,9 +873,8 @@ BOOL ExtObject::OnFrame()
 			leftright *= -1;
 
 		// Prevent bunnyhop-jumping unless bunnyhop bool is true
-		curjump = vk_jump > 0.5;
-		jump = curjump & !oldjump;
-		oldjump = curjump;
+		
+		jump = curjump & !oldjump;		
 
 		if(bunnyhop)
 			jump = curjump;
@@ -882,6 +883,7 @@ BOOL ExtObject::OnFrame()
 			jump = false;
 		
 	}
+	oldjump = curjump;
 
 	if (GetFocus() != pRuntime->GetFrameHwnd(pLink->pLayout)) {
 		leftright = 0;

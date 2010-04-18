@@ -1019,6 +1019,7 @@ void CLayoutEditor::OnToolbarCut()
 	if (m_sel.GetCount() == 1 && (GetOINFO(layout->GetObj(m_sel.GetHead())->GetObjectType(application)->DLLIndex)->ideFlags & OF_NODRAW))
 		g_dragInfo->nonlayout = true;
 
+	OrderSelectionListByZOrder();
 	ddm.PrepareDrop(DO_CLIPBOARD, DRAGDROP_OBJECTS, g_dragInfo, &drop);
 
 	DeleteSelection(true);
@@ -1031,6 +1032,44 @@ void CLayoutEditor::OnToolbarCut()
 
 	Invalidate();
 }
+
+
+
+void CLayoutEditor::OrderSelectionListByZOrder()
+{
+	CObjList newSel;
+
+	POSITION pos = m_sel.GetHeadPosition();
+	std::set<int> selected;
+	for( int i = 0; i < m_sel.GetCount(); i++)
+	{
+		long val = m_sel.GetNext(pos);
+		selected.insert(val);
+	}
+
+	m_sel.RemoveAll();
+
+	POSITION layerPos = layout->layers.GetHeadPosition();
+	for( int lp = 0; lp < layout->layers.GetCount(); lp++)
+	{
+		CLayer* layer = layout->layers.GetNext(layerPos);
+
+		POSITION zOrderPos = layer->m_zOrder.GetHeadPosition();
+		for( int zp = 0; zp < layer->m_zOrder.GetCount(); zp++)
+		{
+			long val = layer->m_zOrder.GetNext(zOrderPos);
+			if( selected.find(val) != selected.end())
+			{
+				// we have found it...
+				// Note: I thought it would be AddTail..but perhaps the
+				//       iteration of the selection is reversed when its copied...wouldn't surprise me
+				m_sel.AddTail(val);
+			}
+		}
+	}
+}
+
+
 
 void CLayoutEditor::OnToolbarCopy()
 {
@@ -1058,6 +1097,8 @@ void CLayoutEditor::OnToolbarCopy()
 	if (m_sel.GetCount() == 1 && (GetOINFO(layout->GetObj(m_sel.GetHead())->GetObjectType(application)->DLLIndex)->ideFlags & OF_NODRAW))
 		g_dragInfo->nonlayout = true;
 
+
+	OrderSelectionListByZOrder();
 	ddm.PrepareDrop(DO_CLIPBOARD, DRAGDROP_OBJECTS, g_dragInfo, &drop);
 
 	m_UpdatePreview = true;

@@ -1303,6 +1303,7 @@ void CLayoutEditor::ArrayPaste(CArrayPasteDlg *apDlg)
 	g_pSel = g_dragInfo->m_pSel = &m_sel;
 	g_pApp = g_dragInfo->application = application;
 	g_dragInfo->m_curPt = initPt;
+	OrderSelectionListByZOrder();
 	ddm.PrepareDrop(DO_CLIPBOARD, DRAGDROP_OBJECTS, g_dragInfo, &drop);
 
 	/* PREPARE INFORMATION */

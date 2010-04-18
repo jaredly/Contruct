@@ -640,6 +640,7 @@ public:
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 	bool inPrecisionMode();
+	void OrderSelectionListByZOrder();
 };
 
 #ifndef _DEBUG  // debug version
